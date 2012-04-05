@@ -10,8 +10,8 @@ QT       -= gui
 TEMPLATE  = app
 CONFIG   += console
 
-CONFIG(debug,   debug|release): TARGET = ../../../bin/emulator-daemon-debug
-CONFIG(release, debug|release): TARGET = ../../../bin/emulator-daemon
+CONFIG(debug,   debug|release): TARGET = ../../bin/emulatord-debug
+CONFIG(release, debug|release): TARGET = ../../bin/emulatord
 
 SOURCES += emulator-daemon-session.cpp netem-session.cpp emulator-daemon.cpp 
 HEADERS += emulator-daemon-session.h   netem-session.h

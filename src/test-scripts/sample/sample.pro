@@ -10,8 +10,8 @@ QT       -= gui
 TEMPLATE  = app
 CONFIG   += console
 
-CONFIG(debug,   debug|release): TARGET = ../sampled
-CONFIG(release, debug|release): TARGET = ../sample
+CONFIG(debug,   debug|release): TARGET = sampled
+CONFIG(release, debug|release): TARGET = sample
 
 SOURCES += sample.cpp
 

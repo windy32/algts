@@ -10,8 +10,8 @@ QT       -= gui
 TEMPLATE  = lib
 CONFIG   += staticlib
 
-CONFIG(debug,   debug|release): TARGET = ../../../bin/cored
-CONFIG(release, debug|release): TARGET = ../../../bin/core
+CONFIG(debug,   debug|release): TARGET = ../../bin/cored
+CONFIG(release, debug|release): TARGET = ../../bin/core
 
 # c++ constructs used by all modules
 SOURCES += global-timer.cpp log.cpp QBoundTcpSocket.cpp scenario.cpp trace.cpp

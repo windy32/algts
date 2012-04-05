@@ -10,8 +10,8 @@ QT       -= gui
 TEMPLATE  = app
 CONFIG   += console
 
-CONFIG(debug,   debug|release): TARGET = ../../../bin/server-daemon-debug
-CONFIG(release, debug|release): TARGET = ../../../bin/server-daemon
+CONFIG(debug,   debug|release): TARGET = ../../bin/serverd-debug
+CONFIG(release, debug|release): TARGET = ../../bin/serverd
 
 SOURCES += server-daemon.cpp
 

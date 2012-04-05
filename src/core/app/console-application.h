@@ -23,7 +23,7 @@ class ConsoleApplication : public CoreApplication
 private:
     bool parseAddr(const QString &str, QHostAddress &addr);
     bool parsePort(const QString &str, quint16 &port);
-    bool parseAddrRange(const QString &str, QList<QHostAddress> addrRange);
+    bool parseAddrRange(const QString &str, QList<QHostAddress> &addrRange);
 
 public:
     ConsoleApplication(int argc, char *argv[]);

@@ -39,13 +39,13 @@ public:  //public api
 	void ResetStartStream();
 	void ResetStartSubstream();
 	void ResetNextSubstream();
-	void ResetNthSubstream(uint32_t N);
+	void ResetNthSubstream(quint32 N);
 
 	void SetAntithetic(bool a);
 	void IncreasedPrecis(bool incp);
 
 	double RandU01();
-	qint32 RandInt(int32_t i, int32_t j);
+	qint32 RandInt(qint32 i, qint32 j);
 
 public: //public static api
 	static bool SetPackageSeed(quint32 seed);
