@@ -193,7 +193,7 @@ double ParetoVariable::getValue()
 {
     while(true)
     {
-        double r = (m_scale * (1.0 / pow(m_generator->RandU01(), 1.0 / m_shape)));
+        double r = m_scale * (1.0 / pow(m_generator->RandU01(), 1.0 / m_shape));
         if (m_bound == 0 || r <= m_bound)
         {
             return r;

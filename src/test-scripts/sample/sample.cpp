@@ -22,33 +22,36 @@
  * in the algts testbed.
  *
  * When the testbed has been set up (which means that you've got a client host
- * connected to a router, the router connected to a server host, and a
- * server daemon as well as a emulator daemon are running on the server host), 
- * you can script a scenario and then execute the test.
+ * connected to a router, the router connected to a server host, and a server
+ * daemon as well as a emulator daemon are running on the server host), you can
+ * script a scenario and then execute the test.
  *
- * In this sample, there're two users, Harry and Sally. Harry has a bulk download task
- * running on port 80, and a on/off download task running on port 80. Sally has a tcp echo
- * task running on port 23, and a udp echo task running on port 4000.
+ * In this sample, there're two users, Harry and Sally. Harry has a bulk 
+ * download task running on port 80, a bulk upload task running on port 80, and
+ * a on/off download task running on port 80. Sally has a tcp echo task running
+ * on port 23, and a udp echo task running on port 4000.
  *
- * Each task may have some specific attributes, e.g., for a bulk download task, you can
- * specify the max bytes to get, and the max rate server send data. 
+ * Each task may have some specific attributes, e.g., for a bulk download task,
+ * you can specify the max bytes to get, and the max rate server send data. 
  *
  * A scenario consists of three parts: users and tasks, a seed and a length.
  *
- * The seed is used while generating numbers from an random variable attribute. This is
- * useful when you just want to run the test again, or run the with same attributes but 
- * different concrete parameters. Although seeding in the application layer cannot
- * guarantee exactly the same result, compared to discrete event simulators like ns2/ns3, 
- * it's helpful getting results relatively stable.
+ * The seed is used while generating numbers from an random variable attribute. 
+ * This is useful when you just want to run the test again, or run the with same
+ * attributes but different concrete parameters. Although seeding in the 
+ * application layer cannot guarantee exactly the same result, compared to
+ * discrete event simulators like ns2/ns3, it's helpful getting results 
+ * relatively stable.
  *
- * The length describes the max length of the test, which applies to all tasks in the scenario.
+ * The length describes the max length of the test, which applies to all tasks 
+ * in the scenario.
  *
- * A scenario object has nothing to do with address of users and servers.
- * To run a test in application layer, however, concrete ip addresses are necessary as they
- * should appear in ip packets.
+ * A scenario object has nothing to do with address of users and servers. To run
+ * a test in application layer, however, concrete ip addresses are necessary as 
+ * they shall appear in ip packets.
  *
- * An ClientApplication object process the information that's necessary for a test, 
- * its constructor tasks 3 parameters:
+ * An ClientApplication object process the information that's necessary for a 
+ * test, its constructor tasks 3 parameters:
  *  - Avaliable local ip addresses
  *  - Address of the server daemon
  *  - Port of the server daemon
@@ -57,17 +60,18 @@
  * \endcode
  * In the code above, server daemon's address and port is set to 10.0.0.1:3201.
  *
- * Finally, call app.exec(Scenario *s) to run the test. If the number of users is
- * larger than the number of local addresses available (e.g., when Harry, Sally and Tom
- * share the link but only 10.0.0.8 and 10.0.0.9 are available), an error message
- * will show up, and test will not continue.
+ * Finally, call app.exec(Scenario *s) to run the test. If the number of users
+ * is larger than the number of local addresses available (e.g., when Harry, 
+ * Sally and Tom share the link but only 10.0.0.8 and 10.0.0.9 are available), 
+ * an error message will show up, and test will not continue.
  * 
- * It's common to create a terminal object and a emulator object, and put setting-up scripts
- * before running the test. If neither one has been done, the router will forward packets
- * using the default FIFO queue, and no extra delay or rate limit that
- * emulate the properties of wide area networks will be generated.
+ * It's common to create a terminal object and a emulator object, and put 
+ * setting-up scripts before running the test. If neither one has been done, 
+ * the router will forward packets using the default FIFO queue, and no extra
+ * delay or rate limit that emulate the properties of wide area networks will
+ * be generated.
  *
- * Usage: app <local-address-range> <daemon-address> <daemon-port>\n"
+ * Usage: sample <local-address-range> <daemon-address> <daemon-port>\n"
  */
 
 int main(int argc, char *argv[])

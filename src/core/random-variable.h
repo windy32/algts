@@ -36,7 +36,8 @@
  * Class RandomVariable defines the base class functionalty
  * required for all random number generators.  By default, the underlying
  * generator is seeded all the time with the same seed value and run number
- * coming from the ns3::GlobalValue \ref GlobalValueRngSeed "RngSeed" and \ref GlobalValueRngRun "RngRun".
+ * coming from the ns3::GlobalValue \ref GlobalValueRngSeed "RngSeed" 
+ * and \ref GlobalValueRngRun "RngRun".
  */
 class RandomVariable
 {
@@ -179,7 +180,8 @@ public:
 	double getValue(double s, double l);
 
     /**
-     * \brief Returns a random unsigned integer from the interval [s,l] including both ends.
+     * \brief Returns a random unsigned integer from the interval [s,l] 
+     *        including both ends.
      * \param s Low end of the range
      * \param l High end of the range
      * \return A random unsigned integer value.
@@ -209,7 +211,8 @@ private:
  *
  * The bounded version is defined over the interval [0,b] as:
  * \f$ \alpha  e^{-\alpha x} \quad x \in [0,b] \f$.
- * Note that in this case the true mean is \f$ 1/\alpha - b/(e^{\alpha \, b}-1) \f$
+ * Note that in this case the true mean is
+ * \f$ 1/\alpha - b/(e^{\alpha \, b}-1) \f$
  *
  * \code
  * ExponentialVariable x(3.14);
@@ -237,10 +240,11 @@ public:
      * \brief Constructs an exponential random variable with specified
      * mean and upper limit.
      *
-     * Since exponential distributions can theoretically return unbounded values,
-     * it is sometimes useful to specify a fixed upper limit.  Note however when
-     * the upper limit is specified, the true mean of the distribution is
-     * slightly smaller than the mean value specified: \f$ m - b/(e^{b/m}-1) \f$.
+     * Since exponential distributions can theoretically return unbounded 
+     * values, it is sometimes useful to specify a fixed upper limit. 
+     * Note however when the upper limit is specified, the true mean of the
+     * distribution is slightly smaller than the mean value specified: 
+     * \f$ m - b/(e^{b/m}-1) \f$.
      * \param m Mean value of the random variable
      * \param b Upper bound on returned values
      */
@@ -265,12 +269,12 @@ private:
  * from a fixed pareto distribution.  It also supports the generation of
  * single random numbers from various pareto distributions.
  *
- * The probability density function is defined over the range [\f$x_m\f$,+inf) as:
- * \f$ k \frac{x_m^k}{x^{k+1}}\f$ where \f$x_m > 0\f$ is called the location
+ * The probability density function is defined over the range [\f$x_m\f$,+inf) 
+ * as: \f$ k \frac{x_m^k}{x^{k+1}}\f$ where \f$x_m > 0\f$ is called the location
  * parameter and \f$ k > 0\f$ is called the pareto index or shape.
  *
- * The parameter \f$ x_m \f$ can be infered from the mean and the parameter \f$ k \f$
- * with the equation \f$ x_m = mean \frac{k-1}{k},  k > 1\f$.
+ * The parameter \f$ x_m \f$ can be infered from the mean and the parameter 
+ * \f$ k \f$ with the equation \f$ x_m = mean \frac{k-1}{k},  k > 1\f$.
  *
  * \code
  * ParetoVariable x (3.14);
@@ -306,7 +310,8 @@ public:
 	
     /**
      * \brief Constructs a pareto random variable with the specified mean
-     * value, shape (alpha), and upper bound. Beware, s must be strictly greater than 1.
+     * value,shape (alpha), and upper bound. Beware, s must be strictly 
+     * greater than 1.
      *
      * Since pareto distributions can theoretically return unbounded values,
      * it is sometimes useful to specify a fixed upper limit.  Note however

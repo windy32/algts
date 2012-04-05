@@ -32,7 +32,8 @@ private:
     QVector<qint32> m_offTimes;
 
 public:
-    OnoffDownloadTask(quint16 serverPort, qint32 startTime = 0, qint32 stopTime = -1);
+    OnoffDownloadTask(quint16 serverPort, qint32 startTime = 0, 
+        qint32 stopTime = -1);
 
 public: // interface for script
     virtual void setAttribute(const QString &attribute, const QString &value);

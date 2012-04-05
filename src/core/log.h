@@ -40,8 +40,10 @@ public:
         LOG_ALL            = 0x3fffffff, // print everything
         LOG_LEVEL_ALL      = 0x3fffffff,
 
-        // LOG_PREFIX_FUNC    = 0x80000000, // prefix all trace prints with function
-        // LOG_PREFIX_TIME    = 0x40000000, // prefix all trace prints with simulation time
+        // prefix all trace prints with function
+        // LOG_PREFIX_FUNC    = 0x80000000, 
+        // prefix all trace prints with simulation time
+        // LOG_PREFIX_TIME    = 0x40000000, 
     };
 
 private:
@@ -69,3 +71,4 @@ public:
 #define LOG_DEBUG(args...) Log::addLine(Log::LOG_DEBUG, ##args)
 
 #endif /* LOG_H */
+

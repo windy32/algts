@@ -15,7 +15,8 @@
 
 #include "onoff-download-task.h"
 
-OnoffDownloadTask::OnoffDownloadTask(quint16 serverPort, qint32 startTime, qint32 stopTime)
+OnoffDownloadTask::OnoffDownloadTask(quint16 serverPort, qint32 startTime, 
+    qint32 stopTime)
     : Task(serverPort, startTime, stopTime)
 {
     m_maxRate = -1;
@@ -31,7 +32,8 @@ OnoffDownloadTask::OnoffDownloadTask(quint16 serverPort, qint32 startTime, qint3
     m_offTime = NULL;
 }
 
-void OnoffDownloadTask::setAttribute(const QString &attribute, const QString &value)
+void OnoffDownloadTask::setAttribute(const QString &attribute, 
+                                     const QString &value)
 {
     LOG_DEBUG("Beginning of OnoffDownloadTask::setAttribute");
 

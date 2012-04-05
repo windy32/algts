@@ -10,13 +10,13 @@
  * 
  * Server daemon will listen on 10.0.0.1:3200 for server layout requests.
  * A server layout request consists of a TaskType with a corresponding
- * port: 
+ * port:
  * 
  *   [int32 taskType, uint16 port]
  * 
- * Each server layout request occupies a new tcp connection, which means that
- * in order to set up multiple servers, a number of connection should be created.
- * This design is simply used to simplify coding, since efficiency is inessential
+ * Each server layout request occupies a new tcp connection, which means that in
+ * order to set up multiple servers, a number of connection should be created.
+ * The design is simply used to simplify coding, since efficiency is inessential
  * when setting up servers.
  * 
  * Currently, there're 5 task types. Consider the scenario below:
@@ -40,7 +40,7 @@
  * When the number of addresses available are less than 5, an error message
  * will be generated and the daemon will not continue.
  *
- * For each server layout request, daemon sends a reply which consists of 
+ * For each server layout request, daemon sends a reply which consists of the
  * following elements:
  *
  *   [uint32 length]
@@ -51,9 +51,9 @@
  *   [uint32 length]
  *   [bool result][QString failure description]
  *
- * When a server is already listening at a specific port, server daemon
- * will not try to start a server with the same port again,
- * The reply will be {true, "Server already started @ addr:port"}.
+ * When a server is already listening at a specific port, server daemon will not
+ * try to start a server with the same port again, the reply will be 
+ * {true, "Server already started @ addr:port"}.
  *
  */
 
@@ -239,9 +239,9 @@ int main(int argc, char *argv[])
             "algts server daemon\n"
             "-------------------\n"
             "Usage: \n"
-            "    serverd <daemon-address> <daemon-port> <server-address-range>\n"
+            "   serverd <daemon-address> <daemon-port> <server-address-range>\n"
             "Example: \n"
-            "    serverd 10.0.0.1 3200 10.0.0.8/29\n");
+            "   serverd 10.0.0.1 3200 10.0.0.8/29\n");
         return 0;
     }
     

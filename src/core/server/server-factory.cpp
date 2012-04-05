@@ -21,7 +21,8 @@
 #include "tcp-echo-server.h"
 #include "async-udp-echo-server.h"
 
-Server *ServerFactory::create(Task::Type type, const QHostAddress &addr, quint16 port)
+Server *ServerFactory::create(Task::Type type, const QHostAddress &addr, 
+    quint16 port)
 {
     if( type == Task::BULK_DOWNLOAD )
     {

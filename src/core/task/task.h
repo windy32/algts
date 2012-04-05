@@ -40,7 +40,8 @@ public:
     Task(quint16 serverPort, qint32 startTime = 0, qint32 stopTime = -1);
     
     // Set task-specific attributes
-    virtual void setAttribute(const QString &attribute, const QString &value) = 0;
+    virtual void setAttribute(const QString &attribute, 
+                              const QString &value) = 0;
     
     // Serialization of tasks should alwasys occur before expanding, 
     // no expanded values are serialized

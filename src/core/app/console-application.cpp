@@ -54,7 +54,8 @@ bool ConsoleApplication::parsePort(const QString &str, quint16 &port)
     return true;
 }
 
-bool ConsoleApplication::parseAddrRange(const QString &str, QList<QHostAddress> addrRange)
+bool ConsoleApplication::parseAddrRange(const QString &str, 
+                                        QList<QHostAddress> &addrRange)
 {
     QRegExp rx("^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\."
                "(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)/(0|[1-9][0-9]*)$");

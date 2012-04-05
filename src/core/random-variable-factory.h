@@ -40,13 +40,15 @@
  * // Create a exponential variable with mean value 20 and upper bound 1000
  * v4 = RandomVariableFactory::create("Exponential 20, 1000");
  *
- * // Create a pareto variable with mean value 1000 and default shape parameter 1.5
+ * // Create a pareto variable with mean value 1000 and 
+ * // default shape parameter 1.5
  * v5 = RandomVariableFactory::create("Pareto 1000");
  *
  * // Create a pareto variable with mean value 600 and shape parameter 1.4
  * v6 = RandomVariableFactory::create("Pareto 600, 1.4");
  *
- * // Create a pareto variable with mean value 500, shape parameter 1.5 and upper bound 10000
+ * // Create a pareto variable with mean value 500, shape parameter 1.5 and
+ * // upper bound 10000
  * v7 = RandomVariableFactory::create("Pareto 500, 1.5, 10000");
  * 
  * \endcode
@@ -59,3 +61,4 @@ public:
 };
 
 #endif /* RANDOM_VARIABLE_FACTORY_H */
+

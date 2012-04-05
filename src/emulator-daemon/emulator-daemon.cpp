@@ -18,15 +18,15 @@
  * the latter one has been implemented.
  *
  * netem has been implemented as a qdisc that provides Network Emulation 
- * functionality for testing protocols by emulating the properties of 
- * wide area networks. The current version emulates variable delay, loss, 
- * duplication and re-ordering.
+ * functionality for testing protocols by emulating the properties of wide area
+ * networks. The current version emulates variable delay, loss, duplication and
+ * re-ordering.
  * 
- * In Linux 2.6 distributions, netem is already enabled in the kernel
- * and a current version of iproute2 is included.
+ * In Linux 2.6 distributions, netem is already enabled in the kernel and a
+ * current version of iproute2 is included.
  *
- * Currently four parameters are supported by emulator daemon: TxRate, 
- * RxRate, TxDelay and RxDelay.
+ * Currently four parameters are supported by emulator daemon: TxRate, RxRate, 
+ * TxDelay and RxDelay.
  *
  * To perform rate control, the token bucket filter (tbf) is used as a parent
  * qdisc of the netem qdisc. And to deal with incoming traffic, the 
@@ -34,22 +34,22 @@
  *
  * Typical setup script:
  *
- *    tc qdisc add dev eth0 root handle 1: tbf rate 10mbit buffer 1600 limit 3000
- *    tc qdisc add dev eth0 parent 1: handle 10: netem limit 10000
+ *   tc qdisc add dev eth0 root handle 1: tbf rate 10mbit buffer 1600 limit 3000
+ *   tc qdisc add dev eth0 parent 1: handle 10: netem limit 10000
  *
- *    modprobe ifb
- *    ip link set dev ifb0 up
- *    tc qdisc add dev eth0 ingress
- *    tc filter add dev eth0 parent ffff: protocol ip pref 10 u32 \ 
- *       match u32 0 0 flowid 1:1 action mirred egress redirect dev ifb0
- *    tc qdisc add dev ifb0 root handle 1: tbf rate 10mbit buffer 1600 limit 3000
- *    tc qdisc add dev ifb0 parent 1: handle 10: netem limit 1000 *
+ *   modprobe ifb
+ *   ip link set dev ifb0 up
+ *   tc qdisc add dev eth0 ingress
+ *   tc filter add dev eth0 parent ffff: protocol ip pref 10 u32 \ 
+ *      match u32 0 0 flowid 1:1 action mirred egress redirect dev ifb0
+ *   tc qdisc add dev ifb0 root handle 1: tbf rate 10mbit buffer 1600 limit 3000
+ *   tc qdisc add dev ifb0 parent 1: handle 10: netem limit 1000 *
  *
  * Typical reset script:
  *
- *    tc qdisc del dev eth0 root handle 1:
- *    tc qdisc del dev ifb0 root handle 1:
- *    tc filter del dev eth0 parent ffff: pref 10 *
+ *   tc qdisc del dev eth0 root handle 1:
+ *   tc qdisc del dev ifb0 root handle 1:
+ *   tc filter del dev eth0 parent ffff: pref 10
  */
 
 bool parseAddr(const QString &str, QHostAddress &addr)
@@ -135,7 +135,8 @@ int main(int argc, char *argv[])
         LOG_INFO("Emulator daemon connection established");
         
         // Start a new thread for the session
-        EmulatorDaemonSession *session = new EmulatorDaemonSession(socket, params);
+        EmulatorDaemonSession *session = 
+            new EmulatorDaemonSession(socket, params);
         //connect(session, SIGNAL(finished()), thread, SLOT(deleteLator()));
         session->start();
         

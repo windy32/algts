@@ -15,7 +15,8 @@
 
 #include "bulk-download-client.h"
 
-BulkDownloadClient::BulkDownloadClient(const QString &localAddr, const QString &serverAddr)
+BulkDownloadClient::BulkDownloadClient(const QString &localAddr, 
+                                       const QString &serverAddr)
     : Client(localAddr, serverAddr)
 {
 }
@@ -118,7 +119,8 @@ void BulkDownloadClient::generateTextTrace(TextTraceItem &trace)
     }
 }
 
-void BulkDownloadClient::generateRegularTrace(RegularTraceItem &trace, int seconds)
+void BulkDownloadClient::generateRegularTrace(RegularTraceItem &trace, 
+                                              int seconds)
 {
     // Init regular trace
     trace.clear();

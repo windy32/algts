@@ -15,7 +15,8 @@
 
 #include "netem-session.h"
 
-bool NetemSession::execCommand(const QString &command, const QString &expectedOutput)
+bool NetemSession::execCommand(const QString &command, 
+                               const QString &expectedOutput)
 {
     LOG_DEBUG("Beginning of NetemSession::execCommand");
 
@@ -44,7 +45,8 @@ bool NetemSession::execCommand(const QString &command, const QString &expectedOu
     }
     else
     {
-        LOG_ERROR(QString("An error occurred executing command %1").arg(command));
+        LOG_ERROR(QString("An error occurred executing command %1")
+            .arg(command));
         LOG_INFO(QString("Expected output: %1").arg(expectedOutput));
         LOG_INFO(QString("Actual output: %1").arg(QString(output)));
         return false;
@@ -111,7 +113,8 @@ bool NetemSession::execReset()
     return true;
 }
 
-bool NetemSession::parseCommit(QTcpSocket *socket, QMap<QString, QString> &params)
+bool NetemSession::parseCommit(
+    QTcpSocket *socket, QMap<QString, QString> &params)
 {
     LOG_DEBUG("Beginning of NetemSession::parseCommit");
     

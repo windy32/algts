@@ -16,7 +16,8 @@
 #include "bulk-upload-client.h"
 #include "../task/bulk-upload-task.h"
 
-BulkUploadClient::BulkUploadClient(const QString &localAddr, const QString &serverAddr)
+BulkUploadClient::BulkUploadClient(const QString &localAddr, 
+                                   const QString &serverAddr)
     : Client(localAddr, serverAddr)
 {
 }
@@ -113,7 +114,8 @@ void BulkUploadClient::generateTextTrace(TextTraceItem &trace)
     }
 }
 
-void BulkUploadClient::generateRegularTrace(RegularTraceItem &trace, int seconds)
+void BulkUploadClient::generateRegularTrace(RegularTraceItem &trace, 
+                                            int seconds)
 {
     // Init regular trace
     trace.clear();

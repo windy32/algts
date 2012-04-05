@@ -15,7 +15,8 @@
 
 #include "async-udp-echo-task.h"
 
-AsyncUdpEchoTask::AsyncUdpEchoTask(quint16 serverPort, qint32 startTime, qint32 stopTime)
+AsyncUdpEchoTask::AsyncUdpEchoTask(quint16 serverPort, qint32 startTime, 
+    qint32 stopTime)
     : Task(serverPort, startTime, stopTime)
 {
     m_inputSize = NullVariable::getInstance();
@@ -23,7 +24,8 @@ AsyncUdpEchoTask::AsyncUdpEchoTask(quint16 serverPort, qint32 startTime, qint32 
     m_interval = NullVariable::getInstance();
 }
 
-void AsyncUdpEchoTask::setAttribute(const QString &attribute, const QString &value)
+void AsyncUdpEchoTask::setAttribute(const QString &attribute, 
+                                    const QString &value)
 {
     LOG_DEBUG("Beginning of AsyncUdpEchoTask::setAttribute");
 

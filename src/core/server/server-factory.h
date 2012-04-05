@@ -30,7 +30,8 @@
 class ServerFactory
 {
 public:
-    static Server *create(Task::Type type, const QHostAddress &addr, quint16 port);
+    static Server *create(Task::Type type, const QHostAddress &addr, 
+        quint16 port);
 };
 
 #endif /* SERVER_FACTORY_H */

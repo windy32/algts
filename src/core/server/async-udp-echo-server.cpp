@@ -34,7 +34,8 @@ void AsyncUdpEchoServer::run()
             char buffer[1500];
             qint16 echoSize;
 
-            qint64 bytesRead = m_socket.readDatagram(buffer, 1500, &clientAddr, &clientPort);
+            qint64 bytesRead = m_socket.readDatagram(buffer, 1500, 
+                &clientAddr, &clientPort);
             if( bytesRead < 2 )
             {
                 LOG_INFO("Corrupt packet received");

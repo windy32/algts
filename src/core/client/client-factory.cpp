@@ -21,7 +21,8 @@
 #include "../client/tcp-echo-client.h"
 #include "../client/async-udp-echo-client.h"
 
-Client *ClientFactory::create(Task::Type type, const QString &localAddr, const QString &serverAddr)
+Client *ClientFactory::create(Task::Type type, const QString &localAddr, 
+    const QString &serverAddr)
 {
     if( type == Task::BULK_DOWNLOAD )
     {
@@ -49,3 +50,4 @@ Client *ClientFactory::create(Task::Type type, const QString &localAddr, const Q
         return NULL;
     }
 }
+

@@ -15,7 +15,8 @@
 
 #include "async-udp-echo-client.h"
 
-AsyncUdpEchoClient::AsyncUdpEchoClient(const QString &localAddr, const QString &serverAddr)
+AsyncUdpEchoClient::AsyncUdpEchoClient(const QString &localAddr, 
+                                       const QString &serverAddr)
     : Client(localAddr, serverAddr)
 {
 }
@@ -64,15 +65,18 @@ void AsyncUdpEchoClient::run()
         out << (qint16)echoSizes[i];
         block.append(QByteArray(qMax(0, inputSizes[i] - 2), 0));
         
-        qint64 bytesWritten = socket.writeDatagram(block, QHostAddress(m_serverAddr), serverPort);
+        qint64 bytesWritten = socket.writeDatagram(block, 
+            QHostAddress(m_serverAddr), serverPort);
         if( bytesWritten == -1 )
         {
-            LOG_INFO("Cannot send input packet %d / %d", i + 1, intervals.size());
+            LOG_INFO("Cannot send input packet %d / %d", 
+                i + 1, intervals.size());
             return;
         }
         else if( bytesWritten == 0 )
         {
-            LOG_DEBUG("No bytes sent for input packet %d / %d", i + 1, intervals.size());
+            LOG_DEBUG("No bytes sent for input packet %d / %d", 
+                i + 1, intervals.size());
             return;
         }
         
@@ -107,7 +111,8 @@ void AsyncUdpEchoClient::generateTextTrace(TextTraceItem &trace)
     }
 }
 
-void AsyncUdpEchoClient::generateRegularTrace(RegularTraceItem &trace, int seconds)
+void AsyncUdpEchoClient::generateRegularTrace(RegularTraceItem &trace, 
+                                              int seconds)
 {
     // Init regular trace
     trace.clear();
@@ -152,7 +157,8 @@ void AsyncUdpEchoClient::generateRegularTrace(RegularTraceItem &trace, int secon
     }
 }
 
-AsyncUdpEchoClientReceiver::AsyncUdpEchoClientReceiver(QUdpSocket *socket, AsyncUdpEchoClient *client)
+AsyncUdpEchoClientReceiver::AsyncUdpEchoClientReceiver(
+    QUdpSocket *socket, AsyncUdpEchoClient *client)
     : m_socket(socket), 
       m_client(client)
 {
@@ -184,7 +190,8 @@ void AsyncUdpEchoClientReceiver::run()
             
             // Set delay
             m_client->m_mutex.lock();
-            m_client->m_trace.delay[index] = GlobalTimer::msec() - m_client->m_trace.time[index];
+            m_client->m_trace.delay[index] = 
+                GlobalTimer::msec() - m_client->m_trace.time[index];
             m_client->m_mutex.unlock();
         }
     }

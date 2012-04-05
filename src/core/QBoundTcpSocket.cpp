@@ -19,8 +19,9 @@
     #include <arpa/inet.h>
 #endif
 
-bool QBoundTcpSocket::bindAndConnect(const QString &localAddr, quint16 localPort, 
-                                     const QString &serverAddr, quint16 serverPort)
+bool QBoundTcpSocket::bindAndConnect(
+    const QString &localAddr, quint16 localPort, 
+    const QString &serverAddr, quint16 serverPort)
 {
 #ifdef Q_OS_LINUX
     LOG_DEBUG("Beginning of QBoundTcpSocket::bindAndConnect");
@@ -45,7 +46,8 @@ bool QBoundTcpSocket::bindAndConnect(const QString &localAddr, quint16 localPort
     localSockAddr.sin_port = htons(localPort);
     localSockAddr.sin_addr.s_addr = inet_addr(localAddr.toLocal8Bit().data());
 
-    result = bind(sockfd, (struct sockaddr *)&localSockAddr, sizeof(localSockAddr));
+    result = bind(sockfd, 
+               (struct sockaddr *)&localSockAddr, sizeof(localSockAddr));
     if( result == -1 ) 
     {
         qDebug() << "QBoundTcpSocket: Cannot bind socket";
@@ -57,7 +59,8 @@ bool QBoundTcpSocket::bindAndConnect(const QString &localAddr, quint16 localPort
     serverSockAddr.sin_port = htons(serverPort);
     serverSockAddr.sin_addr.s_addr = inet_addr(serverAddr.toLocal8Bit().data());
 
-    result = ::connect(sockfd, (struct sockaddr *)&serverSockAddr, sizeof(serverSockAddr));
+    result = ::connect(sockfd, 
+                 (struct sockaddr *)&serverSockAddr, sizeof(serverSockAddr));
     if( result == -1 ) 
     {
         qDebug() << "QBoundTcpSocket: Cannot connect to server";
@@ -78,3 +81,4 @@ bool QBoundTcpSocket::bindAndConnect(const QString &localAddr, quint16 localPort
     return false;
 #endif
 }
+

@@ -29,7 +29,8 @@
 class ClientFactory
 {
 public:
-    static Client *create(Task::Type type, const QString &localAddr, const QString &serverAddr);
+    static Client *create(Task::Type type, const QString &localAddr, 
+                          const QString &serverAddr);
 };
 
 #endif /* CLIENT_FACTORY_H */

@@ -15,7 +15,8 @@
 
 #include "tcp-echo-client.h"
 
-TcpEchoClient::TcpEchoClient(const QString &localAddr, const QString &serverAddr)
+TcpEchoClient::TcpEchoClient(const QString &localAddr, 
+                             const QString &serverAddr)
     : Client(localAddr, serverAddr)
 {
 }

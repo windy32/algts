@@ -15,7 +15,8 @@
 
 #include "bulk-download-task.h"
 
-BulkDownloadTask::BulkDownloadTask(quint16 serverPort, qint32 startTime, qint32 stopTime)
+BulkDownloadTask::BulkDownloadTask(quint16 serverPort, qint32 startTime, 
+    qint32 stopTime)
     : Task(serverPort, startTime, stopTime)
 {
     m_maxBytes = 0;
@@ -25,7 +26,8 @@ BulkDownloadTask::BulkDownloadTask(quint16 serverPort, qint32 startTime, qint32 
     LOG_DEBUG("MaxRate set to default value INFINITE");
 }
 
-void BulkDownloadTask::setAttribute(const QString &attribute, const QString &value)
+void BulkDownloadTask::setAttribute(const QString &attribute, 
+                                    const QString &value)
 {
     LOG_DEBUG("Beginning of BulkDownloadTask::setAttribute");
     
@@ -58,8 +60,8 @@ void BulkDownloadTask::setAttribute(const QString &attribute, const QString &val
             ( unit == "K" ) ? 1024 : 1;
 
         if( !ok || // cannot convert to long, 
-            intValue == 0 || // no bytes to send
-            intValue > ((qint64)2 * 1024 * 1024 * 1024) / inc ) // or larger than 2GB
+            intValue == 0 || // no bytes to send, or larger than 2GB
+            intValue > ((qint64)2 * 1024 * 1024 * 1024) / inc )
         {
             LOG_WARN(QString("Invalid value %1").arg(value));
             return;

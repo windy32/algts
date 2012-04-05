@@ -37,10 +37,12 @@ public:
     // 1. if no enough local addresses are available, exit
     // 2. create the mapping from user name to local address
     // 3. connect to server daemon and send layout [TaskType][Port] ...
-    // 4. get response [bool: Result][quint32: Address][QString: success description] or
-    //                 [bool: Result][QString: failure description]
+    // 4. get response 
+    //       [bool: Result][quint32: Address][QString: success description] or
+    //       [bool: Result][QString: failure description]
     // 5. if any error occurred, tasks will no longer continue
-    // 6. create client objects, with generated server addresses & local addresses
+    // 6. create client objects, with generated server addresses & local
+    //    addresses
     // 7. execute client objects
     void  exec(Scenario *s);
 };

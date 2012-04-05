@@ -32,7 +32,7 @@
  *
  * vector of vector {period, index, time(ms), newBytes, totalBytes}, e.g.,
  * 
- *    0, 0, 11, 0, 0           <- connecting to server (first line in the on period period)
+ *    0, 0, 11, 0, 0           <- connecting to server
  *    0, 1, 30, 1000, 1000     <- first data packet receive in the on period
  *    0, 2, 99, 1450, 2450
  *    0, 3, 127, 1450, 3900
@@ -43,7 +43,8 @@
  *    0, 71, 5532, 1000, 59900 <- last data packet received in the on period
  *                             <- sleep during the off period
  *
- *    1, 0, 16882, 0, 0 // connecting to server (first line in the next on period)
+ *    1, 0, 16882, 0, 0 // connecting to server 
+ *                         (first line in the next on period)
  *    ...
  */
 
