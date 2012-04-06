@@ -1,0 +1,82 @@
+#! /bin/bash
+
+function usage()
+{
+    echo "------------------------------------------------------------------"
+    echo "ALGTS Script Helper"
+    echo "------------------------------------------------------------------"
+    echo "Build a script from source, or do building and running in a single"
+    echo "commmand."
+    echo ""
+    echo "Note: "
+    echo "    The script helper always assummes that the filename of the"
+    echo "    script ends with .cpp"
+    echo ""
+    echo "Usage:"
+    echo "    ./script --build filename"
+    echo "    ./script --run filename arguments"
+    echo "Exapmles:"
+    echo "    ./script --build sample"
+    echo "    ./script --run sample \"172.16.0.8/29 10.0.0.1 3201\""
+    exit 1
+}
+
+# Check arguments
+if [ $# -ne 2 -a $# -ne 3 ]; then usage; fi
+if [ $# -eq 2 -a $1 != "--build" ]; then usage; fi
+if [ $# -eq 3 -a $1 != "--run" ]; then usage; fi
+
+# Check if cpp file exist
+if [ ! -f "$2.cpp" ]; then
+    echo "[ALGTS SCRIPT] Error: file \"$2.cpp\" doesn't exist" 1>&2
+    exit 1
+fi
+
+# Needn't recompile
+if [ -f "$2" -a "$2" -nt "$2.cpp" ]; then
+    echo "[ALGTS SCRIPT] File \"$2\" is up to date"
+fi
+
+# (Re)Compile if executable file doesn't exist, or it's older than cpp file
+if [ ! -f "$2" -o "$2" -ot "$2.cpp" ]; then
+    # Generate pro file
+    echo "[ALGTS SCRIPT] Generating $2.pro"
+    
+    echo "" > "$2.pro"
+    echo "QT       += core network" >> "$2.pro"
+    echo "QT       -= gui"          >> "$2.pro"
+    echo "TEMPLATE  = app"          >> "$2.pro"
+    echo "CONFIG   += console"      >> "$2.pro"
+    echo "TARGET = $2"              >> "$2.pro"
+    echo "SOURCES += $2.cpp"        >> "$2.pro"
+    echo "CONFIG(debug,   debug|release): LIBS += ../../../bin/libcored.a" >> "$2.pro"
+    echo "CONFIG(release, debug|release): LIBS += ../../../bin/libcore.a" >> "$2.pro"
+    
+    # Build script
+    echo "[ALGTS SCRIPT] Building script"
+    echo "-----------------------------------------------------------------"
+    if [ ! -d "$2-build" ]; then
+        mkdir "$2-build"
+    fi
+    
+    cd "$2-build"
+    qmake "../$2.pro"
+    make
+    
+    # cleanup
+    echo "-----------------------------------------------------------------"
+    echo "[ALGTS SCRIPT] Cleaning up"
+    
+    mv "$2" "../$2"
+    cd ..
+    rm -r "$2-build"
+    rm "$2.pro"
+fi
+
+# Execute if desired
+if [ $1 = "--run" ]; then
+    echo "[ALGTS SCRIPT] Executing script"
+    echo ""
+    exec "./$2" $3
+fi
+
