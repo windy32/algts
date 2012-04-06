@@ -19,6 +19,9 @@
 #include "task.h"
 #include "../random-variable-factory.h"
 
+/**
+ * \brief The tcp echo task
+ */
 class TcpEchoTask : public Task
 {
 private:
@@ -31,14 +34,34 @@ private:
     QVector<qint32> m_intervals;
 
 public:
+    /**
+     * \brief Initialize the tcp echo task
+     * \param serverPort Server port of the task
+     * \param startTime Start time of the task
+     * \param stopTime Stop time of the task
+     */
     TcpEchoTask(quint16 serverPort, qint32 startTime = 0, qint32 stopTime = -1);
 
 public: // interface for script
     virtual void setAttribute(const QString &attribute, const QString &value);
 
 public: // interface for client
+    /**
+     * \brief Return the size of each input packets
+     * \return The size (bytes) of each input packets
+     */
     const QVector<qint32> &getInputSizes();
+
+    /**
+     * \brief Return the size of each echo packets
+     * \return The size (bytes) of each echo packets
+     */
     const QVector<qint32> &getEchoSizes();
+
+    /**
+     * \brief Return the length of each intervals
+     * \return The length (ms) of each intervals
+     */
     const QVector<qint32> &getIntervals();
     
 public:

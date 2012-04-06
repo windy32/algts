@@ -8,7 +8,7 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//
+//-+
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -28,6 +28,12 @@ private:
     qint32 m_maxRate;
 
 public:
+    /**
+     * \brief Initialize the bulk download task
+     * \param serverPort Server port of the task
+     * \param startTime Start time of the task
+     * \param stopTime Stop time of the task
+     */
     BulkDownloadTask(quint16 serverPort, qint32 startTime = 0, 
         qint32 stopTime = -1);
 
@@ -35,7 +41,16 @@ public: // interface for script
     virtual void setAttribute(const QString &attribute, const QString &value);
 
 public: //interface for client
+    /**
+     * \brief Return max bytes to download
+     * \return Max bytes to download
+     */
     qint32 getMaxBytes();
+
+    /**
+     * \brief Return max download rate
+     * \return Max download rate (byte/s)
+     */
     qint32 getMaxRate();
 
 public:

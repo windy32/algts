@@ -19,6 +19,9 @@
 #include "task.h"
 #include "../random-variable-factory.h"
 
+/**
+ * \brief The on/off download task
+ */
 class OnoffDownloadTask : public Task
 {
 private:
@@ -32,6 +35,12 @@ private:
     QVector<qint32> m_offTimes;
 
 public:
+    /**
+     * \brief Initialize the on/off download task
+     * \param serverPort Server port of the task
+     * \param startTime Start time of the task
+     * \param stopTime Stop time of the task
+     */
     OnoffDownloadTask(quint16 serverPort, qint32 startTime = 0, 
         qint32 stopTime = -1);
 
@@ -39,10 +48,34 @@ public: // interface for script
     virtual void setAttribute(const QString &attribute, const QString &value);
 
 public: // interface for client
+    /**
+     * \brief Return max bytes to download
+     * \return Max bytes to download
+     */
     qint32 getMaxRate();
+
+    /**
+     * \brief Return the application layer packet size
+     * \return The application layer packet size (bytes)
+     */
     qint16 getPacketSize();
+
+    /**
+     * \brief Return the request size
+     * \return The request size (bytes)
+     */
     qint16 getRequestSize();
+
+    /**
+     * \brief Return the length of each "On" periods
+     * \return The length (ms) of each "On" periods
+     */
     const QVector<qint32> &getOnTimes();
+
+    /**
+     * \brief Return the length of each "Off" periods
+     * \return The length (ms) of each "Off" periods
+     */
     const QVector<qint32> &getOffTimes();
 
 public:

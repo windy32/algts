@@ -18,6 +18,9 @@
 
 #include "task.h"
 
+/**
+ * \brief The bulk upload task
+ */
 class BulkUploadTask : public Task
 {
 private:
@@ -25,6 +28,12 @@ private:
     qint32 m_maxRate;
 
 public:
+    /**
+     * \brief Initialize the bulk upload task
+     * \param serverPort Server port of the task
+     * \param startTime Start time of the task
+     * \param stopTime Stop time of the task
+     */
     BulkUploadTask(quint16 serverPort, qint32 startTime = 0, 
         qint32 stopTime = -1);
 
@@ -32,7 +41,16 @@ public: // interface for script
     virtual void setAttribute(const QString &attribute, const QString &value);
 
 public: //interface for client
+    /**
+     * \brief Return max bytes to upload
+     * \return Max bytes to upload
+     */
     qint32 getMaxBytes();
+
+    /**
+     * \brief Return max upload rate
+     * \return Max upload rate (byte/s)
+     */
     qint32 getMaxRate();
 
 public:
