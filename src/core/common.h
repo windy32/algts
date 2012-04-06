@@ -40,7 +40,7 @@
 
 /**
  * \brief The serialization interface
- *
+ * 
  */
 
 class Serializable
