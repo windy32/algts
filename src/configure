@@ -24,7 +24,7 @@ fi
 # Generate makefile --------------------------------------------------------
 echo -n "  Generating Makefile..."
 
-echo "QMAKE = $QTDIR" > Makefile
+echo "QMAKE = $QTDIR/bin/qmake" > Makefile
 
 echo '' >> Makefile
 echo 'all: corelib emulatord serverd' >> Makefile

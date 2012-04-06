@@ -18,6 +18,9 @@
 
 #include "../common.h"
 
+/**
+ * \brief The base class of all tasks
+ */
 class Task : public Serializable
 {
 protected:
@@ -26,6 +29,9 @@ protected:
     qint32 m_stopTime;
 
 public:
+    /**
+     * \brief The type of a task.
+     */
     enum Type
     {
         BULK_DOWNLOAD  = 0,
@@ -37,24 +43,65 @@ public:
     };
 
 public:
+    /**
+     * \brief Initialize the base class with specified server port, start time
+     *        and stop time.
+     * \param serverPort Server port of the task
+     * \param startTime Start time of the task
+     * \param stopTime Stop time of the task
+     */
     Task(quint16 serverPort, qint32 startTime = 0, qint32 stopTime = -1);
     
-    // Set task-specific attributes
+    /**
+     * \brief Set the task attribute
+     * \param attribute Name of the attribute
+     * \param value Value of the attribute
+     */
     virtual void setAttribute(const QString &attribute, 
                               const QString &value) = 0;
     
-    // Serialization of tasks should alwasys occur before expanding, 
-    // no expanded values are serialized
-    virtual void serialize(QDataStream *pStream) = 0;
+    /**
+     * \brief Serialize the task object
+     * \param stream The target device of the serialization
+     */
+    virtual void serialize(QDataStream *stream) = 0;
 
-	// Expand random variables to concrete values
+    /**
+     * \brief Expand the task object
+     * \param length Max length of the tasks (ms)
+     *
+     * Some tasks have random number generator members, expanding means 
+     * generating a random number sequence.
+     *
+     * \note The order creating task objects as well as calling expand functions
+     *       will both lead to different expanding results.
+     */
     virtual void expand(qint32 length) = 0;
 	
+    /**
+     * \brief Return the type of the task 
+     * \return Type of the task
+     */
     virtual enum Type getType() = 0;
     
+    /**
+     * \brief Return the server port of the task 
+     * \return Server port of the task
+     */
     quint16 getServerPort();
+
+    /**
+     * \brief Return the start time of the task 
+     * \return Start time (ms) of the task
+     */
     qint32  getStartTime();
+    
+    /**
+     * \brief Return the stop time of the task 
+     * \return Stop time (ms) of the task
+     */
     qint32  getStopTime();
 };
 
 #endif /* TASK_H */
+

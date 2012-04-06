@@ -131,7 +131,7 @@ enum Task::Type BulkUploadTask::getType()
     return BULK_UPLOAD;
 }
 
-void BulkUploadTask::serialize(QDataStream *pStream)
+void BulkUploadTask::serialize(QDataStream *stream)
 {
     LOG_DEBUG("BulkUploadTask::serialize() not implemented yet");
 }

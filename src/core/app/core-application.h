@@ -20,6 +20,11 @@
 #include "../scenario.h"
 #include "../client/client-factory.h"
 
+/**
+ * \brief The core application.
+ *
+ * ...detail
+ */ 
 class CoreApplication
 {
 protected:

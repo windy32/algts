@@ -18,6 +18,11 @@
 
 #include "core-application.h"
 
+/**
+ * \brief The console application.
+ *
+ * ...detail
+ */
 class ConsoleApplication : public CoreApplication
 {
 private:

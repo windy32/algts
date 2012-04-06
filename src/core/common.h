@@ -46,7 +46,7 @@
 class Serializable
 {
 public:
-	virtual void serialize(QDataStream *pStream) = 0;
+	virtual void serialize(QDataStream *stream) = 0;
 };
 
 

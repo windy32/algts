@@ -180,7 +180,7 @@ enum Task::Type OnoffDownloadTask::getType()
     return ONOFF_DOWNLOAD;
 }
 
-void OnoffDownloadTask::serialize(QDataStream *pStream)
+void OnoffDownloadTask::serialize(QDataStream *stream)
 {
     LOG_DEBUG("OnoffDownloadTask::serialize() not implemented yet");
 }

@@ -82,7 +82,7 @@ enum Task::Type TcpEchoTask::getType()
     return TCP_ECHO;
 }
 
-void TcpEchoTask::serialize(QDataStream *pStream)
+void TcpEchoTask::serialize(QDataStream *stream)
 {
     LOG_DEBUG("TcpEchoTask::serialize() not implemented yet");
 }

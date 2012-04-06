@@ -66,7 +66,7 @@ QMap<QString, QVector<Task *> > &Scenario::tasks()
     return m_tasks;
 }
 
-void Scenario::serialize(QDataStream *pStream)
+void Scenario::serialize(QDataStream *stream)
 {
     LOG_DEBUG("Scenario::serialize() not implemented yet");
 }

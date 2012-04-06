@@ -18,6 +18,9 @@
 
 #include "task.h"
 
+/**
+ * \brief The bulk download task
+ */
 class BulkDownloadTask : public Task
 {
 private:
@@ -37,7 +40,7 @@ public: //interface for client
 
 public:
     virtual enum Type getType();
-    virtual void serialize(QDataStream *pStream);
+    virtual void serialize(QDataStream *stream);
     virtual void expand(qint32 length);
 };
 
