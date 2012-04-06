@@ -38,6 +38,11 @@
 #include "log.h"
 #include "global-timer.h"
 
+/**
+ * \brief The serialization interface
+ *
+ */
+
 class Serializable
 {
 public:
