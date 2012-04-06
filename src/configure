@@ -1,0 +1,65 @@
+#! /bin/bash
+
+# Check for qt -------------------------------------------------------------
+if [ -z "$QTDIR" ]; then
+    echo "  QTDIR environment variable not set!"
+    echo -n "  Checking for Qt..."
+    for d in /usr/{lib,share,qt}/{qt-4,qt4,qt,qt*,4} /usr; do
+        if test -x "$d/bin/qmake"; then
+            QTDIR=$d
+        fi
+    done
+else
+    echo "  Detected Qt via the QTDIR environment variable..."
+fi
+
+if test -z "$QTDIR"; then
+    echo "QTDIR not set and Qt not found at standard locations!"
+    echo
+    echo "Set the QTDIR environment variable such that \$QTDIR/bin/qmake exists."
+    echo "check the Qt installation instructions!"
+    exit 1
+fi
+
+# Generate makefile --------------------------------------------------------
+echo -n "  Generating Makefile..."
+
+echo "QMAKE = $QTDIR" > Makefile
+
+echo '' >> Makefile
+echo 'all: corelib emulatord serverd' >> Makefile
+echo '' >> Makefile
+echo 'corelib:' >> Makefile
+echo '	mkdir core-build; \' >> Makefile
+echo '	cd core-build; \' >> Makefile
+echo '	$(QMAKE) ../core/core.pro; \' >> Makefile
+echo '	make' >> Makefile
+echo '' >> Makefile
+echo 'emulatord:' >> Makefile
+echo '	mkdir emulator-daemon-build; \' >> Makefile
+echo '	cd emulator-daemon-build; \' >> Makefile
+echo '	$(QMAKE) ../emulator-daemon/emulator-daemon.pro; \' >> Makefile
+echo '	make' >> Makefile
+echo '' >> Makefile
+echo 'serverd:' >> Makefile
+echo '	mkdir server-daemon-build; \' >> Makefile
+echo '	cd server-daemon-build; \' >> Makefile
+echo '	$(QMAKE) ../server-daemon/server-daemon.pro; \' >> Makefile
+echo '	make' >> Makefile
+echo '' >> Makefile
+echo 'clean:' >> Makefile
+echo '	rm -rf core-build' >> Makefile
+echo '	rm -rf emulator-daemon-build' >> Makefile
+echo '	rm -rf server-daemon-build' >> Makefile
+echo '	rm -f ../bin/*' >> Makefile
+echo '' >> Makefile
+echo 'distclean: clean' >> Makefile
+echo '	rm -f Makefile' >> Makefile
+echo '' >> Makefile
+echo 'install:' >> Makefile
+echo '' >> Makefile
+echo 'uninstall:' >> Makefile
+echo '' >> Makefile
+echo 'FORCE:' >> Makefile
+
+echo " Done"
