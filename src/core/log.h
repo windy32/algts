@@ -18,26 +18,47 @@
 
 #include "common.h"
 
+/**
+ * \file log.h
+ * \brief Global logging support
+ */
+
+
+/**
+ * \brief The global log object
+ */
 class Log
 {
 public:
+    /**
+     * \brief The log level
+     */
     enum LogLevel
     {
-        LOG_LEVEL_NONE     = 0x00000000, // no logging
-
-        LOG_ERROR          = 0x00000001, // serious error messages only
+        /** Show nothing */
+        LOG_LEVEL_NONE     = 0x00000000,
+        
+        /** Serious error messages */
+        LOG_ERROR          = 0x00000001,
+        /** Show error messages */
         LOG_LEVEL_ERROR    = 0x00000001,
 
-        LOG_WARN           = 0x00000002, // warning messages
+        /** Warning messages */
+        LOG_WARN           = 0x00000002, 
+        /** Show error and warning messages */
         LOG_LEVEL_WARN     = 0x00000003,
 
-        LOG_INFO           = 0x00000004, // informational messages
+        /** Informational messages */
+        LOG_INFO           = 0x00000004,
+        /** Show error, warning and information messages */
         LOG_LEVEL_INFO     = 0x00000007,
 
-        LOG_DEBUG          = 0x00000008, // debug messages
+        /** Debug messages */
+        LOG_DEBUG          = 0x00000008,
+        /** Show error, warning, information and debug messages */
         LOG_LEVEL_DEBUG    = 0x0000000F, 
 
-        LOG_ALL            = 0x3fffffff, // print everything
+        /** Show everything */
         LOG_LEVEL_ALL      = 0x3fffffff,
 
         // prefix all trace prints with function
@@ -52,11 +73,30 @@ private:
     static QMutex m_mutex;
     
 public:
+    /**
+     * \brief Enable logging at specific level
+     * \param level The log level
+     */
     static void enable(enum LogLevel level);
     
+    /**
+     * \brief Add a line in the log
+     * \param level The log level of the line
+     * \param str The content
+     */
     static void addLine(enum LogLevel level, const QString &str);
+
+    /**
+     * \brief Add a line in the log
+     * \param level The log level of the line
+     * \param str The c style format string of the content
+     */
     static void addLine(enum LogLevel level, const char *format, ...);
 
+    /**
+     * \brief Returns the number of log items at ERROR level
+     * \return The number of log items at ERROR level
+     */
     static qint32 getErrorCount();
 };
 
@@ -64,10 +104,25 @@ public:
 //
 // Note: The [gcc variadic macro] feature is used here
 //       If any error occurrs here, check your compiler settings
-
+/**
+ * \def LOG_ERROR(args..)
+ *  Add a line in the log at ERROR level
+ */
 #define LOG_ERROR(args...) Log::addLine(Log::LOG_ERROR, ##args)
+/**
+ * \def LOG_WARN(args..)
+ *  Add a line in the log at WARNING level
+ */
 #define LOG_WARN(args...) Log::addLine(Log::LOG_WARN, ##args)
+/**
+ * \def LOG_INFO(args..)
+ *  Add a line in the log at INFORMATION level
+ */
 #define LOG_INFO(args...) Log::addLine(Log::LOG_INFO, ##args)
+/**
+ * \def LOG_DEBUG(args..)
+ *  Add a line in the log at DEBUG level
+ */
 #define LOG_DEBUG(args...) Log::addLine(Log::LOG_DEBUG, ##args)
 
 #endif /* LOG_H */

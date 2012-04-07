@@ -25,19 +25,10 @@
 #include "rng-stream.h"
 
 /**
- * \brief The basic RNG for NS-3.
- * \ingroup randomvariable
+ * \brief The base class of all random variables
  *
- * Note: The underlying random number generation method used
- * by NS-3 is the RngStream code by Pierre L'Ecuyer at
- * the University of Montreal.
- *
- * NS-3 has a rich set of  random number generators.
- * Class RandomVariable defines the base class functionalty
- * required for all random number generators.  By default, the underlying
- * generator is seeded all the time with the same seed value and run number
- * coming from the ns3::GlobalValue \ref GlobalValueRngSeed "RngSeed" 
- * and \ref GlobalValueRngRun "RngRun".
+ * Note: The underlying random number generation method used in algts is the
+ * RngStream code by Pierre L'Ecuyer at the University of Montreal.
  */
 class RandomVariable
 {
@@ -52,11 +43,20 @@ public:
 	
     /**
      * \brief Returns a random integer integer from the underlying distribution
-     * \return  Integer cast of RandomVariable::getValue
+     * \return Integer cast of RandomVariable::getValue
      */
 	virtual quint32 getInteger() = 0;
     
+    /**
+     * \brief Returns the min integer that the random variable can generate
+     * \return The min integer that the random variable can generate
+     */
     virtual quint32 getMin() = 0;
+
+    /**
+     * \brief Returns the max integer that the random variable can generate
+     * \return The max integer that the random variable can generate
+     */
     virtual quint32 getMax() = 0;
 	
     //virtual void serialize(QDataStream *pStream) = 0;
@@ -161,11 +161,6 @@ public:
     /**
      * \brief call RandomVariable::getValue
      * \return A floating point random value
-     *
-     * Note: we have to re-implement this method here because the method is
-     * overloaded below for the two-argument variant and the c++ name resolution
-     * rules don't work well with overloads split between parent and child
-     * classes.
      */
 	virtual double getValue();
 

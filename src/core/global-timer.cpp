@@ -26,3 +26,4 @@ int GlobalTimer::msec()
 {
     return m_time.elapsed();
 }
+

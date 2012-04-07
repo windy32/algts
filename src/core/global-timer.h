@@ -18,14 +18,27 @@
 
 #include "common.h"
 
+/**
+ * \brief The global timer
+ */
 class GlobalTimer
 {
 private:
     static QTime m_time;
     
 public:
+    /**
+     * \brief Start the timer
+     */
     static void start();
+    
+    /**
+     * \brief Returns the milliseconds elapsed since last call to start()
+     * \return Milliseconds elapsed since last call to start()
+     * \note If start() hasn't been called earlier, the result is undefined
+     */
     static int msec();
 };
 
 #endif /* GLOBAL_TIMER_H */
+
