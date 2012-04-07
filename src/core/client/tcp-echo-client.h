@@ -20,26 +20,28 @@
 #include "../task/tcp-echo-task.h"
 
 /**
- * Trace Format of Asynchronous TCP Echo Task
+ * \brief The tcp echo task client
  *
- * Regular trace items for rating gui
+ * Regular trace format:
+ *  - vector<int32> Delay (ms)
+ *  - vector<int32> Active (BOOL)
  *
- *  - vector [Regular Delay: ms, int32]
- *  - vector [Regular Active, BOOL, int32]
+ * Text trace format:
+ *  - index
+ *  - time (ms)
+ *  - delay (ms)
  *
- * Irregular trace items for script outputs
- *
- * vector of vector {index, time(ms), delay(ms)}, e.g.: 
- * 
- *    0, 30, 63
- *    1, 99, 43
- *    2, 127, 72
- *    3, 183, 55 (packets will never be lost in a tcp echo task)
- *    4, 227, 89
- *    5, 472, 58
- *    ...
+ * An example of text trace output:
+ * \code
+ * 0, 30, 63
+ * 1, 99, 43
+ * 2, 127, 72
+ * 3, 183, 255 (packets won't be lost in a tcp echo task, it just tasks longer)
+ * 4, 227, 289 
+ * 5, 472, 58
+ * ...
+ * \endcode
  */
-
 class TcpEchoClient : public Client
 {
 private:
@@ -56,6 +58,11 @@ private:
 	virtual void run();
 
 public:
+    /**
+     * \brief Initialize the tcp echo client
+     * \param localAddr Client's IPv4 address
+     * \param serverAddr Server's IPv4 address
+     */
     TcpEchoClient(const QString &localAddr, const QString &serverAddr);
 
     virtual void generateTextTrace(TextTraceItem &trace);

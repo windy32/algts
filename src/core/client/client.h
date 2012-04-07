@@ -21,20 +21,51 @@
 
 #include "../QBoundTcpSocket.h"
 
+/**
+ * \brief The base class of all clients
+ */
 class Client : public QThread
 {
 protected:
+    /**
+     * \brief Server's IPv4 address
+     */
     QString m_serverAddr;
+    
+    /**
+     * \brief Client's IPv4 address
+     */
     QString m_localAddr;
 
 protected:
+    /**
+     * \brief The entry point of the thread function
+     * \note To start a thread in Qt, exec() is the right one to call
+     */
 	virtual void run() = 0;
 
 public:
+    /**
+     * \brief Initialize the base class with specific local address and server
+     *        address
+     * \param localAddr Client's IPv4 address
+     * \param serverAddr Server's IPv4 address
+     */
     Client(const QString &localAddr, const QString &serverAddr);
     
+    /**
+     * \brief Generate text trace
+     * \param trace The text trace item for output
+     */
     virtual void generateTextTrace(TextTraceItem &trace) = 0;
+    
+    /**
+     * \brief Generate regular trace
+     * \param trace The regular trace item for output
+     * \param length The length of the regular trace
+     */
     virtual void generateRegularTrace(RegularTraceItem &trace, int length) = 0;
 };
 
 #endif /* CLIENT_H */
+

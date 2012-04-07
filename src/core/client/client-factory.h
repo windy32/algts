@@ -19,18 +19,25 @@
 #include "client.h"
 
 /**
- * \brief Factory for creating random variable objects in scripts.
- * 
- * The class...
- * 
- *
+ * \brief Factory for creating client objects
  */
 
 class ClientFactory
 {
 public:
+    /**
+     * \brief Create a client object
+     * \param type The type of the concrete client
+     * \param localAddr Client's IPv4 address
+     * \param serverAddr Server's IPv4 address
+     * \return The pointer to the created client object. If type is invalid, 
+     *         a NULL pointer is returnd.
+     * \note ClientFactory will not return a null client, make sure that
+     *       code checking for NULL pointers are available.
+     */
     static Client *create(Task::Type type, const QString &localAddr, 
                           const QString &serverAddr);
 };
 
 #endif /* CLIENT_FACTORY_H */
+

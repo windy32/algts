@@ -20,34 +20,38 @@
 #include "../task/onoff-download-task.h"
 
 /**
- * Trace Format of On/Off Download Task
+ * \brief The on/off download task client
  *
- * Regular trace items for rating gui
+ * Regular trace format:
+ *  - vector<int32> RxRate (byte/s)
+ *  - vector<int32> MaxRxRate (byte/s)
+ *  - vector<int32> Active (BOOL)
  *
- *  - vector [Regular RxRate: byte/s, int32]
- *  - vector [Regular MaxRxRate: byte/s, int32]
- *  - vector [Regular Active, BOOL, int32]
+ * Text trace format:
+ *  - period
+ *  - index
+ *  - time (ms)
+ *  - newBytes
+ *  - totalBytes
  *
- * Irregular trace items for script outputs
+ * An example of text trace output:
+ * \code
+ * 0, 0, 11, 0, 0           <- connecting to server
+ * 0, 1, 30, 1000, 1000     <- first data packet receive in the "On" period
+ * 0, 2, 99, 1450, 2450
+ * 0, 3, 127, 1450, 3900
+ * 0, 4, 183, 1000, 4900
+ * 0, 5, 227, 1000, 5900
+ * 0, 6, 472, 1000, 6900
+ * ...
+ * 0, 71, 5532, 1000, 59900 <- last data packet received in the "On" period
+ *                          <- sleep during the "Off" period
  *
- * vector of vector {period, index, time(ms), newBytes, totalBytes}, e.g.,
- * 
- *    0, 0, 11, 0, 0           <- connecting to server
- *    0, 1, 30, 1000, 1000     <- first data packet receive in the on period
- *    0, 2, 99, 1450, 2450
- *    0, 3, 127, 1450, 3900
- *    0, 4, 183, 1000, 4900
- *    0, 5, 227, 1000, 5900
- *    0, 6, 472, 1000, 6900
- *    ...
- *    0, 71, 5532, 1000, 59900 <- last data packet received in the on period
- *                             <- sleep during the off period
- *
- *    1, 0, 16882, 0, 0 // connecting to server 
- *                         (first line in the next on period)
- *    ...
+ * 1, 0, 16882, 0, 0 // connecting to server 
+ *                     (first line in the next "On" period)
+ * ...
+ * \endcode
  */
-
 class OnoffDownloadClient : public Client
 {
 private:
@@ -66,6 +70,11 @@ private:
     virtual void run();
 
 public:
+    /**
+     * \brief Initialize the on/off download client
+     * \param localAddr Client's IPv4 address
+     * \param serverAddr Server's IPv4 address
+     */
     OnoffDownloadClient(const QString &localAddr, const QString &serverAddr);
 
     virtual void generateTextTrace(TextTraceItem &trace);

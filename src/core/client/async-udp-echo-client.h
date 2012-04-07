@@ -20,27 +20,29 @@
 #include "../task/async-udp-echo-task.h"
 
 /**
- * Trace Format of Asynchronous UDP Echo Task
+ * \brief The asynchronous udp echo task client
  *
- * Regular trace items for rating gui
+ * Regular trace format:
+ *  - vector<int32> Delay (ms)
+ *  - vector<int32> Lost (%1)
+ *  - vector<int32> Active (BOOL)
  *
- *  - vector [Regular Delay: ms, int32]
- *  - vector [Regular Lost: %1, int32]
- *  - vector [Regular Active, BOOL, int32]
+ * Text trace format:
+ *  - index
+ *  - time (ms)
+ *  - delay (ms)
  *
- * Irregular trace items for script outputs
- *
- * vector of vector {index, time(ms), delay(ms)}, e.g.: 
- * 
- *    0, 30, 63
- *    1, 99, 43
- *    2, 127, 72
- *    3, 183, -1 (lost)
- *    4, 227, 89
- *    5, 472, 58
- *    ...
+ * An example of text trace output:
+ * \code
+ * 0 30 63
+ * 1 99 43
+ * 2 127 72
+ * 3 183 -1 (lost)
+ * 4 227 89
+ * 5 472 58
+ * ...
+ * \endcode
  */
-
 class AsyncUdpEchoClient : public Client
 {
 private:
@@ -60,6 +62,11 @@ private:
     friend class AsyncUdpEchoClientReceiver;
     
 public:
+    /**
+     * \brief Initialize the asynchronous udp echo client
+     * \param localAddr Client's IPv4 address
+     * \param serverAddr Server's IPv4 address
+     */
     AsyncUdpEchoClient(const QString &localAddr, const QString &serverAddr);
 
     virtual void generateTextTrace(TextTraceItem &trace);

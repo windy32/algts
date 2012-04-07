@@ -20,29 +20,32 @@
 #include "../task/bulk-upload-task.h"
 
 /**
- * Trace Format of Bulk Download Task
+ * \brief The bulk upload task client
  *
- * Regular trace items for rating gui
+ * Regular trace format:
+ *  - vector<int32> TxRate (byte/s)
+ *  - vector<int32> MaxTxRate (byte/s)
+ *  - vector<int32> Active (BOOL)
  *
- *  - vector [Regular TxRate: byte/s, int32]
- *  - vector [Regular MaxTxRate: byte/s, int32]
- *  - vector [Regular Active, BOOL, int32]
+ * Text trace format:
+ *  - index
+ *  - time (ms)
+ *  - newBytes
+ *  - totalBytes
  *
- * Irregular trace items for script outputs
- *
- * vector of vector {index, time(ms), newBytes, totalBytes}, e.g.,
- *
- *    0, 18, 0, 0                <- connecting to server (first line)
- *    1, 40, 1000, 1000          <- first data packet sent
- *    2, 99, 1450, 2450
- *    3, 127, 1450, 3900
- *    4, 183, 1000, 4900
- *    5, 227, 1000, 5900
- *    6, 472, 1000, 6900
- *    ...
- *    183, 134390, 1000, 3249320 <- last packet sent (last line)
+ * An example of text trace output:
+ * \code
+ * 0 18 0 0                <- connecting to server (first line)
+ * 1 40 1000 1000          <- first data packet sent
+ * 2 99 1450 2450
+ * 3 127 1450 3900
+ * 4 183 1000 4900
+ * 5 227 1000 5900
+ * 6 472 1000 6900
+ * ...
+ * 183 134390 1000 3249320 <- last packet sent (last line)
+ * \endcode
  */
-
 class BulkUploadClient : public Client
 {
 private:
@@ -60,6 +63,11 @@ private:
 	virtual void run();
 
 public:
+    /**
+     * \brief Initialize the bulk upload client
+     * \param localAddr Client's IPv4 address
+     * \param serverAddr Server's IPv4 address
+     */
     BulkUploadClient(const QString &localAddr, const QString &serverAddr);
     
     virtual void generateTextTrace(TextTraceItem &trace);
