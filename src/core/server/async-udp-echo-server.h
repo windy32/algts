@@ -18,6 +18,9 @@
 
 #include "server.h"
 
+/**
+ * \brief The asynchronous udp echo server
+ */
 class AsyncUdpEchoServer : public Server
 {
 private:
@@ -27,8 +30,14 @@ protected:
     virtual void run();
 
 public:
+    /**
+     * \brief Initialize the asynchronous udp echo server
+     * \param addr The ip address of the server
+     * \param port The port of the server
+     */
     AsyncUdpEchoServer(const QHostAddress &addr, quint16 port);
 	virtual bool start(QString &description);
 };
 
 #endif /* ASYNC_UDP_ECHO_SERVER_H */
+

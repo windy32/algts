@@ -18,18 +18,34 @@
 
 #include "tcp-server.h"
 
+/**
+ * \brief The tcp echo server session
+ */
 class TcpEchoServerSession : public TcpServerSession
 {
 public:
+    /**
+     * \brief Initialize the tcp echo server session
+     * \param socket The socket for the session
+     */
     TcpEchoServerSession(QTcpSocket *socket);
     virtual void run();
 };
 
+/**
+ * \brief The tcp echo server
+ */
 class TcpEchoServer : public TcpServer
 {
 public:
+    /**
+     * \brief Initialize the tcp echo server
+     * \param addr The ip address of the server
+     * \param port The port of the server
+     */
     TcpEchoServer(const QHostAddress &addr, quint16 port);
     virtual TcpServerSession *createSession(QTcpSocket *socket);
 };
 
 #endif /* TCP_ECHO_SERVER_H */
+

@@ -18,16 +18,34 @@
 
 #include "server.h"
 
+/**
+ * \brief The base class of all tcp servers sessions
+ */
 class TcpServerSession : public QThread
 {
 protected:
+    /**
+     * \brief The socket for the session
+     */
     QTcpSocket *m_socket;
+    
+    /**
+     * \brief The entry point of the thread function
+     * \note To start a thread in Qt, exec() is the right one to call
+     */
     virtual void run() = 0;
     
 public:
+    /**
+     * \brief Initialize the tcp server session
+     * \param socket The socket for the session
+     */
     TcpServerSession(QTcpSocket *socket);
 };
 
+/**
+ * \brief The base class of all tcp servers
+ */
 class TcpServer : public Server
 {
 private:
@@ -37,8 +55,21 @@ protected:
     virtual void run();
 
 public:
+    /**
+     * \brief Initialize the tcp server
+     * \param addr The ip address of the server
+     * \param port The port of the server
+     */
     TcpServer(const QHostAddress &addr, quint16 port);
+    
+    /**
+     * \brief Create a session for the new connection
+     * \param socket The socket for the new connection
+     * \return A pointer to the session object that will process client's 
+     *         requests
+     */
     virtual TcpServerSession *createSession(QTcpSocket *socket) = 0;
+    
     virtual bool start(QString &description);
 };
 

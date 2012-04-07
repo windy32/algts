@@ -18,18 +18,34 @@
 
 #include "tcp-server.h"
 
+/**
+ * \brief The on/off download server session
+ */
 class OnoffDownloadServerSession : public TcpServerSession
 {
 public:
+    /**
+     * \brief Initialize the on/off download server session
+     * \param socket The socket for the session
+     */
     OnoffDownloadServerSession(QTcpSocket *socket);
     virtual void run();
 };
 
+/**
+ * \brief The on/off download server
+ */
 class OnoffDownloadServer : public TcpServer
 {
 public:
+    /**
+     * \brief Initialize the on/off downloaload server
+     * \param addr The ip address of the server
+     * \param port The port of the server
+     */
     OnoffDownloadServer(const QHostAddress &addr, quint16 port);
     virtual TcpServerSession *createSession(QTcpSocket *socket);
 };
 
 #endif /* ONOFF_DOWNLOAD_SERVER_H */
+

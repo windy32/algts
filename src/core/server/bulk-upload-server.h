@@ -18,18 +18,33 @@
 
 #include "tcp-server.h"
 
-class BulkUploadServer : public TcpServer
-{
-public:
-    BulkUploadServer(const QHostAddress &addr, quint32 port);
-    virtual TcpServerSession *createSession(QTcpSocket *socket);
-};
-
+/**
+ * \brief The bulk upload server
+ */
 class BulkUploadServerSession : public TcpServerSession
 {
 public:
+    /**
+     * \brief Initialize the bulk upload server session
+     * \param socket The socket for the session
+     */
     BulkUploadServerSession(QTcpSocket *socket);
     virtual void run();
+};
+
+/**
+ * \brief The bulk upload server session
+ */
+class BulkUploadServer : public TcpServer
+{
+public:
+    /**
+     * \brief Initialize the bulk upload server
+     * \param addr The ip address of the server
+     * \param port The port of the server
+     */
+    BulkUploadServer(const QHostAddress &addr, quint32 port);
+    virtual TcpServerSession *createSession(QTcpSocket *socket);
 };
 
 #endif /* BULK_UPLOAD_SERVER_H */

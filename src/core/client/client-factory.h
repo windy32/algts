@@ -28,8 +28,8 @@ public:
     /**
      * \brief Create a client object
      * \param type The type of the concrete client
-     * \param localAddr Client's IPv4 address
-     * \param serverAddr Server's IPv4 address
+     * \param localAddr IP address of the client
+     * \param serverAddr IP address of the server
      * \return The pointer to the created client object. If type is invalid, 
      *         a NULL pointer is returnd.
      * \note ClientFactory will not return a null client, make sure that

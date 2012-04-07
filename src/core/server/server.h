@@ -18,18 +18,47 @@
 
 #include "../common.h"
 
+/**
+ * \brief The base class of all servers
+ */
 class Server : public QThread
 {
 protected:
+    /**
+     * \brief Server's ip address
+     */
     QHostAddress m_addr;
+    
+    /**
+     * \brief Server's port
+     */
     quint16 m_port;
 
 protected:
+    /**
+     * \brief The entry point of the thread function
+     * \note To start a thread in Qt, exec() is the right one to call
+     */
     virtual void run() = 0;
     
 public:
+    /**
+     * \brief Initialize the base class with specified ip address and port
+     * \param addr The ip address of the server
+     * \param port The port of the server
+     */
     Server(const QHostAddress &addr, quint16 port);
+    
+    /**
+     * \brief Start the server
+     * \param description Detailed description of the result
+     * \return Returns true if server started successfully (which means that
+     *         calls to bind, listen, etc. are successful), and false otherwise
+     * \note The function will return quickly, as another thread will be created
+     *       waiting for clients' requests
+     */
     virtual bool start(QString &description) = 0;
 };
 
 #endif /* SERVER_H */
+

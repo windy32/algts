@@ -20,18 +20,25 @@
 #include "../task/task.h"
 
 /**
- * \brief Factory for creating random variable objects in scripts.
- * 
- * The class...
- * 
- *
+ * \brief Factory for creating servers objects
  */
 
 class ServerFactory
 {
 public:
+    /**
+     * \brief Create a server object
+     * \param type The type of the concrete client
+     * \param addr IP address of the server
+     * \param port Port of the server
+     * \return The pointer to the created server object. If type is invalid, 
+     *         a NULL pointer is returnd.
+     * \note ServerFactory will not return a null client, make sure that
+     *       code checking for NULL pointers are available.
+     */
     static Server *create(Task::Type type, const QHostAddress &addr, 
         quint16 port);
 };
 
 #endif /* SERVER_FACTORY_H */
+
