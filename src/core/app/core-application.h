@@ -23,32 +23,86 @@
 /**
  * \brief The core application.
  *
- * ...detail
- */ 
+ * A scenario mainly consists of a number of users and different types of tasks,
+ * and a task consists of a server port number, a start time, stop time, and
+ * some concrete-task-specific attributes.
+ *
+ * However the information provided by a scenario is not enough at execution,
+ * as each user should have a unique ip address, and clients should connect to
+ * a specific ip address that corresponds to the type of the task.
+ *
+ * Thus the CoreApplication is designed for holding the extra information as
+ * well as execuing the tasks in a scenario.
+ */
 class CoreApplication
 {
 protected:
+    /**
+     * \brief Local addresses that can be used for clients
+     */
     QList<QHostAddress> m_localAddrs;
+    /**
+     * \brief Address of the server daemon
+     */
     QHostAddress m_serverDaemonAddr;
+    /**
+     * \brief Port of the server daemon
+     */
     quint16 m_serverDaemonPort;
     
 public:
+    /**
+     * \brief Constructor that does nothing
+     * \note This function should only be used in CoreApplication's derived
+     *       classes
+     * \see ConsoleApplication
+     */
     CoreApplication();
+    /**
+     * \brief Initialize the core application
+     * \param localAddrs Local addresses that can be used for clients
+     * \param serverDaemonAddr Address of the server daemon
+     * \param serverDaemonPort Port of the server daemon
+     * \note The localAddrs should be the addresses actually available on the
+     *       local host, the constructor does not automatically filter addresses
+     *       which are not available.
+     */
     CoreApplication(const QList<QHostAddress> &localAddrs,
                     const QHostAddress &serverDaemonAddr,
                     quint16 serverDaemonPort);
 
-    // Execute tasks
-    // 1. if no enough local addresses are available, exit
-    // 2. create the mapping from user name to local address
-    // 3. connect to server daemon and send layout [TaskType][Port] ...
-    // 4. get response 
-    //       [bool: Result][quint32: Address][QString: success description] or
-    //       [bool: Result][QString: failure description]
-    // 5. if any error occurred, tasks will no longer continue
-    // 6. create client objects, with generated server addresses & local
-    //    addresses
-    // 7. execute client objects
+    /**
+     * \brief Execute tasks in the scenario
+     * \param s Pointer to the scenario
+     * 
+     * The execution follows the procedure below.
+     *  1. Exit if no enough local addresses are available
+     *  2. Create the mapping from usernames to local addresses
+     *  3. Connect to the server daemon and send request
+     *     Field        | Type         | Description
+     *     -------------|--------------|---------------------------
+     *     TaskType     | int32        | Type of the server
+     *     Port         | uint16bool   | Port of the server
+     *  4. Get response from the server daemon.
+     *
+     *     When the server's set up successfully, the response would be
+     *     Field        | Type         | Description
+     *     -------------|--------------|---------------------------
+     *     BlockSize    | uint32       | Size of the remaining part
+     *     Result       | bool         | true
+     *     Address      | quint32      | IPv4 Address of the server
+     *     Description  | QString      | Detailed description
+     *     Otherwise, the response wound be
+     *     Field        | Type         | Description
+     *     -------------|--------------|---------------------------
+     *     BlockSize    | uint32       | Size of the remaining part
+     *     Result       | bool         | false
+     *     Description  | QString      | Detailed description
+     *  5. Exit if any error occurrs
+     *  6. Create client objects with generated server addresses and local
+     *     addresses
+     *  7. Execute client objects
+     */
     void  exec(Scenario *s);
 };
 

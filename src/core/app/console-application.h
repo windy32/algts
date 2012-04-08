@@ -21,7 +21,68 @@
 /**
  * \brief The console application.
  *
- * ...detail
+ * This class is designed for convenience in scripting. Here's a mininal test
+ * script without the ConsoleApplication.
+ *
+ * \code
+ * int main(int argc, char *argv[])
+ * {
+ *     QList<QHostAddress> localAddrs;
+ *     QHostAddress serverDaemonAddr;
+ *     quint16 serverDaemonPort;
+ *
+ *     // Either set fixed address and port, or dynamically get desired address
+ *     // and port from the command line
+ *     //
+ *     // dozens of code here...
+ *
+ *     // Start core application
+ *     CoreApplication app(localAddrs, serverDaemonAddr, serverDaemonPort);
+ *     
+ *     // Setup scenario
+ *     Scenario s(12345, 60); // seed & length
+ *     s.addUser("Harry");
+ *     ...
+ *
+ *     // Execute
+ *     app.exec(&s);
+ *
+ *     return 0;
+ * }
+ * \endcode
+ *
+ * Now, with ConsoleApplication, a derived class of CoreApplication, parsing of
+ * command-line parameters can be finished in a line.
+ *
+ * \code
+ * int main(int argc, char *argv[])
+ * {
+ *     // Start console application
+ *     CoreApplication app(argc, argv);
+ *     
+ *     // Setup scenario
+ *     Scenario s(12345, 60); // seed & length
+ *     s.addUser("Harry");
+ *     ...
+ *
+ *     // Execute
+ *     app.exec(&s);
+ *
+ *     return 0;
+ * }
+ * \endcode
+ *
+ * **Command line usage**
+ * \code
+ * app <local-address-range> <daemon-address> <daemon-port>
+ * \endcode
+ *
+ * **Command line example**
+ * \code
+ * app 172.16.0.8/29 10.0.0.1 3201
+ * \endcode
+ *
+ * \see CoreApplication
  */
 class ConsoleApplication : public CoreApplication
 {
@@ -31,6 +92,11 @@ private:
     bool parseAddrRange(const QString &str, QList<QHostAddress> &addrRange);
 
 public:
+    /**
+     * \brief Initialize the console application.
+     * \param argc The number of command line argumnets
+     * \param argv The content of command line arguments
+     */
     ConsoleApplication(int argc, char *argv[]);
 };
 
