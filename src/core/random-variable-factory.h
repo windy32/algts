@@ -20,9 +20,7 @@
 #include "random-variable.h"
 
 /**
- * \brief Factory for creating random variable objects in scripts.
- * 
- * The class...
+ * \brief Factory for creating random variable objects
  * 
  * Examples:
  * \code
@@ -53,10 +51,16 @@
  * 
  * \endcode
  */
-
 class RandomVariableFactory
 {
 public:
+    /**
+     * \brief Create a random variable object
+     * \param param The type of the random variable along with its parameters
+     * \return The pointer to the created random variable object
+     * \note If parameter is invalid, a pointer to a null variable will be
+     *       returned.
+     */
     static RandomVariable *create(const QString &param);
 };
 

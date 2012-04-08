@@ -19,25 +19,33 @@
 #include "common.h"
 #include "task/task.h"
 
-// Raw trace items are generated when a client is executing a task,
-// those items are basically simple events, e.g.,
-// "at 3692ms, 1430 bytes are received, now 7220024 bytes are received in total"
-
-// Text trace items (trace files) are generated after the execution of tasks
-
 /**
- * Format of trace files
- * 
+ * \file trace.h
+ * \brief Global tracing support
+ *
+ * **Raw trace**
+ *
+ * Raw trace is generated when a client is executing a task, they are basically
+ * simple event descriptions, e.g.:
+ * "at 3692ms, 1430 bytes are received, now 7220024 bytes are received in total"
+ *
+ * \note Raw trace is generated internally when a client executes a task, 
+ *       which is not visible from users.
+ *
+ * **Text trace**
+ *
+ * Text trace (the trace file) is generated after the execution of tasks.
+ * \code
  * username="Harry" type="onoff-download"
  * {
- *   0, 0, 30, 1000, 1000
- *   0, 1, 99, 1450, 2450
- *   0, 2, 127, 1450, 3900
- *   0, 3, 183, 1000, 4900
- *   0, 4, 227, 1000, 5900
- *   0, 5, 472, 1000, 6900
- *   0, 71, 5532, 1000, 9900
- *   1, 0, 16882, 1000, 1000
+ *   0 0 30 1000 1000
+ *   0 1 99 1450 2450
+ *   0 2 127 1450 3900
+ *   0 3 183 1000 4900
+ *   0 4 227 1000 5900
+ *   0 5 472 1000 6900
+ *   0 71 5532 1000 9900
+ *   1 0 16882 1000 1000
  *   ...
  * }
  * 
@@ -45,14 +53,36 @@
  * {
  *   ...
  * }
+ * \endcode
+ * 
+ * **Regular trace**
+ * 
+ * The regular trace for a task may consists of several vectors, in each
+ * vector, trace data are organized according to a specific time interval.
+ * Currently, the time interval is one second.
  *
+ * e.g., for a tcp echo task, there're 2 vectors, "Delay" and "Active".
+ * In the "Delay" vector, the 1st element represents the average delay for the
+ * 1st second, and the 2nd element represents the average delay for the 2nd
+ * second, etc.
+ * 
+ * \see Client
+ */
+
+
+/**
+ * \brief Regular trace output for a task
  */
 typedef QStringList TextTraceItem;
 
-// Regular trace items are generated after the execution of tasks
-// used for rating gui
+/**
+ * \brief Regular trace output for a task
+ */
 typedef QMap<QString, QList<qint32> > RegularTraceItem;
 
+/**
+ * \brief The global text trace object
+ */
 class TextTrace
 {
 private:
@@ -60,9 +90,22 @@ private:
     static QString m_filename;
     
 public:
+    /**
+     * \brief Enable text trace
+     * \param filename Name of the text trace file
+     */
     static void enable(const QString &filename);
+    /**
+     * \brief Returns if text trace is enabled
+     * \return Returns true if text trace is enabled, and false otherwise
+     */
     static bool enabled();
+    /**
+     * \brief Generate text trace
+     * \param tasks The tasks in the scenario
+     */
     static void generate(QMap<QString, QVector<Task *> > &tasks);
 };
 
 #endif /* TRACE_H */
+

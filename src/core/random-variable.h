@@ -66,8 +66,7 @@ protected:
 };
 
 /**
- * \brief The null RNG.
- * \ingroup randomvariable
+ * \brief The null random variable
  *
  * A null variable object is used as a replacement of a NULL pointer to 
  * random variable objects so that access violations could be avoided.
@@ -94,7 +93,7 @@ protected:
  * // The Interval attribute of the TcpEchoTask is not specified
  * 
  * ...
- * s.exec(); // The Interval attribute is null, thus warning will be generated
+ * s.exec(); // The Interval attribute is null, thus a warning will be generated
  * \endcode
  * 
  */
@@ -112,13 +111,13 @@ public:
     static NullVariable* getInstance();
     
     /**
-     * \brief call NullVariable::getValue
+     * \brief Returns a floating point value
      * \return A floating point value of zero
      */
 	virtual double getValue();
 
     /**
-     * \brief call NullVariable::GetInteger
+     * \brief Returns an integer
      * \return An integer value of zero
      */
 	virtual quint32 getInteger();
@@ -128,15 +127,14 @@ public:
 };
 
 /**
- * \brief The uniform distribution RNG for NS-3.
- * \ingroup randomvariable
+ * \brief Uniform distributed random variable
  *
- * This class supports the creation of objects that return random numbers
- * from a fixed uniform distribution.  It also supports the generation of
- * single random numbers from various uniform distributions.
+ * This class supports the creation of objects that return random numbers from
+ * a fixed uniform distribution.  It also supports the generation of single
+ * random numbers from various uniform distributions.
  *
- * The low end of the range is always included and the high end
- * of the range is always excluded.
+ * The low end of the range is always included and the high end of the range is
+ * always excluded.
  * \code
  * UniformVariable x (0,10);
  * x.getValue ();  //will always return numbers [0,10)
@@ -146,8 +144,7 @@ class UniformVariable : public RandomVariable
 {
 public:
     /**
-     * Creates a uniform random number generator in the
-     * range [0.0 .. 1.0).
+     * Creates a uniform random number generator in the range [0.0 .. 1.0)
      */
 	UniformVariable();
 	
@@ -159,11 +156,15 @@ public:
 	UniformVariable(double s, double l);
 
     /**
-     * \brief call RandomVariable::getValue
+     * \brief Returns a floating point value from the uniform distribution
      * \return A floating point random value
      */
 	virtual double getValue();
 
+    /**
+     * \brief Returns an integer from the uniform distribution
+     * \return Integer cast of UniformVariable::getValue
+     */
 	virtual quint32 getInteger();
 
     /**
@@ -192,17 +193,15 @@ private:
 };
 
 /**
- * \brief Exponentially Distributed random var
- * \ingroup randomvariable
+ * \brief Exponentially distributed random variable
  *
- * This class supports the creation of objects that return random numbers
- * from a fixed exponential distribution.  It also supports the generation of
- * single random numbers from various exponential distributions.
+ * This class supports the creation of objects that return random numbers from
+ * a fixed exponential distribution.  It also supports the generation of single
+ * random numbers from various exponential distributions.
  *
- * The probability density function of an exponential variable
- * is defined over the interval [0, +inf) as:
- * \f$ \alpha  e^{-\alpha x} \f$
- * where \f$ \alpha = \frac{1}{mean} \f$
+ * The probability density function of an exponential variable is defined over
+ * the interval [0, +inf) as: \f$ \alpha  e^{-\alpha x} \f$ where 
+ * \f$ \alpha = \frac{1}{mean} \f$
  *
  * The bounded version is defined over the interval [0,b] as:
  * \f$ \alpha  e^{-\alpha x} \quad x \in [0,b] \f$.
@@ -232,20 +231,29 @@ public:
 	explicit ExponentialVariable(double m);
 	
     /**
-     * \brief Constructs an exponential random variable with specified
-     * mean and upper limit.
-     *
-     * Since exponential distributions can theoretically return unbounded 
-     * values, it is sometimes useful to specify a fixed upper limit. 
-     * Note however when the upper limit is specified, the true mean of the
-     * distribution is slightly smaller than the mean value specified: 
-     * \f$ m - b/(e^{b/m}-1) \f$.
+     * \brief Constructs an exponential random variable with specified mean and
+     *        upper limit
      * \param m Mean value of the random variable
      * \param b Upper bound on returned values
+     *
+     * \note Since exponential distributions can theoretically return unbounded 
+     *       values, it is sometimes useful to specify a fixed upper limit. Note
+     *       however when the upper limit is specified, the true mean of the
+     *       distribution is slightly smaller than the mean value specified: 
+     *       \f$ m - b/(e^{b/m}-1) \f$.
      */
 	ExponentialVariable(double m, double b);
 
+    /**
+     * \brief Returns a floating point value from the exponential distribution
+     * \return A floating point random value
+     */
     virtual double getValue();
+
+    /**
+     * \brief Returns an integer from the exponential distribution
+     * \return Integer cast of ExponentialVariable::getValue
+     */
     virtual quint32 getInteger();
     
     virtual quint32 getMin();
@@ -257,8 +265,7 @@ private:
 };
 
 /**
- * \brief ParetoVariable distributed random var
- * \ingroup randomvariable
+ * \brief Pareto distributed random variable
  *
  * This class supports the creation of objects that return random numbers
  * from a fixed pareto distribution.  It also supports the generation of
@@ -282,43 +289,50 @@ class ParetoVariable : public RandomVariable
 public:
     /**
      * \brief Constructs a pareto random variable with a mean of 1 and a shape
-     * parameter of 1.5
+     *        parameter of 1.5
      */
 	ParetoVariable ();
 	
     /**
      * \brief Constructs a pareto random variable with specified mean and shape
-     * parameter of 1.5
-     *
+     *        parameter of 1.5
      * \param m Mean value of the distribution
      */
 	explicit ParetoVariable (double m);
 	
     /**
-     * \brief Constructs a pareto random variable with the specified mean
-     * value and shape parameter. Beware, s must be strictly greater than 1.
-     *
+     * \brief Constructs a pareto random variable with the specified mean value
+     *        and shape parameter. Beware, s must be strictly greater than 1.
      * \param m Mean value of the distribution
      * \param s Shape parameter for the distribution
      */
 	ParetoVariable (double m, double s);
 	
     /**
-     * \brief Constructs a pareto random variable with the specified mean
-     * value,shape (alpha), and upper bound. Beware, s must be strictly 
-     * greater than 1.
-     *
-     * Since pareto distributions can theoretically return unbounded values,
-     * it is sometimes useful to specify a fixed upper limit.  Note however
-     * when the upper limit is specified, the true mean of the distribution
-     * is slightly smaller than the mean value specified.
+     * \brief Constructs a pareto random variable with the specified mean value,
+     *        shape (alpha), and upper bound. Beware, s must be strictly greater
+     *        than 1.
      * \param m Mean value
      * \param s Shape parameter
      * \param b Upper limit on returned values
+     *
+     * \note Since pareto distributions can theoretically return unbounded
+     *       values, it is sometimes useful to specify a fixed upper limit. 
+     *       Note however when the upper limit is specified, the true mean of
+     *       the distribution is slightly smaller than the mean value specified.
      */
 	ParetoVariable (double m, double s, double b);
 
+    /**
+     * \brief Returns a floating point value from the pareto distribution
+     * \return A floating point random value
+     */
 	virtual double getValue();
+	
+    /**
+     * \brief Returns an integer from the Pareto distribution
+     * \return Integer cast of ParetoVariable::getValue
+     */
 	virtual quint32 getInteger();
 
     virtual quint32 getMin();
@@ -331,3 +345,4 @@ private:
 };
 
 #endif /* RANDOM_VARIABLE_H */
+
