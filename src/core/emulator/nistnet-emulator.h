@@ -18,9 +18,19 @@
 
 #include "emulator.h"
 
+/**
+ * \brief The nistnet emulator
+ * \note This class hasn't been implemented yet, and any call to commit/reset
+ *       will do nothing but generate a warning
+ */
 class NistnetEmulator : public Emulator
 {
 public:
+    /**
+     * \brief Initialize the nistnet emulator
+     * \param addr IPv4 address of the emulator daemon
+     * \param port Port of the emulator daemon
+     */
     NistnetEmulator(const QString &addr, quint16 port);
     
     virtual void commit();

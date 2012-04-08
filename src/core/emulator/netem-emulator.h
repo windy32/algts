@@ -18,9 +18,17 @@
 
 #include "emulator.h"
 
+/**
+ * \brief The netem emulator
+ */
 class NetemEmulator : public Emulator
 {
 public:
+    /**
+     * \brief Initialize the netem emulator
+     * \param addr IPv4 address of the emulator daemon
+     * \param port Port of the emulator daemon
+     */
     NetemEmulator(const QString &addr, quint16 port);
     
     virtual void commit();
