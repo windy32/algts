@@ -18,9 +18,21 @@
 
 #include "terminal.h"
 
+/**
+ * \brief The ssh terminal
+ */
 class SshTerminal : public Terminal
 {
 public:
+    /**
+     * \brief Initialize the ssh terminal
+     * \param addr The address of remote host
+     * 
+     * The command line starting the ssh terminal would be
+     * \code
+     * ssh <addr>
+     * \endcode
+     */
     SshTerminal(const QString &addr);
 };
 

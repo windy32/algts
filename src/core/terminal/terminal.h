@@ -18,14 +18,40 @@
 
 #include "../common.h"
 
+/**
+ * \brief The base class of all terminals
+ * \note Concrete terminal classes should explicitly initialize the m_program
+ *       and the m_arguments members in constructor
+ *
+ * Terminals are typically used for setting up routers.
+ * \code
+ * // Setup router
+ * TelnetTerminal terminal("172.16.0.1");
+ * terminal.enter("root\n");
+ * terminal.enter("admin\n");
+ * terminal.enter("tc qdisc add dev eth0 root htb ...\n");
+ * ...
+ * terminal.close();
+ * \endcode
+ * \see TelnetTerminal, SshTerminal
+ */
 class Terminal
 {
 protected:
     //qint32 m_responseDelay;
     //qint32 m_response;
     
+    /**
+     * \brief The process object for the terminal
+     */
     QProcess *m_process;
+    /**
+     * \brief The executable file name of the terminal
+     */
     QString m_program;
+    /**
+     * \brief Arguments used starting the terminal process
+     */
     QStringList m_arguments;
     
 protected:
@@ -50,10 +76,24 @@ protected:
     void waitForResponse();*/
     
 public:
+    /**
+     * \brief Initialize the terminal
+     */
     Terminal();
 
+    /**
+     * \brief Start the terminal process
+     * \return Returns true if process started successfully, and false otherwise
+     */
     virtual bool start();
+    /**
+     * \brief Send something to the terminal process' regular input
+       \param input The content to enter
+     */
     virtual void enter(const QString &input);
+    /**
+     * \brief Close the terminal process
+     */
     virtual void close();
 };
 

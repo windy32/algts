@@ -18,9 +18,21 @@
  
 #include "terminal.h"
 
+/**
+ * \brief The telnet terminal
+ */
 class TelnetTerminal : public Terminal
 {
 public:
+    /**
+     * \brief Initialize the tenlet terminal
+     * \param addr The address of remote host
+     *
+     * The command line starting the ssh terminal would be
+     * \code
+     * telnet <addr>
+     * \endcode
+     */
     TelnetTerminal(const QString &addr);
 };
 
