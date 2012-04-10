@@ -49,18 +49,36 @@
  */
 class BulkDownloadClient : public Client
 {
-private:
+protected:
+    /**
+     * \brief Raw trace structure for bulk download tasks
+     */
     struct RawTrace
     {
+        /** \brief Index of the event that starts with 0 */
         QList<qint32> index;
+        
+        /** \brief The time (ms) of the event */
         QList<qint32> time;
+        
+        /** \brief New bytes received in the event */
         QList<qint32> newBytes;
+        
+        /** \brief Total bytes received */
         QList<qint32> totalBytes;
-    } m_trace;
+    };
     
-	BulkDownloadTask *m_task;
+    /**
+     * \brief The raw trace object
+     */
+    RawTrace m_trace;
+    
+    /**
+     * \brief Pointer to the bulk download task object
+     */
+    BulkDownloadTask *m_task;
 
-private:
+protected:
     virtual void run();
 
 public:

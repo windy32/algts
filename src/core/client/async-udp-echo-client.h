@@ -46,16 +46,43 @@
  */
 class AsyncUdpEchoClient : public Client
 {
-private:
+protected:
+    /**
+     * \brief Raw trace structure for asynchronous udp echo tasks
+     */
     struct RawTrace
     {
+        /** \brief Index of the event that starts with 0 */
         QVector<qint32> index;
+        
+        /** \brief The time (ms) of the event */
         QVector<qint32> time;
+        
+        /** \brief The delay (ms) of the echo packet
+         *  \note a value of -1 indicates that the echo packet is lost
+         */
         QVector<qint32> delay;
-    } m_trace;
+    };
+    
+    /**
+     * \brief The raw trace object
+     */
+    RawTrace m_trace;
 
-	AsyncUdpEchoTask *m_task;
+    /**
+     * \brief Pointer to the tcp echo task object
+     */
+    AsyncUdpEchoTask *m_task;
+    
+    /**
+     * \brief The mutex for visiting raw trace
+     */
     QMutex m_mutex;
+    
+    /**
+     * \brief The flag indicating whether the receiver thread should continue
+     *        waiting and receiving packets
+     */
     bool m_receiving;
     
 private:

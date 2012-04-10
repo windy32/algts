@@ -55,17 +55,39 @@
  */
 class OnoffDownloadClient : public Client
 {
-private:
+protected:
+    /**
+     * \brief Raw trace structure for on/off download tasks
+     */
     struct RawTrace
     {
+        /** \brief Index of the "On" period */
         QVector<qint32> period;
+        
+        /** \brief Index of the event in current "On" period 
+         *         that starts with 0
+         */
         QVector<qint32> index;
-        QVector<qint32> time;
-        QVector<qint32> newBytes;
-        QVector<qint32> totalBytes;
-    } m_trace;
 
-	OnoffDownloadTask *m_task;
+        /** \brief The time (ms) of the event */
+        QVector<qint32> time;
+
+        /** \brief Bytes received in the event */
+        QVector<qint32> newBytes;
+
+        /** \brief Total bytes received */
+        QVector<qint32> totalBytes;
+    };
+    
+    /**
+     * \brief The raw trace object
+     */
+    RawTrace m_trace;
+
+    /**
+     * \brief Pointer to the on/off download task object
+     */
+    OnoffDownloadTask *m_task;
 
 private:
     virtual void run();

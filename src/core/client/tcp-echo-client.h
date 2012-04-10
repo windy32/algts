@@ -45,15 +45,31 @@
  */
 class TcpEchoClient : public Client
 {
-private:
+protected:
+    /**
+     * \brief Raw trace structure for tcp echo tasks
+     */
     struct RawTrace
     {
+        /** \brief Index of the event that starts with 0 */
         QVector<qint32> index;
+        
+        /** \brief The time (ms) of the event */
         QVector<qint32> time;
+        
+        /** \brief The delay (ms) of the echo packet */
         QVector<qint32> delay;
-    } m_trace;
+    };
+    
+    /**
+     * \brief The raw trace object
+     */
+    RawTrace m_trace;
 
-	TcpEchoTask *m_task;
+    /**
+     * \brief Pointer to the tcp echo task object
+     */
+    TcpEchoTask *m_task;
 
 private:
 	virtual void run();
