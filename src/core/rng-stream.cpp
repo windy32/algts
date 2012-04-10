@@ -328,54 +328,6 @@ RngStream::RngStream(const RngStream& r)
     }
 }
 
-
-//-------------------------------------------------------------------------
-// Reset Stream to beginning of Stream.
-//
-void RngStream::ResetStartStream ()
-{
-  for (int i = 0; i < 6; ++i)
-    Cg[i] = Bg[i] = Ig[i];
-}
-
-
-//-------------------------------------------------------------------------
-// Reset Stream to beginning of SubStream.
-//
-void RngStream::ResetStartSubstream ()
-{
-  for (int i = 0; i < 6; ++i)
-    Cg[i] = Bg[i];
-}
-
-
-//-------------------------------------------------------------------------
-// Reset Stream to NextSubStream.
-//
-void RngStream::ResetNextSubstream ()
-{
-  MatVecModM (A1p76, Bg, Bg, m1);
-  MatVecModM (A2p76, &Bg[3], &Bg[3], m2);
-  for (int i = 0; i < 6; ++i)
-    Cg[i] = Bg[i];
-}
-
-
-//-------------------------------------------------------------------------
-// Reset Stream to Nth SubStream.
-//
-void RngStream::ResetNthSubstream (quint32 N)
-{
-  if(N==0) return;
-  for(quint32 i=0; i<N; ++i) {
-      MatVecModM (A1p76, Bg, Bg, m1);
-      MatVecModM (A2p76, &Bg[3], &Bg[3], m2);
-    }
-  for (int i = 0; i < 6; ++i)
-    Cg[i] = Bg[i];
-}
-
-
 //-------------------------------------------------------------------------
 bool RngStream::SetPackageSeed (const quint32 seed[6])
 {
@@ -392,15 +344,6 @@ RngStream::SetPackageSeed (quint32 seed)
 {
   quint32 seeds[6] = { seed, seed, seed, seed, seed, seed};
   return SetPackageSeed (seeds);
-}
-void
-RngStream::GetPackageSeed (quint32 seed[6])
-{
-  quint32 theSeed = 12345;
-  for (int i = 0; i < 6; i++)
-    {
-      seed[i] = static_cast<quint32> (theSeed);
-    }
 }
 bool
 RngStream::CheckSeed (quint32 seed)
@@ -434,13 +377,4 @@ double RngStream::RandU01 ()
   else
     return U01 ();
 }
-
-
-//-------------------------------------------------------------------------
-// Generate the next random integer.
-//
-qint32 RngStream::RandInt (qint32 low, qint32 high)
-{
-  return low + static_cast<int32_t> ((high - low + 1) * RandU01 ());
-};
 

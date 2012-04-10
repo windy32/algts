@@ -33,23 +33,16 @@ class RngStream
 public:  //public api
 	RngStream();
 	RngStream(const RngStream&);
-	void ResetStartStream();
-	void ResetStartSubstream();
-	void ResetNextSubstream();
-	void ResetNthSubstream(quint32 N);
-
 	void SetAntithetic(bool a);
 	void IncreasedPrecis(bool incp);
-
 	double RandU01();
-	qint32 RandInt(qint32 i, qint32 j);
 
 public: //public static api
 	static bool SetPackageSeed(quint32 seed);
 	static bool SetPackageSeed(const quint32 seed[6]);
 	static void GetPackageSeed(quint32 seed[6]);
-	static bool CheckSeed(const quint32 seed[6]);
 	static bool CheckSeed(quint32 seed);
+	static bool CheckSeed(const quint32 seed[6]);
 
 private: // members
 	double Cg[6], Bg[6], Ig[6];
