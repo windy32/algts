@@ -31,17 +31,54 @@
 class RngStream
 {
 public:  //public api
+    /**
+     * \brief Initialize the generator
+     */
 	RngStream();
+    /**
+     * \brief Initialize the generator
+     */
 	RngStream(const RngStream&);
-	void SetAntithetic(bool a);
+	
+    /**
+     * \brief Set the antithesis flag of the generator.
+     * 
+     * If the flag is set true, RngStream::RandU01 will return 
+     * (1 - the_original_value)
+     */
+	void SetAntithetic(bool a);	
+	/**
+     * \brief Increase precision
+     */
 	void IncreasedPrecis(bool incp);
+	
+	/**
+     * \brief Generate a random number in the range [0.0, 1.0)
+     */
 	double RandU01();
 
 public: //public static api
+    /**
+     * \brief Set the global seed used by all RngStream objects
+     */
 	static bool SetPackageSeed(quint32 seed);
+    /**
+     * \brief Set the global seed used by all RngStream objects
+     */
 	static bool SetPackageSeed(const quint32 seed[6]);
+	
+    /**
+     * \brief Returns the global seed used by all RngStream objects
+     */
 	static void GetPackageSeed(quint32 seed[6]);
+	
+    /**
+     * \brief Check if the global seed is valid
+     */
 	static bool CheckSeed(quint32 seed);
+    /**
+     * \brief Check if the global seed is valid
+     */
 	static bool CheckSeed(const quint32 seed[6]);
 
 private: // members
