@@ -20,6 +20,7 @@
 
 /**
  * \brief Factory for creating client objects
+ * \ingroup Factories
  */
 
 class ClientFactory

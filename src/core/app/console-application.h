@@ -20,6 +20,7 @@
 
 /**
  * \brief The console application.
+ * \ingroup Applications
  *
  * This class is designed for convenience in scripting. Here's a mininal test
  * script without the ConsoleApplication.

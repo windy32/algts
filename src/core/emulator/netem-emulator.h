@@ -20,6 +20,7 @@
 
 /**
  * \brief The netem emulator
+ * \ingroup Emulators
  */
 class NetemEmulator : public Emulator
 {

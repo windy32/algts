@@ -16,7 +16,13 @@
 #include "../../core/core.h"
 
 /**
- * Client application sample
+ * \defgroup Scripts Scripts
+ */
+
+/**
+ * \file sample.cpp
+ * \ingroup Scripts
+ * \brief The sample client application script
  *
  * A clinet application is an application that runs on the client host
  * in the algts testbed.
@@ -50,13 +56,14 @@
  * a test in application layer, however, concrete ip addresses are necessary as 
  * they shall appear in ip packets.
  *
- * An ClientApplication object process the information that's necessary for a 
+ * An CoreApplication object process the information that's necessary for a 
  * test, its constructor tasks 3 parameters:
  *  - Avaliable local ip addresses
  *  - Address of the server daemon
  *  - Port of the server daemon
+ *
  * \code
- *  ClientApplication app(localAddrs, QHostAddress("10.0.0.1"), 3201)
+ * CoreApplication app(localAddrs, QHostAddress("10.0.0.1"), 3201)
  * \endcode
  * In the code above, server daemon's address and port is set to 10.0.0.1:3201.
  *
@@ -71,9 +78,17 @@
  * delay or rate limit that emulate the properties of wide area networks will
  * be generated.
  *
- * Usage: sample <local-address-range> <daemon-address> <daemon-port>\n"
+ * Usage:
+ * \code
+ * sample <local-address-range> <daemon-address> <daemon-port>
+ * \endcode
+ *
+ * \see CoreApplication, ConsoleApplication, Scenario, Emulator, Terminal
  */
 
+/**
+ * \brief The entry point of the sample
+ */
 int main(int argc, char *argv[])
 {
     // Start console application and check arguments

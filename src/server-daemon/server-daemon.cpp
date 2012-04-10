@@ -1,65 +1,102 @@
 #include "../core/core.h"
 
 /**
- * Usage: serverd <daemon-adddress> <daemon-port> <server-address-range>
- *
+ * \defgroup ServerDaemon Server Daemon
+ */
+
+/**
+ * \file server-daemon.cpp
+ * \ingroup ServerDaemon
+ * \brief The server daemon
+ * 
+ * Usage: 
+ * \code
+ * serverd <daemon-adddress> <daemon-port> <server-address-range>
+ * \endcode
  * e.g., when users types
  * \code
  * serverd 10.0.0.1 3200 10.0.0.8/29
  * \endcode
  * 
- * Server daemon will listen on 10.0.0.1:3200 for server layout requests.
- * A server layout request consists of a TaskType with a corresponding
- * port:
+ * The server daemon will listen on 10.0.0.1:3200 for server layout requests.
+ * A server layout request consists of a TaskType with a corresponding port.
  * 
- *   [int32 taskType, uint16 port]
+ * Field        | Type         | Description
+ * -------------|--------------|---------------------------
+ * TaskType     | int32        | Type of the server
+ * Port         | uint16       | Port of the server
  * 
  * Each server layout request occupies a new tcp connection, which means that in
  * order to set up multiple servers, a number of connection should be created.
  * The design is simply used to simplify coding, since efficiency is inessential
  * when setting up servers.
  * 
- * Currently, there're 5 task types. Consider the scenario below:
- * 
- *   Bulk Download @ port 80
- *   Bulk Download @ port 8080
- *   Bulk Upload @ port 80
- *   On/Off Download @ port 80
- *   TCP Echo @ port 23
- *   UDP Echo @ port 5000
+ * Currently, there're 5 task types. Consider the scenario below.
+ *  - Bulk Download @ port 80
+ *  - Bulk Download @ port 8080
+ *  - Bulk Upload @ port 80
+ *  - On/Off Download @ port 80
+ *  - TCP Echo @ port 23
+ *  - UDP Echo @ port 5000
  *
  * For convenience, tasks of the same type occupy a same address.
+ *  - 10.0.0.8: Bulk Download Server @ port 80, 8080
+ *  - 10.0.0.9: Bulk Upload Server @ port 80
+ *  - 10.0.0.10: On/Off Download Server @ port 80
+ *  - 10.0.0.11: TCP Echo Server @ port 23
+ *  - 10.0.0.12: UDP Echo Server @ port 5000
  *
- *   10.0.0.8: Bulk Download Server @ port 80, 8080
- *   10.0.0.9: Bulk Upload Server @ port 80
- *   10.0.0.10: On/Off Download Server @ port 80
- *   10.0.0.11: TCP Echo Server @ port 23
- *   10.0.0.12: UDP Echo Server @ port 5000
- *
- * Server daemon first checks how many server addresses are actually available. 
- * When the number of addresses available are less than 5, an error message
- * will be generated and the daemon will not continue.
+ * The server daemon first checks how many server addresses are actually
+ * available. When the number of addresses available are less than 5, an error
+ * message will be generated and the daemon will not continue.
  *
  * For each server layout request, daemon sends a reply which consists of the
  * following elements:
  *
- *   [uint32 length]
- *   [bool result][uint32 Address][QString success decription]
+ * Field        | Type         | Description
+ * -------------|--------------|---------------------------
+ * BlockSize    | uint32       | Size of the remaining part
+ * Result       | bool         | true
+ * Address      | quint32      | IPv4 Address of the server
+ * Description  | QString      | Detailed description
  *
  * or
  *
- *   [uint32 length]
- *   [bool result][QString failure description]
+ * Field        | Type         | Description
+ * -------------|--------------|---------------------------
+ * BlockSize    | uint32       | Size of the remaining part
+ * Result       | bool         | false
+ * Description  | QString      | Detailed description
  *
- * When a server is already listening at a specific port, server daemon will not
- * try to start a server with the same port again, the reply will be 
- * {true, "Server already started @ addr:port"}.
- *
+ * \note When a server is already listening at a specific port, server daemon
+ *       will not try to start a server with the same port again, and the result
+ *       would be true.
  */
 
+/**
+ * \brief The ip address for tasks
+ *
+ * Since currently, only five task types are available, the length of the array
+ * is fixed to 5. The index of the array is determined by the Task::Type
+ * emulation.
+ * \see Task
+ */
 QHostAddress taskAddrs[5];
+/**
+ * \brief The running servers
+ *
+ * The first element of the QPari represents the IPv4 address, and the second
+ * represents the port.
+ */
 QSet<QPair<qint32, quint16> > servers;
 
+/**
+ * \brief Parse the IPv4 address
+ * \param str The string to be parsed
+ * \param addr The output ip address
+ * \return Returns true if str represents a valid IPv4 address, and false
+ *         otherwise.
+ */
 bool parseAddr(const QString &str, QHostAddress &addr)
 {
     QRegExp rx("^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\."
@@ -82,6 +119,12 @@ bool parseAddr(const QString &str, QHostAddress &addr)
     return true;
 }
 
+/**
+ * \brief Parse the port
+ * \param str The string to be parsed
+ * \param port The output port
+ * \return Returns true if str represents a valid port, and false otherwise.
+ */
 bool parsePort(const QString &str, quint16 &port)
 {
     bool ok;
@@ -99,6 +142,16 @@ bool parsePort(const QString &str, quint16 &port)
     return true;
 }
 
+/**
+ * \brief Parse the IPv4 address range
+ * \param str The string to be parsed
+ * \param addrRange The output IPv4 address range
+ * \return Returns true if str represents a valid range, and false otherwise.
+ *
+ * \note The size of the subnet should be greater than or equal to 8 (since
+ *       there are five task types), and less than or equal to 64.\n
+ *       An example of the expression is "10.0.0.8/29"
+ */
 bool parseAddrRange(const QString &str, QList<QHostAddress> addrRange)
 {
     QRegExp rx("^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\."
@@ -138,16 +191,28 @@ bool parseAddrRange(const QString &str, QList<QHostAddress> addrRange)
     return true;
 }
 
-
+/**
+ * \brief The server daemon session
+ * \ingroup ServerDaemon
+ */
 class ServerDaemonSession : public QThread
 {
 private:
     QTcpSocket *m_socket;
     
 protected:
+    /**
+     * \brief The entry point the thread function
+     *
+     * The daemon receives the request and trys to start a server here.
+     * \see server-daemon.cpp
+     */
     virtual void run();
 
 public:
+    /**
+     * \brief Initialize the server daemon session with an established socket
+     */
     ServerDaemonSession(QTcpSocket *socket);
 };
 
@@ -230,6 +295,9 @@ void ServerDaemonSession::run()
     LOG_DEBUG("End of ServerDaemonSession::run");
 }
 
+/**
+ * \brief The entry point the server daemon
+ */
 int main(int argc, char *argv[])
 {
     // Check arguments

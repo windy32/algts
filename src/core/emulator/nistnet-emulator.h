@@ -20,6 +20,7 @@
 
 /**
  * \brief The nistnet emulator
+ * \ingroup Emulators
  * \note This class hasn't been implemented yet, and any call to commit/reset
  *       will do nothing but generate a warning
  */

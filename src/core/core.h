@@ -16,6 +16,15 @@
 #ifndef CORE_H
 #define CORE_H
 
+/**
+ * \defgroup Core Core
+ */
+
+/**
+ * \defgroup Factories Factories
+ * \ingroup Core
+ */
+
 #include "random-variable.h"
 #include "scenario.h"
 #include "log.h"

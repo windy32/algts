@@ -20,6 +20,7 @@
 
 /**
  * \brief The asynchronous udp echo server
+ * \ingroup Servers
  */
 class AsyncUdpEchoServer : public Server
 {

@@ -21,6 +21,7 @@
 
 /**
  * \brief Factory for creating servers objects
+ * \ingroup Factories
  */
 
 class ServerFactory

@@ -2,17 +2,29 @@
 #include "emulator-daemon-session.h"
 
 /**
- * Usage: emulatord <daemon-adddress> <daemon-port>
+ * \defgroup EmulatorDaemon Emulator Daemon
+ */
+
+/**
+ * \file emulator-daemon.cpp
+ * \brief The emulator daemon
+ * \ingroup EmulatorDaemon
+ *
+ * Usage: 
+ * \code
+ * emulatord <daemon-adddress> <daemon-port>
+ * \endcode
  *
  * e.g., when users types
  * \code
  * emulatord 10.0.0.1 3201
  * \endcode
  * 
- * Emulator daemon will listen on 10.0.0.1:3201 for emulator setup requests, 
- * and provide network emulation functionality in local host.
- * For each request, daemon sends a response for result with decription 
- * (see "emulator.h" for detailed protocol definition).
+ * The emulator daemon will listen on 10.0.0.1:3201 for emulator setup requests, 
+ * and provide network emulation functionality in local host. For each request,
+ * the daemon sends a response for result with decription.
+ *
+ * \see Emulator
  *
  * Currently, there're two defined emulators, "NistNet" and "NetEm", and only
  * the latter one has been implemented.
@@ -34,24 +46,35 @@
  *
  * Typical setup script:
  *
- *   tc qdisc add dev eth0 root handle 1: tbf rate 10mbit buffer 1600 limit 3000
- *   tc qdisc add dev eth0 parent 1: handle 10: netem limit 10000
+ * \code
+ * tc qdisc add dev eth0 root handle 1: tbf rate 10mbit buffer 1600 limit 3000
+ * tc qdisc add dev eth0 parent 1: handle 10: netem limit 10000
  *
- *   modprobe ifb
- *   ip link set dev ifb0 up
- *   tc qdisc add dev eth0 ingress
- *   tc filter add dev eth0 parent ffff: protocol ip pref 10 u32 \ 
- *      match u32 0 0 flowid 1:1 action mirred egress redirect dev ifb0
- *   tc qdisc add dev ifb0 root handle 1: tbf rate 10mbit buffer 1600 limit 3000
- *   tc qdisc add dev ifb0 parent 1: handle 10: netem limit 1000 *
+ * modprobe ifb
+ * ip link set dev ifb0 up
+ * tc qdisc add dev eth0 ingress
+ * tc filter add dev eth0 parent ffff: protocol ip pref 10 u32 \ 
+ *    match u32 0 0 flowid 1:1 action mirred egress redirect dev ifb0
+ * tc qdisc add dev ifb0 root handle 1: tbf rate 10mbit buffer 1600 limit 3000
+ * tc qdisc add dev ifb0 parent 1: handle 10: netem limit 1000 *
+ * \endcode
  *
  * Typical reset script:
  *
- *   tc qdisc del dev eth0 root handle 1:
- *   tc qdisc del dev ifb0 root handle 1:
- *   tc filter del dev eth0 parent ffff: pref 10
+ * \code
+ * tc qdisc del dev eth0 root handle 1:
+ * tc qdisc del dev ifb0 root handle 1:
+ * tc filter del dev eth0 parent ffff: pref 10
+ * \endcode
  */
 
+/**
+ * \brief Parse the IPv4 address
+ * \param str The string to be parsed
+ * \param addr The output ip address
+ * \return Returns true if str represents a valid IPv4 address, and false
+ *         otherwise.
+ */
 bool parseAddr(const QString &str, QHostAddress &addr)
 {
     QRegExp rx("^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\."
@@ -74,6 +97,12 @@ bool parseAddr(const QString &str, QHostAddress &addr)
     return true;
 }
 
+/**
+ * \brief Parse the port
+ * \param str The string to be parsed
+ * \param port The output port
+ * \return Returns true if str represents a valid port, and false otherwise.
+ */
 bool parsePort(const QString &str, quint16 &port)
 {
     bool ok;
@@ -91,6 +120,9 @@ bool parsePort(const QString &str, quint16 &port)
     return true;
 }
 
+/**
+ * \brief The entry point the server daemon
+ */
 int main(int argc, char *argv[])
 {
     // Check arguments
@@ -147,3 +179,4 @@ int main(int argc, char *argv[])
     // TODO: capture ctrl+c and stop the loop above
     daemon.close();    
 }
+

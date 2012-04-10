@@ -19,7 +19,13 @@
 #include "../common.h"
 
 /**
+ * \defgroup Terminals Terminals
+ * \ingroup Core
+ */
+
+/**
  * \brief The base class of all terminals
+ * \ingroup Terminals
  * \note Concrete terminal classes should explicitly initialize the m_program
  *       and the m_arguments members in constructor
  *

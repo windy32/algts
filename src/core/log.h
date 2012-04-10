@@ -89,7 +89,7 @@ public:
     /**
      * \brief Add a line in the log
      * \param level The log level of the line
-     * \param str The c style format string of the content
+     * \param format The c style format string of the content
      */
     static void addLine(enum LogLevel level, const char *format, ...);
 

@@ -19,7 +19,13 @@
 #include "../common.h"
 
 /**
+ * \defgroup Emulators Emulators
+ * \ingroup Core
+ */
+
+/**
  * \brief The base class of all emulators
+ * \ingroup Emulators
  *
  * In Linux, it's easy to provide network emulation functionality with the
  * kernel modules or packages like netem or NIST Net.

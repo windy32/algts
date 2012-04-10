@@ -62,6 +62,9 @@ public:
     //virtual void serialize(QDataStream *pStream) = 0;
 
 protected:
+    /**
+     * \brief The random variable stream used by all concrete random variables
+     */
 	RngStream *m_generator;
 };
 
@@ -102,12 +105,13 @@ class NullVariable : public RandomVariable
 private:
     static NullVariable *m_instance;
     
-    /**
-     * Creates a null random number generator.
-     */
 	NullVariable();
 
 public:
+    /**
+     * \brief Get an instance of the null variable
+     * \return A pointer to the null variable
+     */
     static NullVariable* getInstance();
     
     /**

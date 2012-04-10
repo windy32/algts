@@ -21,6 +21,7 @@
 
 /**
  * \brief The tcp echo task client
+ * \ingroup Clients
  *
  * Regular trace format:
  *  - vector<int32> Delay (ms)

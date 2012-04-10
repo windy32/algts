@@ -21,6 +21,7 @@
 
 /**
  * \brief The on/off download task
+ * \ingroup Tasks
  */
 class OnoffDownloadTask : public Task
 {

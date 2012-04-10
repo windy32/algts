@@ -21,6 +21,7 @@
 
 /**
  * \brief The tcp echo task
+ * \ingroup Tasks
  */
 class TcpEchoTask : public Task
 {

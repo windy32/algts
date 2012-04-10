@@ -21,6 +21,7 @@
  
 /**
  * \brief The bulk download task client
+ * \ingroup Clients
  *
  * Regular trace format:
  *  - vector<int32> RxRate (byte/s)

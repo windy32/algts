@@ -20,6 +20,7 @@
 
 /**
  * \brief The telnet terminal
+ * \ingroup Terminals
  */
 class TelnetTerminal : public Terminal
 {

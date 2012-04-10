@@ -20,6 +20,7 @@
 
 /**
  * \brief The on/off download server session
+ * \ingroup Servers
  */
 class OnoffDownloadServerSession : public TcpServerSession
 {
@@ -34,6 +35,7 @@ public:
 
 /**
  * \brief The on/off download server
+ * \ingroup Servers
  */
 class OnoffDownloadServer : public TcpServer
 {

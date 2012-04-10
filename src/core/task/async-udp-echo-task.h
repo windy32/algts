@@ -21,6 +21,7 @@
 
 /**
  * \brief The asynchronous udp echo task
+ * \ingroup Tasks
  */
 class AsyncUdpEchoTask : public Task
 {

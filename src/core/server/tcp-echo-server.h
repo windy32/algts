@@ -20,6 +20,7 @@
 
 /**
  * \brief The tcp echo server session
+ * \ingroup Servers
  */
 class TcpEchoServerSession : public TcpServerSession
 {
@@ -34,6 +35,7 @@ public:
 
 /**
  * \brief The tcp echo server
+ * \ingroup Servers
  */
 class TcpEchoServer : public TcpServer
 {

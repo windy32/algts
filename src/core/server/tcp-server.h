@@ -45,6 +45,7 @@ public:
 
 /**
  * \brief The base class of all tcp servers
+ * \ingroup Servers
  */
 class TcpServer : public Server
 {

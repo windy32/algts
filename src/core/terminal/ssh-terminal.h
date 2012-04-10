@@ -20,6 +20,7 @@
 
 /**
  * \brief The ssh terminal
+ * \ingroup Terminals
  */
 class SshTerminal : public Terminal
 {

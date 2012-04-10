@@ -19,7 +19,13 @@
 #include "../common.h"
 
 /**
+ * \defgroup Servers Servers
+ * \ingroup Core
+ */
+
+/**
  * \brief The base class of all servers
+ * \ingroup Servers
  */
 class Server : public QThread
 {

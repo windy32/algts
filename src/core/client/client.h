@@ -22,7 +22,13 @@
 #include "../QBoundTcpSocket.h"
 
 /**
+ * \defgroup Clients Clients
+ * \ingroup Core
+ */
+
+/**
  * \brief The base class of all clients
+ * \ingroup Clients
  */
 class Client : public QThread
 {

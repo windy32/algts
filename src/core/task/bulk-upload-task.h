@@ -20,6 +20,7 @@
 
 /**
  * \brief The bulk upload task
+ * \ingroup Tasks
  */
 class BulkUploadTask : public Task
 {

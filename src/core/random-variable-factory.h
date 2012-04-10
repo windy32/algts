@@ -21,6 +21,7 @@
 
 /**
  * \brief Factory for creating random variable objects
+ * \ingroup Factories
  * 
  * Examples:
  * \code

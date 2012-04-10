@@ -21,6 +21,7 @@
 
 /**
  * \brief The asynchronous udp echo task client
+ * \ingroup Clients
  *
  * Regular trace format:
  *  - vector<int32> Delay (ms)
@@ -73,6 +74,19 @@ public:
     virtual void generateRegularTrace(RegularTraceItem &trace, int seconds);
 };
 
+/**
+ * \brief The receiver thread of the asynchronous udp echo client
+ *
+ * Since the AsyncUdpEchoClient works in asynchronous mode, it's incorrect
+ * to send an input packet, wait for the echo, and send next input packet in
+ * one thread. It's necessary to create two threads that share a same piece of
+ * data, and update the raw trace concurrently.
+ *
+ * This class is juct the receiver thread. For convenience, this class is set
+ * to AsyncUdpEchoClient's friend class.
+ *
+ * \see AsyncUdpEchoClient
+ */
 class AsyncUdpEchoClientReceiver : public QThread
 {
 private:
@@ -83,7 +97,13 @@ private:
     virtual void run();
 
 public:
+    /**
+     * \brief Initialize the receiver thread of the asynchronous udp echo client
+     * \param socket The socket of the established connection
+     * \param client Pointer to the udp echo client object
+     */
     AsyncUdpEchoClientReceiver(QUdpSocket *socket, AsyncUdpEchoClient *client);
 };
 
 #endif /* ASYNC_UDP_ECHO_CLIENT_H */
+

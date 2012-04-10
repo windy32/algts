@@ -20,6 +20,7 @@
 
 /**
  * \brief The null task
+ * \ingroup Tasks
  *
  * The "Null Object Pattern" and the "Singleton Pettern" are used here in the
  * null task.

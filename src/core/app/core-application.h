@@ -21,7 +21,13 @@
 #include "../client/client-factory.h"
 
 /**
+ * \defgroup Applications Applications
+ * \ingroup Core
+ */
+
+/**
  * \brief The core application.
+ * \ingroup Applications
  *
  * A scenario mainly consists of a number of users and different types of tasks,
  * and a task consists of a server port number, a start time, stop time, and
@@ -82,7 +88,7 @@ public:
      *     Field        | Type         | Description
      *     -------------|--------------|---------------------------
      *     TaskType     | int32        | Type of the server
-     *     Port         | uint16bool   | Port of the server
+     *     Port         | uint16       | Port of the server
      *  4. Get response from the server daemon.
      *
      *     When the server's set up successfully, the response would be

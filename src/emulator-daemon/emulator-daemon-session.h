@@ -18,6 +18,10 @@
 
 #include "../core/common.h"
 
+/**
+ * \brief The emulator daemon session
+ * \ingroup EmulatorDaemon
+ */
 class EmulatorDaemonSession : public QThread
 {
 private:
@@ -25,9 +29,17 @@ private:
     QMap<QString, QString> &m_params;
 
 protected:
+    /**
+     * \brief The entry point of the thread function
+     */
     virtual void run();
     
 public:
+    /**
+     * \brief Initialize the emulator daemon session
+     * \param socket The socket for the new connection
+     * \param params The emulation property table to be updated
+     */
     EmulatorDaemonSession(QTcpSocket *socket, QMap<QString, QString> &params);
 };
 

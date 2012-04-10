@@ -19,13 +19,28 @@
 #include "../common.h"
 
 /**
+ * \defgroup Tasks Tasks
+ * \ingroup Core
+ */
+
+/**
  * \brief The base class of all tasks
+ * \ingroup Tasks
  */
 class Task : public Serializable
 {
 protected:
+    /**
+     * \brief Port of the server
+     */
     quint16 m_serverPort;
+    /**
+     * \brief Start time of the task
+     */
     qint32 m_startTime;
+    /**
+     * \brief Stop time of the task
+     */
     qint32 m_stopTime;
 
 public:

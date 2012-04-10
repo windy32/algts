@@ -20,6 +20,7 @@
 
 /**
  * \brief The bulk download server
+ * \ingroup Servers
  */
 class BulkDownloadServerSession : public TcpServerSession
 {
@@ -34,6 +35,7 @@ public:
 
 /**
  * \brief The bulk download server session
+ * \ingroup Servers
  */
 class BulkDownloadServer : public TcpServer
 {

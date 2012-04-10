@@ -20,6 +20,7 @@
 
 /**
  * \brief The bulk upload server
+ * \ingroup Servers
  */
 class BulkUploadServerSession : public TcpServerSession
 {
@@ -34,6 +35,7 @@ public:
 
 /**
  * \brief The bulk upload server session
+ * \ingroup Servers
  */
 class BulkUploadServer : public TcpServer
 {

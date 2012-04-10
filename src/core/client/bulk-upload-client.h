@@ -21,6 +21,7 @@
 
 /**
  * \brief The bulk upload task client
+ * \ingroup Clients
  *
  * Regular trace format:
  *  - vector<int32> TxRate (byte/s)

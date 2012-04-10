@@ -20,6 +20,7 @@
 
 /**
  * \brief The bulk download task
+ * \ingroup Tasks
  */
 class BulkDownloadTask : public Task
 {
