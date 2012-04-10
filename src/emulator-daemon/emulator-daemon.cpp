@@ -1,4 +1,6 @@
 #include "../core/common.h"
+#include "../core/log.h"
+
 #include "emulator-daemon-session.h"
 
 /**
@@ -7,8 +9,8 @@
 
 /**
  * \file emulator-daemon.cpp
- * \brief The emulator daemon
  * \ingroup EmulatorDaemon
+ * \brief The emulator daemon
  *
  * Usage: 
  * \code

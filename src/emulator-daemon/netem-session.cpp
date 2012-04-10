@@ -14,6 +14,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #include "netem-session.h"
+#include "../core/log.h"
 
 bool NetemSession::execCommand(const QString &command, 
                                const QString &expectedOutput)

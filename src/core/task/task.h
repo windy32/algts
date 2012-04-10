@@ -17,6 +17,7 @@
 #define TASK_H
 
 #include "../common.h"
+#include "../log.h"
 
 /**
  * \defgroup Tasks Tasks

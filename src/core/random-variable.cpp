@@ -19,6 +19,7 @@
 // Modified for algts by: Gao Fengyu<feng32tc@gmail.com>
 
 #include "random-variable.h"
+#include "log.h"
 #include <math.h>
 
 // Random Variable

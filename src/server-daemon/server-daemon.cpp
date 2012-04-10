@@ -1,4 +1,6 @@
-#include "../core/core.h"
+#include "../core/common.h"
+#include "../core/log.h"
+#include "../core/server/server-factory.h"
 
 /**
  * \defgroup ServerDaemon Server Daemon

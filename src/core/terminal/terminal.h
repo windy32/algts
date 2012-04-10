@@ -17,6 +17,7 @@
 #define TERMINAL_H
 
 #include "../common.h"
+#include "../log.h"
 
 /**
  * \defgroup Terminals Terminals

@@ -17,6 +17,7 @@
 #define SERVER_H
 
 #include "../common.h"
+#include "../log.h"
 
 /**
  * \defgroup Servers Servers

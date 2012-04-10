@@ -35,9 +35,6 @@
 #include <QVector>
 #include <QMap>
 
-#include "log.h"
-#include "global-timer.h"
-
 /**
  * \brief The serialization interface
  */

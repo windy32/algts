@@ -30,36 +30,27 @@
  * \ingroup Core
  */
 
-#include "random-variable.h"
-#include "scenario.h"
+// Emulator support
+#include "emulator/netem-emulator.h"
+#include "emulator/nistnet-emulator.h"
+
+// Terminal support
+#include "terminal/telnet-terminal.h"
+#include "terminal/ssh-terminal.h"
+
+// Debugging support
 #include "log.h"
 #include "trace.h"
+
+// Application, scenario and tasks
 #include "app/console-application.h"
+#include "scenario.h"
 
 #include "task/bulk-download-task.h"
 #include "task/bulk-upload-task.h"
 #include "task/onoff-download-task.h"
 #include "task/tcp-echo-task.h"
 #include "task/async-udp-echo-task.h"
-
-#include "client/bulk-download-client.h"
-#include "client/bulk-upload-client.h"
-#include "client/onoff-download-client.h"
-#include "client/tcp-echo-client.h"
-#include "client/async-udp-echo-client.h"
-
-#include "server/server-factory.h"
-#include "server/bulk-download-server.h"
-#include "server/bulk-upload-server.h"
-#include "server/onoff-download-server.h"
-#include "server/tcp-echo-server.h"
-#include "server/async-udp-echo-server.h"
-
-#include "emulator/netem-emulator.h"
-#include "emulator/nistnet-emulator.h"
-
-#include "terminal/telnet-terminal.h"
-#include "terminal/ssh-terminal.h"
 
 #endif /* CORE_H */
 

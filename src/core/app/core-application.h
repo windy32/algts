@@ -17,6 +17,8 @@
 #define CORE_APPLICATION_H
 
 #include "../common.h"
+
+#include "../log.h"
 #include "../scenario.h"
 #include "../client/client-factory.h"
 

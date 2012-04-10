@@ -17,7 +17,10 @@
 #define CLIENT_H
 
 #include "../common.h"
+
+#include "../log.h"
 #include "../trace.h"
+#include "../global-timer.h"
 
 #include "../QBoundTcpSocket.h"
 

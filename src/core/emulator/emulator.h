@@ -17,6 +17,7 @@
 #define EMULATOR_H
 
 #include "../common.h"
+#include "../log.h"
 
 /**
  * \defgroup Emulators Emulators

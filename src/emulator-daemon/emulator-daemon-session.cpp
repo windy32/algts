@@ -16,6 +16,8 @@
 #include "emulator-daemon-session.h"
 #include "netem-session.h"
 
+#include "../core/log.h"
+
 EmulatorDaemonSession::EmulatorDaemonSession(
     QTcpSocket *socket, QMap<QString, QString> &params)
     : m_socket(socket), m_params(params)
