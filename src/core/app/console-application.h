@@ -19,8 +19,8 @@
 #include "core-application.h"
 
 /**
- * \brief The console application.
  * \ingroup Applications
+ * \brief The console application.
  *
  * This class is designed for convenience in scripting. Here's a mininal test
  * script without the ConsoleApplication.

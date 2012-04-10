@@ -20,6 +20,7 @@
 
 /**
  * \brief The global timer
+ * \ingroup Constructs
  */
 class GlobalTimer
 {

@@ -25,6 +25,12 @@
 #include "rng-stream.h"
 
 /**
+ * \defgroup RandomVariable Random Variables
+ * \ingroup Core
+ */
+
+/**
+ * \ingroup RandomVariables
  * \brief The base class of all random variables
  *
  * Note: The underlying random number generation method used in algts is the
@@ -69,6 +75,7 @@ protected:
 };
 
 /**
+ * \ingroup RandomVariable
  * \brief The null random variable
  *
  * A null variable object is used as a replacement of a NULL pointer to 
@@ -131,6 +138,7 @@ public:
 };
 
 /**
+ * \ingroup RandomVariable
  * \brief Uniform distributed random variable
  *
  * This class supports the creation of objects that return random numbers from
@@ -197,6 +205,7 @@ private:
 };
 
 /**
+ * \ingroup RandomVariable
  * \brief Exponentially distributed random variable
  *
  * This class supports the creation of objects that return random numbers from
@@ -269,6 +278,7 @@ private:
 };
 
 /**
+ * \ingroup RandomVariable
  * \brief Pareto distributed random variable
  *
  * This class supports the creation of objects that return random numbers

@@ -26,8 +26,8 @@
  */
 
 /**
- * \brief The core application.
  * \ingroup Applications
+ * \brief The core application.
  *
  * A scenario mainly consists of a number of users and different types of tasks,
  * and a task consists of a server port number, a start time, stop time, and

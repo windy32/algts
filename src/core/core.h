@@ -21,6 +21,11 @@
  */
 
 /**
+ * \defgroup Constructs C++ Constructs Used by All Modules
+ * \ingroup Core
+ */
+
+/**
  * \defgroup Factories Factories
  * \ingroup Core
  */

@@ -19,8 +19,8 @@
 #include "task.h"
 
 /**
- * \brief The null task
  * \ingroup Tasks
+ * \brief The null task
  *
  * The "Null Object Pattern" and the "Singleton Pettern" are used here in the
  * null task.

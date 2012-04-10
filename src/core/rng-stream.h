@@ -22,10 +22,8 @@
 #include "common.h"
 
 /**
- * \brief Combined multiple-recursive generator MRG32k3a
- *
- * This class is the combined multiple-recursive random number generator called
- * MRG32k3a. 
+ * \ingroup RandomVariable
+ * \brief The MRG32k3a combined multiple-recursive random number generator
  *
  * The details of this class are explained in:
  * http://www.iro.umontreal.ca/~lecuyer/myftp/papers/streams00.pdf

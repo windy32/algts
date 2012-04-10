@@ -24,8 +24,8 @@
  */
 
 /**
- * \brief The base class of all emulators
  * \ingroup Emulators
+ * \brief The base class of all emulators
  *
  * In Linux, it's easy to provide network emulation functionality with the
  * kernel modules or packages like netem or NIST Net.

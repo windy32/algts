@@ -26,6 +26,7 @@
 
 /**
  * \brief The global log object
+ * \ingroup Constructs
  */
 class Log
 {

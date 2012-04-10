@@ -20,6 +20,7 @@
 #include "task/task.h"
 
 /**
+ * \ingroup Constructs
  * \brief The scenario
  * 
  * A scenario describes how a bottle-neck link is shared between different

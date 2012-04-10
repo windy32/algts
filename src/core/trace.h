@@ -72,16 +72,19 @@
 
 /**
  * \brief Regular trace output for a task
+ * \ingroup Constructs
  */
 typedef QStringList TextTraceItem;
 
 /**
  * \brief Regular trace output for a task
+ * \ingroup Constructs
  */
 typedef QMap<QString, QList<qint32> > RegularTraceItem;
 
 /**
  * \brief The global text trace object
+ * \ingroup Constructs
  */
 class TextTrace
 {

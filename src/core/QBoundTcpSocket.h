@@ -19,8 +19,8 @@
 #include <QTcpSocket>
 
 /**
- * \brief The QBoundTcpSocket class adds binding support
- *        to tcp client sockets.
+ * \ingroup Constructs
+ * \brief Binding support for tcp client sockets
  *
  * In Qt 4, it's impossible to bind a tcp client socket to a specific port or
  * ip address.
