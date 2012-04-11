@@ -45,16 +45,16 @@ void CoreApplication::exec(Scenario *s)
 
     // 1
     QMap<QString, QVector<Task *> > &tasks = s->tasks();
-    if( tasks.size() < m_localAddrs.size())
+    if( m_localAddrs.size() < tasks.size())
     {
         LOG_ERROR("No enough addresses available");
         return;
     }
     
-    // 2
+    // 2    
     QMap<QString, QHostAddress> addrTable;
     QMap<QString, QVector<Task *> >::iterator it;
-    int index;
+    int index = 0;
     for(it = tasks.begin(), index = 0; it != tasks.end(); ++it, ++index)
     {
         addrTable[it.key()] = m_localAddrs[index];

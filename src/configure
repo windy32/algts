@@ -30,19 +30,19 @@ echo '' >> Makefile
 echo 'all: corelib emulatord serverd' >> Makefile
 echo '' >> Makefile
 echo 'corelib:' >> Makefile
-echo '	mkdir core-build; \' >> Makefile
+echo '	mkdir -p core-build; \' >> Makefile
 echo '	cd core-build; \' >> Makefile
 echo '	$(QMAKE) ../core/core.pro; \' >> Makefile
 echo '	make' >> Makefile
 echo '' >> Makefile
 echo 'emulatord:' >> Makefile
-echo '	mkdir emulator-daemon-build; \' >> Makefile
+echo '	mkdir -p emulator-daemon-build; \' >> Makefile
 echo '	cd emulator-daemon-build; \' >> Makefile
 echo '	$(QMAKE) ../emulator-daemon/emulator-daemon.pro; \' >> Makefile
 echo '	make' >> Makefile
 echo '' >> Makefile
 echo 'serverd:' >> Makefile
-echo '	mkdir server-daemon-build; \' >> Makefile
+echo '	mkdir -p server-daemon-build; \' >> Makefile
 echo '	cd server-daemon-build; \' >> Makefile
 echo '	$(QMAKE) ../server-daemon/server-daemon.pro; \' >> Makefile
 echo '	make' >> Makefile

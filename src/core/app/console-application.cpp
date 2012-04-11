@@ -34,6 +34,7 @@ bool ConsoleApplication::parseAddr(const QString &str, QHostAddress &addr)
     }
     
     addr = QHostAddress(str);
+    
     return true;
 }
 
@@ -96,6 +97,8 @@ bool ConsoleApplication::parseAddrRange(const QString &str,
 
 ConsoleApplication::ConsoleApplication(int argc, char *argv[])
 {
+    LOG_DEBUG("Beginning of ConsoleApplication::ConsoleApplicaiton");
+    
     // Check arguments and init variables
     if( argc != 4 )
     {
@@ -120,6 +123,8 @@ ConsoleApplication::ConsoleApplication(int argc, char *argv[])
     
     // Add the specified local addresses that are actually available 
     // to m_localAddrs
+    
+    
     QList<QHostAddress> allAddrs = QNetworkInterface::allAddresses();
     
     for(int i = 0; i < specifiedLocalAddrs.size(); i++)
@@ -128,12 +133,15 @@ ConsoleApplication::ConsoleApplication(int argc, char *argv[])
         {
             LOG_INFO(QString("Address %1 available")
                 .arg(specifiedLocalAddrs[i].toString()));
+            
             m_localAddrs.append(specifiedLocalAddrs[i]);
         }
         else
         {
-            LOG_INFO(QString("Address %s not available")
+            LOG_INFO(QString("Address %1 not available")
                 .arg(specifiedLocalAddrs[i].toString()));
         }
     }
+    LOG_DEBUG("End of ConsoleApplication::ConsoleApplicaiton");
 }
+
