@@ -26,6 +26,8 @@ bool QBoundTcpSocket::bindAndConnect(
 {
 #ifdef Q_OS_LINUX
     LOG_DEBUG("Beginning of QBoundTcpSocket::bindAndConnect");
+    LOG_DEBUG(QString("Local address: %1:%2, Server address: %3:%4")
+        .arg(localAddr).arg(localPort).arg(serverAddr).arg(serverPort));
 
     int sockfd;
     int result;
@@ -62,7 +64,7 @@ bool QBoundTcpSocket::bindAndConnect(
 
     result = ::connect(sockfd, 
                  (struct sockaddr *)&serverSockAddr, sizeof(serverSockAddr));
-    if( result == -1 ) 
+    if( result == -1 )
     {
         qDebug() << "QBoundTcpSocket: Cannot connect to server";
         return false;

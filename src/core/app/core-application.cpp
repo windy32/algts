@@ -95,7 +95,7 @@ void CoreApplication::exec(Scenario *s)
             QByteArray block;
             QDataStream out(&block, QIODevice::WriteOnly);
             out << (qint32)task->getType();
-            out << m_serverDaemonPort;
+            out << (quint16)task->getServerPort();
 
             socket.write(block);
             socket.waitForBytesWritten(-1);

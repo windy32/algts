@@ -242,6 +242,8 @@ void ServerDaemonSession::run()
     }
     in >> taskType >> port;
     
+    LOG_DEBUG("TaskType = %d, Port = %d", (int)taskType, (int)port);
+    
     // Start server
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
