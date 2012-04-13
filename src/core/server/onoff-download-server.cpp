@@ -88,9 +88,9 @@ void OnoffDownloadServerSession::run()
             (int)bytesSent, (int)totalBytes);
         
         // Rate limit
-        if( maxRate != -1 && bytesSent / maxRate * 8000 > t.elapsed())
+        if( maxRate != -1 && bytesSent * 1000 / maxRate > t.elapsed())
         {
-            msleep(qMax(bytesSent / maxRate * 8000 - t.elapsed(), 0));
+            msleep(qMax(bytesSent * 1000 / maxRate - t.elapsed(), 0));
         }
     }
 

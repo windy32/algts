@@ -65,8 +65,6 @@ void BulkDownloadServerSession::run()
     QTime t;
     t.start();
     
-    LOG_DEBUG("C");
-
     while( maxBytes == -1 || bytesSent < maxBytes )
     {
         socket.write(block);
