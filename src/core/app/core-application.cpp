@@ -167,4 +167,6 @@ void CoreApplication::exec(Scenario *s)
     {
         clients[i]->wait();
     }
+    
+    LOG_DEBUG("End of CoreApplication::exec");
 }

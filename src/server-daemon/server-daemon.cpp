@@ -255,6 +255,7 @@ void ServerDaemonSession::run()
         if( servers.contains(QPair<qint32, quint16>(taskType, port)))
         {
             out << true;
+            out << taskAddrs[taskType].toIPv4Address();
             out << QString("Server already started @ %1:%2")
                        .arg(taskAddrs[taskType].toIPv4Address()).arg(port);
         }
