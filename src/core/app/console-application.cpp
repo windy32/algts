@@ -108,7 +108,7 @@ ConsoleApplication::ConsoleApplication(int argc, char *argv[])
             "Usage: \n"
             "    app <local-address-range> <daemon-address> <daemon-port>\n"
             "Example: \n"
-            "    sample 172.16.0.8/29 10.0.0.1 3201\n");
+            "    sample 172.16.0.8/29 10.0.0.1 3200\n");
         exit(1);
     }
     

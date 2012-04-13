@@ -42,8 +42,11 @@ void CoreApplication::exec(Scenario *s)
     // 6. create client objects, with generated server addresses & local 
     //    addresses
     // 7. execute client objects
-
+    // 8. wait until thread exits
+    
     // 1
+    LOG_DEBUG("Checking for addresses available...");
+    
     QMap<QString, QVector<Task *> > &tasks = s->tasks();
     if( m_localAddrs.size() < tasks.size())
     {
@@ -63,6 +66,7 @@ void CoreApplication::exec(Scenario *s)
     }
     
     // 3, 4, 5, 6
+    LOG_DEBUG("Setting up server daemon...");
     QList<Client *> clients;
 
     for(it = tasks.begin(); it != tasks.end(); ++it)
@@ -152,8 +156,16 @@ void CoreApplication::exec(Scenario *s)
     }
     
     // 7
+    LOG_DEBUG("Starting clients...");
     for(int i = 0; i < clients.size(); i++)
     {
         clients[i]->start();
+    }
+    
+    // 8
+    LOG_DEBUG("Waiting till all client threads exit...");
+    for(int i = 0; i < clients.size(); i++)
+    {
+        clients[i]->wait();
     }
 }

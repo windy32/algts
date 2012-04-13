@@ -154,7 +154,7 @@ bool parsePort(const QString &str, quint16 &port)
  *       there are five task types), and less than or equal to 64.\n
  *       An example of the expression is "10.0.0.8/29"
  */
-bool parseAddrRange(const QString &str, QList<QHostAddress> addrRange)
+bool parseAddrRange(const QString &str, QList<QHostAddress> &addrRange)
 {
     QRegExp rx("^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\."
                 "(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)/(0|[1-9][0-9]*)$");
@@ -253,7 +253,7 @@ void ServerDaemonSession::run()
         if( servers.contains(QPair<qint32, quint16>(taskType, port)))
         {
             out << true;
-            out << QString("Server already started @ %1:%1")
+            out << QString("Server already started @ %1:%2")
                        .arg(taskAddrs[taskType].toIPv4Address()).arg(port);
         }
         else
@@ -315,6 +315,8 @@ int main(int argc, char *argv[])
         return 0;
     }
     
+    Log::enable(Log::LOG_LEVEL_DEBUG);
+    
     QHostAddress daemonAddr;
     quint16 daemonPort;
     QList<QHostAddress> serverAddrRange;
@@ -344,7 +346,7 @@ int main(int argc, char *argv[])
         }
         else
         {
-            LOG_INFO(QString("Address %s not available")
+            LOG_INFO(QString("Address %1 not available")
                 .arg(serverAddrRange[i].toString()));
         }
     }

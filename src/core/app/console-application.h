@@ -80,7 +80,7 @@
  *
  * **Command line example**
  * \code
- * app 172.16.0.8/29 10.0.0.1 3201
+ * app 172.16.0.8/29 10.0.0.1 3200
  * \endcode
  *
  * \see CoreApplication

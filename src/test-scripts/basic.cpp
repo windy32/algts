@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
     s.addTask("Harry", new BulkDownloadTask(80));
     s.task()->setAttribute("MaxBytes", "1MB");
     s.task()->setAttribute("MaxRate", "1Mbps");
-   
+    
     // Execute
     app.exec(&s);
     
