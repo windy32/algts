@@ -86,8 +86,10 @@ public:
      * \brief Initialize the bulk upload client
      * \param localAddr Client's IPv4 address
      * \param serverAddr Server's IPv4 address
+     * \param task Pointer to the input task object
      */
-    BulkUploadClient(const QString &localAddr, const QString &serverAddr);
+    BulkUploadClient(const QString &localAddr, 
+                     const QString &serverAddr, BulkUploadTask *task);
     
     virtual void generateTextTrace(TextTraceItem &trace);
     virtual void generateRegularTrace(RegularTraceItem &trace, int seconds);

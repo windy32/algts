@@ -140,10 +140,9 @@ void CoreApplication::exec(Scenario *s)
             // 6
             in >> addr >> description;
 
-            Client *client = ClientFactory::create(
-                task->getType(), 
-                addrTable[it.key()].toString(), 
-                QHostAddress(addr).toString());
+            Client *client = ClientFactory::create(task->getType(), task, 
+                                 addrTable[it.key()].toString(), 
+                                 QHostAddress(addr).toString());
             if( client == NULL )
             {
                 return;

@@ -97,8 +97,10 @@ public:
      * \brief Initialize the on/off download client
      * \param localAddr Client's IPv4 address
      * \param serverAddr Server's IPv4 address
+     * \param task Pointer to the input task object
      */
-    OnoffDownloadClient(const QString &localAddr, const QString &serverAddr);
+    OnoffDownloadClient(const QString &localAddr, 
+                        const QString &serverAddr, OnoffDownloadTask *task);
 
     virtual void generateTextTrace(TextTraceItem &trace);
     virtual void generateRegularTrace(RegularTraceItem &trace, int seconds);

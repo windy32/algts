@@ -86,8 +86,10 @@ public:
      * \brief Initialize the bulk download client
      * \param localAddr Client's IPv4 address
      * \param serverAddr Server's IPv4 address
+     * \param task Pointer to the input task object
      */
-    BulkDownloadClient(const QString &localAddr, const QString &serverAddr);
+    BulkDownloadClient(const QString &localAddr, 
+                       const QString &serverAddr, BulkDownloadTask *task);
     
     virtual void generateTextTrace(TextTraceItem &trace);
     virtual void generateRegularTrace(RegularTraceItem &trace, int seconds);

@@ -29,6 +29,7 @@ public:
     /**
      * \brief Create a client object
      * \param type The type of the concrete client
+     * \param task Pointer to the corresponding concrete task object
      * \param localAddr IP address of the client
      * \param serverAddr IP address of the server
      * \return The pointer to the created client object. If type is invalid, 
@@ -36,7 +37,8 @@ public:
      * \note ClientFactory will not return a null client, make sure that
      *       code checking for NULL pointers are available.
      */
-    static Client *create(Task::Type type, const QString &localAddr, 
+    static Client *create(Task::Type type, Task *task,
+                          const QString &localAddr, 
                           const QString &serverAddr);
 };
 

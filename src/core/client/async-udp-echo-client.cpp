@@ -16,8 +16,9 @@
 #include "async-udp-echo-client.h"
 
 AsyncUdpEchoClient::AsyncUdpEchoClient(const QString &localAddr, 
-                                       const QString &serverAddr)
-    : Client(localAddr, serverAddr)
+                                       const QString &serverAddr, 
+                                       AsyncUdpEchoTask *task)
+    : Client(localAddr, serverAddr), m_task(task)
 {
 }
 

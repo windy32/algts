@@ -17,8 +17,9 @@
 #include "../task/bulk-upload-task.h"
 
 BulkUploadClient::BulkUploadClient(const QString &localAddr, 
-                                   const QString &serverAddr)
-    : Client(localAddr, serverAddr)
+                                   const QString &serverAddr, 
+                                   BulkUploadTask *task)
+    : Client(localAddr, serverAddr), m_task(task)
 {
 }
 

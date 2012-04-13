@@ -16,8 +16,9 @@
 #include "onoff-download-client.h"
 
 OnoffDownloadClient::OnoffDownloadClient(const QString &localAddr, 
-                                         const QString &serverAddr)
-    : Client(localAddr, serverAddr)
+                                         const QString &serverAddr, 
+                                         OnoffDownloadTask *task)
+    : Client(localAddr, serverAddr), m_task(task)
 {
 }
 

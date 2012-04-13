@@ -21,28 +21,34 @@
 #include "../client/tcp-echo-client.h"
 #include "../client/async-udp-echo-client.h"
 
-Client *ClientFactory::create(Task::Type type, const QString &localAddr, 
+Client *ClientFactory::create(Task::Type type, Task *task, 
+    const QString &localAddr, 
     const QString &serverAddr)
 {
     if( type == Task::BULK_DOWNLOAD )
     {
-        return new BulkDownloadClient(localAddr, serverAddr);
+        return new BulkDownloadClient(localAddr, serverAddr, 
+                                     (BulkDownloadTask *)task);
     }
     else if( type == Task::BULK_UPLOAD )
     {
-        return new BulkUploadClient(localAddr, serverAddr);
+        return new BulkUploadClient(localAddr, serverAddr, 
+                                   (BulkUploadTask *)task);
     }
     else if( type == Task::ONOFF_DOWNLOAD )
     {
-        return new OnoffDownloadClient(localAddr, serverAddr);
+        return new OnoffDownloadClient(localAddr, serverAddr, 
+                                      (OnoffDownloadTask *)task);
     }
     else if( type == Task::TCP_ECHO )
     {
-        return new TcpEchoClient(localAddr, serverAddr);
+        return new TcpEchoClient(localAddr, serverAddr, 
+                                (TcpEchoTask *)task);
     }
     else if( type == Task::ASYNC_UDP_ECHO )
     {
-        return new AsyncUdpEchoClient(localAddr, serverAddr);
+        return new AsyncUdpEchoClient(localAddr, serverAddr, 
+                                     (AsyncUdpEchoTask *)task);
     }
     else
     {

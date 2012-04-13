@@ -16,8 +16,9 @@
 #include "bulk-download-client.h"
 
 BulkDownloadClient::BulkDownloadClient(const QString &localAddr, 
-                                       const QString &serverAddr)
-    : Client(localAddr, serverAddr)
+                                       const QString &serverAddr, 
+                                       BulkDownloadTask *task)
+    : Client(localAddr, serverAddr), m_task(task)
 {
 }
 

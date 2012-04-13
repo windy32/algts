@@ -79,8 +79,10 @@ public:
      * \brief Initialize the tcp echo client
      * \param localAddr Client's IPv4 address
      * \param serverAddr Server's IPv4 address
+     * \param task Pointer to the input task object
      */
-    TcpEchoClient(const QString &localAddr, const QString &serverAddr);
+    TcpEchoClient(const QString &localAddr, 
+                  const QString &serverAddr, TcpEchoTask *task);
 
     virtual void generateTextTrace(TextTraceItem &trace);
     virtual void generateRegularTrace(RegularTraceItem &trace, int seconds);
