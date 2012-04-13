@@ -110,6 +110,8 @@ public:
      *  6. Create client objects with generated server addresses and local
      *     addresses
      *  7. Execute client objects
+     *  8. Wait until thread exits
+     *  9. Generate trace file if desired
      */
     void  exec(Scenario *s);
 };

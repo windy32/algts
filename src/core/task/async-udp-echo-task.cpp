@@ -84,6 +84,11 @@ enum Task::Type AsyncUdpEchoTask::getType()
     return ASYNC_UDP_ECHO;
 }
 
+QString AsyncUdpEchoTask::getName()
+{
+    return "Asynchronous UDP Echo Task";
+}
+
 void AsyncUdpEchoTask::serialize(QDataStream *stream)
 {
     LOG_DEBUG("AsyncUdpEchoTask::serialize() not implemented yet");

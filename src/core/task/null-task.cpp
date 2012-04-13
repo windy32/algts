@@ -41,6 +41,11 @@ enum Task::Type NullTask::getType()
     return OTHER;
 }
 
+QString NullTask::getName()
+{
+    return "Null Task";
+}
+
 void NullTask::serialize(QDataStream *stream)
 {
     LOG_WARN("Call to NullTask::serialize()");

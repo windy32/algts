@@ -82,6 +82,11 @@ enum Task::Type TcpEchoTask::getType()
     return TCP_ECHO;
 }
 
+QString TcpEchoTask::getName()
+{
+    return "TCP Echo Task";
+}
+
 void TcpEchoTask::serialize(QDataStream *stream)
 {
     LOG_DEBUG("TcpEchoTask::serialize() not implemented yet");

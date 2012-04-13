@@ -43,6 +43,7 @@ void CoreApplication::exec(Scenario *s)
     //    addresses
     // 7. execute client objects
     // 8. wait until thread exits
+    // 9. Generate trace file if desired
     
     // 1
     LOG_DEBUG("Checking for addresses available...");
@@ -154,8 +155,11 @@ void CoreApplication::exec(Scenario *s)
         }
     }
     
+    
     // 7
+    GlobalTimer::start();
     LOG_DEBUG("Starting clients...");
+    
     for(int i = 0; i < clients.size(); i++)
     {
         clients[i]->start();
@@ -168,5 +172,14 @@ void CoreApplication::exec(Scenario *s)
         clients[i]->wait();
     }
     
+    // 9
+    LOG_DEBUG("Generate trace file...");
+    if( TextTrace::enabled())
+    {
+        TextTrace::generate(tasks, clients); // This piece of code is odd
+                                             // Should be improved later
+    }
+    
     LOG_DEBUG("End of CoreApplication::exec");
 }
+

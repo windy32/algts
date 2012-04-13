@@ -34,6 +34,7 @@
 #include <QDataStream>
 #include <QVector>
 #include <QMap>
+#include <QFile>
 
 /**
  * \brief The serialization interface

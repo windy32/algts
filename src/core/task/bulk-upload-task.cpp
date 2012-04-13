@@ -131,6 +131,11 @@ enum Task::Type BulkUploadTask::getType()
     return BULK_UPLOAD;
 }
 
+QString BulkUploadTask::getName()
+{
+    return "Bulk Upload Task";
+}
+
 void BulkUploadTask::serialize(QDataStream *stream)
 {
     LOG_DEBUG("BulkUploadTask::serialize() not implemented yet");

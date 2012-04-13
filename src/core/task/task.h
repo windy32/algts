@@ -103,6 +103,12 @@ public:
     virtual enum Type getType() = 0;
     
     /**
+     * \brief Return the name of the task 
+     * \return Name of the task
+     */
+    virtual QString getName() = 0;
+    
+    /**
      * \brief Return the server port of the task 
      * \return Server port of the task
      */

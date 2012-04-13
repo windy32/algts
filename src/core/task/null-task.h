@@ -68,6 +68,7 @@ public: // interface for script
 
 public:
     virtual enum Type getType();
+    virtual QString getName();
 
     /**
      * \brief Generate a warning message and return immediately

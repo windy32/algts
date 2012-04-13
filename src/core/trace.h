@@ -36,7 +36,7 @@
  *
  * Text trace (the trace file) is generated after the execution of tasks.
  * \code
- * username="Harry" type="onoff-download"
+ * username="Harry" type="On/Off Download"
  * {
  *   0 0 30 1000 1000
  *   0 1 99 1450 2450
@@ -49,7 +49,7 @@
  *   ...
  * }
  * 
- * username="Sally" type="tcp-echo"
+ * username="Sally" type="Tcp Echo"
  * {
  *   ...
  * }
@@ -71,7 +71,7 @@
 
 
 /**
- * \brief Regular trace output for a task
+ * \brief Text trace output for a task
  * \ingroup Constructs
  */
 typedef QStringList TextTraceItem;
@@ -81,6 +81,8 @@ typedef QStringList TextTraceItem;
  * \ingroup Constructs
  */
 typedef QMap<QString, QList<qint32> > RegularTraceItem;
+
+class Client;
 
 /**
  * \brief The global text trace object
@@ -107,7 +109,8 @@ public:
      * \brief Generate text trace
      * \param tasks The tasks in the scenario
      */
-    static void generate(QMap<QString, QVector<Task *> > &tasks);
+    static void generate(QMap<QString, QVector<Task *> > &tasks,
+                         QList<Client *> &clients);
 };
 
 #endif /* TRACE_H */
