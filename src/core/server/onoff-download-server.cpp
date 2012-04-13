@@ -95,8 +95,6 @@ void OnoffDownloadServerSession::run()
     }
 
     // Close connection
-    socket.disconnectFromHost();
-    socket.waitForDisconnected();
-
+    socket.close();
     LOG_DEBUG("End of OnoffDownloadServerSession::run");
 }

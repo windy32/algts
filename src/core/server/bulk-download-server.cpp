@@ -87,18 +87,7 @@ void BulkDownloadServerSession::run()
         }
     }
     
-    // Connection closed by client
-    if( socket.state() == QAbstractSocket::UnconnectedState )
-    {
-        // nothing to do here
-    }
-    else // all bytes sent
-    {
-        // Close connection
-        socket.disconnectFromHost();
-        socket.waitForDisconnected();
-    }
-    
+    // Connection closed by client, or all bytes sent
     socket.close();
     LOG_DEBUG("End of BulkDownloadServerSession::run");
 }

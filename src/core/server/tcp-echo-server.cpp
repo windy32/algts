@@ -80,6 +80,7 @@ void TcpEchoServerSession::run()
         LOG_DEBUG("TcpEchoSession sent an echo of %d bytes", (int)echoSize);
     }
     
+    socket.close();
     LOG_DEBUG("End of TcpEchoServerSession::run");
 }
 

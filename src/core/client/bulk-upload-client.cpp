@@ -86,17 +86,6 @@ void BulkUploadClient::run()
     }
     
     // Connection closed by server
-    if( socket.state() == QAbstractSocket::UnconnectedState )
-    {
-        // it's unlikely to get here
-    }
-    else // all bytes sent
-    {
-        // Close connection
-        socket.disconnectFromHost();
-        socket.waitForDisconnected();
-    }
-
     socket.close();
     LOG_DEBUG("End of BulkUploadClient::run");
 }

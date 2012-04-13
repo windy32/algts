@@ -99,11 +99,7 @@ void OnoffDownloadClient::run()
         }
         
         // Close connection
-        if( socket.state() != QAbstractSocket::UnconnectedState )
-        {
-            socket.disconnectFromHost();
-            socket.waitForDisconnected();
-        }
+        socket.close();
     }
     LOG_DEBUG("End of OnoffDownloadClient::run");
 }

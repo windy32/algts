@@ -34,9 +34,6 @@ void BulkDownloadClient::run()
     qint32 maxBytes = m_task->getMaxBytes();
     qint32 maxRate = m_task->getMaxRate();
     
-    LOG_DEBUG("SP = %d, ST = %d, ST = %d, MB = %d, MR = %d", 
-        (int)serverPort, startTime, stopTime, maxBytes, maxRate);
-
     // Start timer
     QTime t;
     t.start();
@@ -95,17 +92,8 @@ void BulkDownloadClient::run()
         }
     }
     
-    // Server closed connection after sending specific bytes
-    if( socket.state() == QAbstractSocket::UnconnectedState )
-    {
-        // nothing to do here
-    }
-    else // It's stop time
-    {
-        socket.disconnectFromHost();
-        socket.waitForDisconnected();
-    }
-    
+    // Server closed connection after sending specific bytes, or it's stop time
+    socket.close();
     LOG_DEBUG("End of BulkDownloadClient::run");
 }
 

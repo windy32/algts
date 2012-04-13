@@ -54,9 +54,6 @@ void BulkUploadServerSession::run()
     }
     
     // Connection closed by client
-    if( socket.state() == QAbstractSocket::UnconnectedState )
-    {
-    }
-
+    socket.close();
     LOG_DEBUG("End of BulkUploadServerSession::run");
 }
