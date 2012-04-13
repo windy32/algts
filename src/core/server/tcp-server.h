@@ -24,11 +24,9 @@
 class TcpServerSession : public QThread
 {
 protected:
-    /**
-     * \brief The socket for the session
-     */
-    QTcpSocket *m_socket;
-    
+    int m_socketDescriptor;
+
+protected:
     /**
      * \brief The entry point of the thread function
      * \note To start a thread in Qt, exec() is the right one to call
@@ -40,7 +38,7 @@ public:
      * \brief Initialize the tcp server session
      * \param socket The socket for the session
      */
-    TcpServerSession(QTcpSocket *socket);
+    TcpServerSession(int socketDescriptor);
 };
 
 /**
@@ -50,8 +48,10 @@ public:
 class TcpServer : public Server
 {
 private:
-    QTcpServer m_server;
-
+    bool m_result; // Result of the initialization
+    QString m_description; // Detailed info of initialization
+    bool m_ready; // If initialization is finished
+    
 protected:
     virtual void run();
 
@@ -69,9 +69,10 @@ public:
      * \return A pointer to the session object that will process client's 
      *         requests
      */
-    virtual TcpServerSession *createSession(QTcpSocket *socket) = 0;
+    virtual TcpServerSession *createSession(int socketDescriptor) = 0;
     
     virtual bool start(QString &description);
 };
 
 #endif /* TCP_SERVER_H */
+

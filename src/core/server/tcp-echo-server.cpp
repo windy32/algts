@@ -20,13 +20,13 @@ TcpEchoServer::TcpEchoServer(const QHostAddress &addr, quint16 port)
 {
 }
 
-TcpServerSession *TcpEchoServer::createSession(QTcpSocket *socket)
+TcpServerSession *TcpEchoServer::createSession(int socketDescriptor)
 {
-    return new TcpEchoServerSession(socket);
+    return new TcpEchoServerSession(socketDescriptor);
 }
 
-TcpEchoServerSession::TcpEchoServerSession(QTcpSocket *socket)
-    : TcpServerSession(socket)
+TcpEchoServerSession::TcpEchoServerSession(int socketDescriptor)
+    : TcpServerSession(socketDescriptor)
 {
 }
 
@@ -34,28 +34,34 @@ void TcpEchoServerSession::run()
 {
     LOG_DEBUG("Beginning of TcpEchoServerSession::run");
 
+    QTcpSocket socket;
+    if( !socket.setSocketDescriptor(m_socketDescriptor))
+    {
+        LOG_ERROR("Cannot set socket descriptor");
+    }
+
     while( true )
     {
         // Receive request
         qint16 fillSize;
         qint16 echoSize;
 
-        while( m_socket->bytesAvailable() < 4 )
+        while( socket.bytesAvailable() < 4 )
         {
-            if( !m_socket->waitForReadyRead(3 * 1000))
+            if( !socket.waitForReadyRead(3 * 1000))
             {
                 LOG_INFO("TcpEcho session timed out");
                 return;
             }
         }
 
-        QDataStream in(m_socket);
+        QDataStream in(&socket);
         in >> fillSize >> echoSize;
 
         // Receive filled bytes in the request
-        while( m_socket->bytesAvailable() < fillSize )
+        while( socket.bytesAvailable() < fillSize )
         {
-            if( !m_socket->waitForReadyRead(3 * 1000))
+            if( !socket.waitForReadyRead(3 * 1000))
             {
                 LOG_INFO("TcpEcho session timed out");
                 return;
@@ -64,10 +70,10 @@ void TcpEchoServerSession::run()
         
         // Send data
         QByteArray block(echoSize, 0);
-        m_socket->write(block);
-        m_socket->waitForBytesWritten(-1);
+        socket.write(block);
+        socket.waitForBytesWritten(-1);
 
-        if( m_socket->state() == QAbstractSocket::UnconnectedState )
+        if( socket.state() == QAbstractSocket::UnconnectedState )
         {
             break;
         }
@@ -76,3 +82,4 @@ void TcpEchoServerSession::run()
     
     LOG_DEBUG("End of TcpEchoServerSession::run");
 }
+

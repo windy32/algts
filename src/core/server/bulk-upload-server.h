@@ -29,7 +29,7 @@ public:
      * \brief Initialize the bulk upload server session
      * \param socket The socket for the session
      */
-    BulkUploadServerSession(QTcpSocket *socket);
+    BulkUploadServerSession(int socketDescriptor);
     virtual void run();
 };
 
@@ -46,7 +46,7 @@ public:
      * \param port The port of the server
      */
     BulkUploadServer(const QHostAddress &addr, quint32 port);
-    virtual TcpServerSession *createSession(QTcpSocket *socket);
+    virtual TcpServerSession *createSession(int socketDescriptor);
 };
 
 #endif /* BULK_UPLOAD_SERVER_H */

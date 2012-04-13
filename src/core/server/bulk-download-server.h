@@ -29,7 +29,7 @@ public:
      * \brief Initialize the bulk download server session
      * \param socket The socket for the session
      */
-    BulkDownloadServerSession(QTcpSocket *socket);
+    BulkDownloadServerSession(int socketDescriptor);
     virtual void run();
 };
 
@@ -46,7 +46,7 @@ public:
      * \param port The port of the server
      */
     BulkDownloadServer(const QHostAddress &addr, quint32 port);
-    virtual TcpServerSession *createSession(QTcpSocket *socket);
+    virtual TcpServerSession *createSession(int socketDescriptor);
 };
 
 #endif /* BULK_DONWLOAD_SERVER_H */

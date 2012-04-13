@@ -20,13 +20,13 @@ OnoffDownloadServer::OnoffDownloadServer(const QHostAddress &addr, quint16 port)
 {
 }
 
-TcpServerSession *OnoffDownloadServer::createSession(QTcpSocket *socket)
+TcpServerSession *OnoffDownloadServer::createSession(int socketDescriptor)
 {
-    return new OnoffDownloadServerSession(socket);
+    return new OnoffDownloadServerSession(socketDescriptor);
 }
 
-OnoffDownloadServerSession::OnoffDownloadServerSession(QTcpSocket *socket)
-    : TcpServerSession(socket)
+OnoffDownloadServerSession::OnoffDownloadServerSession(int socketDescriptor)
+    : TcpServerSession(socketDescriptor)
 {
 }
 
@@ -34,28 +34,34 @@ void OnoffDownloadServerSession::run()
 {
     LOG_DEBUG("Beginning of OnoffDownloadServerSession::run");
     
+    QTcpSocket socket;
+    if( !socket.setSocketDescriptor(m_socketDescriptor))
+    {
+        LOG_ERROR("Cannot set socket descriptor");
+    }
+
     // Receive request
     qint16 fillSize;
     qint32 onTime;
     qint32 maxRate;
     qint16 packetSize;
     
-    while( m_socket->bytesAvailable() < 12 )
+    while( socket.bytesAvailable() < 12 )
     {
-        if( !m_socket->waitForReadyRead(3 * 1000))
+        if( !socket.waitForReadyRead(3 * 1000))
         {
             LOG_INFO("OnoffDownload session timed out");
             return;
         }
     }
 
-    QDataStream in(m_socket);
+    QDataStream in(&socket);
     in >> fillSize >> onTime >> maxRate >> packetSize;
     
     // Receive filled bytes in the request
-    while( m_socket->bytesAvailable() < fillSize )
+    while( socket.bytesAvailable() < fillSize )
     {
-        if( !m_socket->waitForReadyRead(3 * 1000))
+        if( !socket.waitForReadyRead(3 * 1000))
         {
             LOG_INFO("OnoffDownload session timed out");
             return;
@@ -70,10 +76,10 @@ void OnoffDownloadServerSession::run()
 
     while( t.elapsed() < onTime )
     {
-        qint32 bytesSent = (qint32)m_socket->write(block);
-        m_socket->waitForBytesWritten(-1);
+        qint32 bytesSent = (qint32)socket.write(block);
+        socket.waitForBytesWritten(-1);
 
-        if( m_socket->state() == QAbstractSocket::UnconnectedState )
+        if( socket.state() == QAbstractSocket::UnconnectedState )
         {
             break;
         }
@@ -89,8 +95,8 @@ void OnoffDownloadServerSession::run()
     }
 
     // Close connection
-    m_socket->disconnectFromHost();
-    m_socket->waitForDisconnected();
+    socket.disconnectFromHost();
+    socket.waitForDisconnected();
 
     LOG_DEBUG("End of OnoffDownloadServerSession::run");
 }

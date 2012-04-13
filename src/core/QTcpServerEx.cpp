@@ -13,32 +13,22 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-#include "task.h"
+#include "QTcpServerEx.h"
+#include "log.h"
 
-Task::Task(quint16 serverPort, qint32 startTime, qint32 stopTime)
-    : m_serverPort(serverPort), 
-      m_startTime(startTime), 
-      m_stopTime(stopTime)
+void QTcpServerEx::incomingConnection(int socketDescriptor)
 {
+    m_pendingDescriptors.enqueue(socketDescriptor);
+    emit newConnection();
 }
 
-quint16 Task::getServerPort()
+int QTcpServerEx::nextPendingDescriptor()
 {
-    return m_serverPort;
-}
-
-qint32 Task::getStartTime()
-{
-    return m_startTime;
-}
-
-qint32 Task::getStopTime()
-{
-    return m_stopTime;
-}
-
-void Task::setStopTime(qint32 stopTime)
-{
-    m_stopTime = stopTime;
+    if( m_pendingDescriptors.isEmpty())
+    {
+        LOG_ERROR("QTcpServerEx: No pending socket descriptor available");
+        return 0;
+    }
+    return m_pendingDescriptors.dequeue();
 }
 

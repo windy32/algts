@@ -63,8 +63,10 @@ public:
      * \brief Initialize the base class with specified server port, start time
      *        and stop time.
      * \param serverPort Server port of the task
-     * \param startTime Start time of the task
-     * \param stopTime Stop time of the task
+     * \param startTime Start time (ms) of the task
+     * \param stopTime Stop time (ms) of the task, a value of -1 set this time
+     *                 to the length of the scenario, which takes effect in
+     *                 Scenario::addTask.
      */
     Task(quint16 serverPort, qint32 startTime = 0, qint32 stopTime = -1);
     
@@ -117,6 +119,12 @@ public:
      * \return Stop time (ms) of the task
      */
     qint32  getStopTime();
+    
+    /**
+     * \brief Set the stop time of the task
+     * \param stopTime Stop time in milliseconds
+     */
+    void setStopTime(qint32 stopTime);
 };
 
 #endif /* TASK_H */

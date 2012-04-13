@@ -294,7 +294,10 @@ void ServerDaemonSession::run()
     
     // Close connection
     m_socket->disconnectFromHost();
-    m_socket->waitForDisconnected();
+    if( m_socket->state() != QAbstractSocket::UnconnectedState )
+    {
+        m_socket->waitForDisconnected();
+    }
 
     LOG_DEBUG("End of ServerDaemonSession::run");
 }

@@ -20,35 +20,43 @@ BulkDownloadServer::BulkDownloadServer(const QHostAddress &addr, quint32 port)
 {
 }
 
-TcpServerSession *BulkDownloadServer::createSession(QTcpSocket *socket)
+TcpServerSession *BulkDownloadServer::createSession(int socketDescriptor)
 {
-    return new BulkDownloadServerSession(socket);
+    return new BulkDownloadServerSession(socketDescriptor);
 }
 
-BulkDownloadServerSession::BulkDownloadServerSession(QTcpSocket *socket)
-    : TcpServerSession(socket)
+BulkDownloadServerSession::BulkDownloadServerSession(int socketDescriptor)
+    : TcpServerSession(socketDescriptor)
 {
 }
 
 void BulkDownloadServerSession::run()
 {
     LOG_DEBUG("Beginning of BulkDownloadServerSession::run");
+    
+    QTcpSocket socket;
+    if( !socket.setSocketDescriptor(m_socketDescriptor))
+    {
+        LOG_ERROR("Cannot set socket descriptor");
+    }
 
     // Receive request
     qint32 maxBytes;
     qint32 maxRate;
     
-    while( m_socket->bytesAvailable() < 8 )
+    while( socket.bytesAvailable() < 8 )
     {
-        if( !m_socket->waitForReadyRead(3 * 1000))
+        if( !socket.waitForReadyRead(3 * 1000))
         {
             LOG_INFO("BulkDownload session timed out");
             return;
         }
     }
     
-    QDataStream in(m_socket);
+    QDataStream in(&socket);
     in >> maxBytes >> maxRate;
+    
+    LOG_DEBUG("MaxBytes = %d, MaxRate = %d", maxBytes, maxRate);
     
     // Send data
     const int packetSize = 1000;
@@ -56,14 +64,18 @@ void BulkDownloadServerSession::run()
     QByteArray block(packetSize, 0);
     QTime t;
     t.start();
+    
+    LOG_DEBUG("C");
 
     while( maxBytes == -1 || bytesSent < maxBytes )
     {
-        m_socket->write(block);
-        m_socket->waitForBytesWritten(-1);
+        socket.write(block);
+        socket.waitForBytesWritten(-1);
+        bytesSent += 1000;
         
-        if( m_socket->state() == QAbstractSocket::UnconnectedState )
+        if( socket.state() == QAbstractSocket::UnconnectedState )
         {
+            LOG_DEBUG("Bulk download session closed by client");
             break;
         }
         
@@ -71,24 +83,25 @@ void BulkDownloadServerSession::run()
             (int)bytesSent, (int)maxBytes);
         
         // Rate limit
-        if( maxRate != -1 && bytesSent / maxRate * 8000 > t.elapsed())
+        if( maxRate != -1 && bytesSent * 1000 / maxRate  > t.elapsed())
         {
-            msleep(qMax(bytesSent / maxRate * 8000 - t.elapsed(), 0));
+            msleep(qMax(bytesSent * 1000 / maxRate  - t.elapsed(), 0));
         }
     }
-
+    
     // Connection closed by client
-    if( m_socket->state() == QAbstractSocket::UnconnectedState )
+    if( socket.state() == QAbstractSocket::UnconnectedState )
     {
         // nothing to do here
     }
     else // all bytes sent
     {
         // Close connection
-        m_socket->disconnectFromHost();
-        m_socket->waitForDisconnected();
+        socket.disconnectFromHost();
+        socket.waitForDisconnected();
     }
     
-    m_socket->close();
+    socket.close();
     LOG_DEBUG("End of BulkDownloadServerSession::run");
 }
+

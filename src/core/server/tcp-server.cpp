@@ -14,54 +14,72 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #include "tcp-server.h"
+#include "../QTcpServerEx.h"
 
 TcpServer::TcpServer(const QHostAddress &addr, quint16 port)
-    : Server(addr, port)
+    : Server(addr, port), m_ready(false)
 {
 }
 
 void TcpServer::run()
 {
     LOG_DEBUG("Beginning of TcpServer::run");
+    
+    // Initialize the server
+    QTcpServerEx server;
+    if( server.listen(QHostAddress(m_addr), m_port))
+    {
+        m_result = true;
+        m_description = QString("Server started @ %1:%2")
+            .arg(m_addr.toString()).arg(m_port);
+        LOG_INFO(m_description);
+        m_ready = true;
+    }
+    else
+    {
+        m_result = false;
+        m_description = QString("Cannot start server @ %1:%2")
+            .arg(m_addr.toString()).arg(m_port);
+        LOG_ERROR(m_description);
+        m_ready = true;
+    }
 
+    // Process incoming requests
     while( true )
     {
         // Wait for a new connection
-        m_server.waitForNewConnection(-1);
-        QTcpSocket *socket = m_server.nextPendingConnection();
+        server.waitForNewConnection(-1);
+        int socketDescriptor = server.nextPendingDescriptor();
         LOG_INFO("A new connection established");
         
         // Start a new thread for the session
-        TcpServerSession *session = createSession(socket);
-        connect(session, SIGNAL(finished()), this, SLOT(deleteLator()));
+        TcpServerSession *session = createSession(socketDescriptor);
+        //connect(session, SIGNAL(finished()), this, SLOT(deleteLator()));
         session->start();
     }
 
     // TODO: capture ctrl+c and stop the loop above
-    m_server.close();
+    server.close();
     LOG_DEBUG("End of TcpServer::run");
 }
 
 bool TcpServer::start(QString &description)
 {
-    if( m_server.listen(QHostAddress(m_addr), m_port))
+    // Start the thread
+    QThread::start();
+    
+    // Wait until initialization is finished
+    while( !m_ready )
     {
-        description = QString("Server started @ %1:%2")
-            .arg(m_addr.toString()).arg(m_port);
-        LOG_INFO(description);
-        QThread::start();
-        return true;
+        msleep(10);
     }
-    else
-    {
-        description = QString("Cannot start server @ %1:%2")
-            .arg(m_addr.toString()).arg(m_port);
-        LOG_ERROR(description);
-        return false;
-    }
+    
+    description = m_description;
+    return m_result;
 }
 
-TcpServerSession::TcpServerSession(QTcpSocket *socket)
-    : m_socket(socket)
+TcpServerSession::TcpServerSession(int socketDescriptor)
+    : m_socketDescriptor(socketDescriptor)
 {
 }
+

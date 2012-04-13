@@ -33,6 +33,9 @@ void BulkDownloadClient::run()
     
     qint32 maxBytes = m_task->getMaxBytes();
     qint32 maxRate = m_task->getMaxRate();
+    
+    LOG_DEBUG("SP = %d, ST = %d, ST = %d, MB = %d, MR = %d", 
+        (int)serverPort, startTime, stopTime, maxBytes, maxRate);
 
     // Start timer
     QTime t;

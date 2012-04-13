@@ -29,7 +29,7 @@ public:
      * \brief Initialize the tcp echo server session
      * \param socket The socket for the session
      */
-    TcpEchoServerSession(QTcpSocket *socket);
+    TcpEchoServerSession(int socketDescriptor);
     virtual void run();
 };
 
@@ -46,7 +46,7 @@ public:
      * \param port The port of the server
      */
     TcpEchoServer(const QHostAddress &addr, quint16 port);
-    virtual TcpServerSession *createSession(QTcpSocket *socket);
+    virtual TcpServerSession *createSession(int socketDescriptor);
 };
 
 #endif /* TCP_ECHO_SERVER_H */

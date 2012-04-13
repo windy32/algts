@@ -20,27 +20,33 @@ BulkUploadServer::BulkUploadServer(const QHostAddress &addr, quint32 port)
 {
 }
 
-TcpServerSession *BulkUploadServer::createSession(QTcpSocket *socket)
+TcpServerSession *BulkUploadServer::createSession(int socketDescriptor)
 {
-    return new BulkUploadServerSession(socket);
+    return new BulkUploadServerSession(socketDescriptor);
 }
 
-BulkUploadServerSession::BulkUploadServerSession(QTcpSocket *socket)
-    : TcpServerSession(socket)
+BulkUploadServerSession::BulkUploadServerSession(int socketDescriptor)
+    : TcpServerSession(socketDescriptor)
 {
 }
 
 void BulkUploadServerSession::run()
 {
     LOG_DEBUG("Beginning of BulkUploadServerSession::run");
+    
+    QTcpSocket socket;
+    if( !socket.setSocketDescriptor(m_socketDescriptor))
+    {
+        LOG_ERROR("Cannot set socket descriptor");
+    }
 
     char buffer[256 * 1024];
     qint32 totalBytes = 0;
     
     // Receive data
-    while( m_socket->waitForReadyRead(3 * 1000))
+    while( socket.waitForReadyRead(3 * 1000))
     {
-        qint64 bytesRead = m_socket->read(buffer, 256 * 1024);
+        qint64 bytesRead = socket.read(buffer, 256 * 1024);
         totalBytes += bytesRead;
         
         LOG_DEBUG("BulkUploadServerSession %d / %d", 
@@ -48,7 +54,7 @@ void BulkUploadServerSession::run()
     }
     
     // Connection closed by client
-    if( m_socket->state() == QAbstractSocket::UnconnectedState )
+    if( socket.state() == QAbstractSocket::UnconnectedState )
     {
     }
 

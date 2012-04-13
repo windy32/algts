@@ -29,7 +29,7 @@ public:
      * \brief Initialize the on/off download server session
      * \param socket The socket for the session
      */
-    OnoffDownloadServerSession(QTcpSocket *socket);
+    OnoffDownloadServerSession(int socketDescriptor);
     virtual void run();
 };
 
@@ -46,7 +46,7 @@ public:
      * \param port The port of the server
      */
     OnoffDownloadServer(const QHostAddress &addr, quint16 port);
-    virtual TcpServerSession *createSession(QTcpSocket *socket);
+    virtual TcpServerSession *createSession(int socketDescriptor);
 };
 
 #endif /* ONOFF_DOWNLOAD_SERVER_H */

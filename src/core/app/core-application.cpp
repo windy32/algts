@@ -133,7 +133,7 @@ void CoreApplication::exec(Scenario *s)
             if( !ok )
             {
                 in >> description;
-                LOG_ERROR(QString("Cannot start server, %1").arg(description));
+                LOG_ERROR(description);
                 return;
             }
             
