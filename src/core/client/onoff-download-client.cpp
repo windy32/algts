@@ -38,11 +38,12 @@ void OnoffDownloadClient::run()
     const QVector<qint32> &onTimes = m_task->getOnTimes();
     const QVector<qint32> &offTimes = m_task->getOffTimes();
     
-    LOG_DEBUG("size = %d", onTimes.size());
-    
     for(int i = 0; i < onTimes.size(); i++)
     {
+        LOG_DEBUG("Period %d / %d", i + 1, onTimes.size());
+        
         // Sleep during the off time
+        LOG_DEBUG("Sleep %d ms...", offTimes[i]);
         msleep(offTimes[i]);
 
         // First line in raw trace for current period
@@ -53,6 +54,8 @@ void OnoffDownloadClient::run()
         m_trace.totalBytes.append(0);
 
         // Bind local address and connect
+        LOG_DEBUG("Connect to on/off download server...", offTimes[i]);
+        
         QBoundTcpSocket socket;
         if( !socket.bindAndConnect(m_localAddr, 0, m_serverAddr, serverPort))
         {

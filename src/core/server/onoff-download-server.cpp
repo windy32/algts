@@ -77,6 +77,7 @@ void OnoffDownloadServerSession::run()
     while( t.elapsed() < onTime )
     {
         qint32 bytesSent = (qint32)socket.write(block);
+        totalBytes += bytesSent;
         socket.waitForBytesWritten(-1);
 
         if( socket.state() == QAbstractSocket::UnconnectedState )
@@ -88,9 +89,9 @@ void OnoffDownloadServerSession::run()
             (int)bytesSent, (int)totalBytes);
         
         // Rate limit
-        if( maxRate != -1 && bytesSent * 1000 / maxRate > t.elapsed())
+        if( maxRate != -1 && totalBytes * 1000 / maxRate > t.elapsed())
         {
-            msleep(qMax(bytesSent * 1000 / maxRate - t.elapsed(), 0));
+            msleep(qMax(totalBytes * 1000 / maxRate - t.elapsed(), 0));
         }
     }
 
