@@ -57,7 +57,7 @@ void TcpEchoServerSession::run()
 
         QDataStream in(&socket);
         in >> fillSize >> echoSize;
-
+        
         // Receive filled bytes in the request
         while( socket.bytesAvailable() < fillSize )
         {
@@ -67,6 +67,7 @@ void TcpEchoServerSession::run()
                 return;
             }
         }
+        socket.read(fillSize);
         
         // Send data
         QByteArray block(echoSize, 0);

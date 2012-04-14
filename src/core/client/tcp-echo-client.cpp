@@ -75,7 +75,7 @@ void TcpEchoClient::run()
                 }
                 else
                 {
-                    LOG_INFO("BulkDownload session timed out");
+                    LOG_INFO("TCP Echo session timed out");
                 }
             }
         }

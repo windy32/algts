@@ -105,7 +105,7 @@ void TcpEchoTask::expand()
         inputSize = qMax(inputSize, 4);
         inputSize = qMin(inputSize, 1024);
         echoSize = qMax(echoSize, 1);
-        echoSize = qMax(echoSize, 1024 * 1024);
+        echoSize = qMin(echoSize, 1024 * 1024);
         interval = qMin(interval, length);
         
         m_inputSizes.push_back(inputSize);
