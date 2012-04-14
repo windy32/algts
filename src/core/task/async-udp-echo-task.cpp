@@ -104,10 +104,10 @@ void AsyncUdpEchoTask::expand()
         qint32 echoSize = m_echoSize->getInteger();
         qint32 interval = m_interval->getInteger();
         
-        inputSize = qMax(inputSize, 4);
+        inputSize = qMax(inputSize, 6);
         inputSize = qMin(inputSize, 1024);
-        echoSize = qMax(echoSize, 1);
-        echoSize = qMax(echoSize, 1472);
+        echoSize = qMax(echoSize, 4);
+        echoSize = qMin(echoSize, 1472);
         interval = qMin(interval, length);
         
         m_inputSizes.push_back(inputSize);

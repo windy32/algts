@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
     // Setup scenario
     LOG_DEBUG("Setting up scenaio");
     
-    Scenario s(12345, 30); // seed & length
+    Scenario s(12345, 15); // seed & length
     s.addUser("Harry");
 
     s.addTask("Harry", new AsyncUdpEchoTask(4000));

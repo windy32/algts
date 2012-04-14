@@ -32,21 +32,27 @@ void AsyncUdpEchoServer::run()
             QHostAddress clientAddr;
             quint16 clientPort;
             char buffer[1500];
+            qint32 index;
             qint16 echoSize;
 
             qint64 bytesRead = m_socket.readDatagram(buffer, 1500, 
                 &clientAddr, &clientPort);
-            if( bytesRead < 2 )
+            if( bytesRead < 6 )
             {
-                LOG_INFO("Corrupt packet received");
+                LOG_INFO("Corrupt packet received", bytesRead);
                 continue;
             }
             QDataStream in(QByteArray(buffer, 1500));
-            in >> echoSize;
+            in >> index >> echoSize;
             
             // Send echo
+            QByteArray block;
+            QDataStream out(&block, QIODevice::WriteOnly);
+            out << (qint32)index;
+            block.append(QByteArray(qMax(0, echoSize - 4), 0));
+
             qint64 bytesWritten = m_socket.writeDatagram(
-                QByteArray(echoSize, 0), clientAddr, clientPort);
+                block, clientAddr, clientPort);
             if( bytesWritten == -1 )
             {
                 LOG_INFO(QString("Cannot send echo packet to client %1:%2")

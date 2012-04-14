@@ -64,7 +64,10 @@ void AsyncUdpEchoClient::run()
         QDataStream out(&block, QIODevice::WriteOnly);
         out << (qint32)i;
         out << (qint16)echoSizes[i];
-        block.append(QByteArray(qMax(0, inputSizes[i] - 2), 0));
+        block.append(QByteArray(qMax(0, inputSizes[i] - 6), 0));
+        
+        LOG_DEBUG("index = %d / %d, inputSize = %d, echoSize = %d", 
+            i + 1, intervals.size(), inputSizes[i], echoSizes[i]);
         
         qint64 bytesWritten = socket.writeDatagram(block, 
             QHostAddress(m_serverAddr), serverPort);
@@ -95,6 +98,7 @@ void AsyncUdpEchoClient::run()
     
     msleep(3 * 1000);
     m_receiving = false;
+    receiver.wait();
     
     LOG_DEBUG("End of AsyncUdpEchoClient::run");
 }
@@ -180,7 +184,7 @@ void AsyncUdpEchoClientReceiver::run()
             size = m_socket->readDatagram(buffer, 1500, NULL, NULL);
             if( size < 4 )
             {
-                LOG_INFO("Corrupt packet");
+                LOG_INFO("Size = %d, Corrupt packet", (int)size);
                 continue;
             }
             
