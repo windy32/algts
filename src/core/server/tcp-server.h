@@ -24,6 +24,9 @@
 class TcpServerSession : public QThread
 {
 protected:
+    /**
+     * \brief The socket descriptor for the session
+     */
     int m_socketDescriptor;
 
 protected:
@@ -36,7 +39,7 @@ protected:
 public:
     /**
      * \brief Initialize the tcp server session
-     * \param socket The socket for the session
+     * \param socketDescriptor The socket descriptor for the session
      */
     TcpServerSession(int socketDescriptor);
 };
@@ -65,7 +68,7 @@ public:
     
     /**
      * \brief Create a session for the new connection
-     * \param socket The socket for the new connection
+     * \param socketDescriptor The socket descriptor for the new connection
      * \return A pointer to the session object that will process client's 
      *         requests
      */

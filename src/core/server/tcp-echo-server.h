@@ -27,7 +27,7 @@ class TcpEchoServerSession : public TcpServerSession
 public:
     /**
      * \brief Initialize the tcp echo server session
-     * \param socket The socket for the session
+     * \param socketDescriptor The socket descriptor for the session
      */
     TcpEchoServerSession(int socketDescriptor);
     virtual void run();

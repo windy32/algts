@@ -108,6 +108,7 @@ public:
     /**
      * \brief Generate text trace
      * \param tasks The tasks in the scenario
+     * \param clients The clients started executing the tasks
      */
     static void generate(QMap<QString, QVector<Task *> > &tasks,
                          QList<Client *> &clients);

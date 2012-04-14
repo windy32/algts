@@ -16,10 +16,6 @@
 #include "../core/core.h"
 
 /**
- * \defgroup Scripts Scripts
- */
-
-/**
  * \file basic.cpp
  * \ingroup Scripts
  * \brief The basic client application script
@@ -33,7 +29,7 @@
  */
 
 /**
- * \brief The entry point of the sample
+ * \brief The entry point of the script
  */
 int main(int argc, char *argv[])
 {

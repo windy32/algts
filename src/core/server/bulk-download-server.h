@@ -27,7 +27,7 @@ class BulkDownloadServerSession : public TcpServerSession
 public:
     /**
      * \brief Initialize the bulk download server session
-     * \param socket The socket for the session
+     * \param socketDescriptor The socket descriptor for the session
      */
     BulkDownloadServerSession(int socketDescriptor);
     virtual void run();
