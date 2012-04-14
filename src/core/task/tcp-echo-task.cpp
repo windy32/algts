@@ -92,8 +92,9 @@ void TcpEchoTask::serialize(QDataStream *stream)
     LOG_DEBUG("TcpEchoTask::serialize() not implemented yet");
 }
 
-void TcpEchoTask::expand(qint32 length)
+void TcpEchoTask::expand()
 {
+    int length = m_stopTime;
     int curLength = 0;
     while( curLength < length )
     {

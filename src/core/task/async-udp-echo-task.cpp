@@ -94,8 +94,9 @@ void AsyncUdpEchoTask::serialize(QDataStream *stream)
     LOG_DEBUG("AsyncUdpEchoTask::serialize() not implemented yet");
 }
 
-void AsyncUdpEchoTask::expand(qint32 length)
+void AsyncUdpEchoTask::expand()
 {
+    int length = m_stopTime;
     int curLength = 0;
     while( curLength < length )
     {

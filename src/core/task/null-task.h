@@ -78,7 +78,7 @@ public:
     /**
      * \brief Generate a warning message and return immediately
      */
-    virtual void expand(qint32 length);
+    virtual void expand();
 };
 
 #endif /* NULL_TASK_H */

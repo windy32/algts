@@ -22,7 +22,7 @@
  *
  * Usage:
  * \code
- * basic <local-address-range> <daemon-address> <daemon-port>
+ * bulk-download <local-address-range> <daemon-address> <daemon-port>
  * \endcode
  */
 

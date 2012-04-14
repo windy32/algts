@@ -140,7 +140,7 @@ void BulkDownloadTask::serialize(QDataStream *stream)
     LOG_DEBUG("BulkDownloadTask::serialize() not implemented yet");
 }
 
-void BulkDownloadTask::expand(qint32 length)
+void BulkDownloadTask::expand()
 {
     // nothing to do here
 }

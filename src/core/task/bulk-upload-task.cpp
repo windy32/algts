@@ -141,7 +141,7 @@ void BulkUploadTask::serialize(QDataStream *stream)
     LOG_DEBUG("BulkUploadTask::serialize() not implemented yet");
 }
 
-void BulkUploadTask::expand(qint32 length)
+void BulkUploadTask::expand()
 {
     // nothing to do here
 }

@@ -190,8 +190,9 @@ void OnoffDownloadTask::serialize(QDataStream *stream)
     LOG_DEBUG("OnoffDownloadTask::serialize() not implemented yet");
 }
 
-void OnoffDownloadTask::expand(qint32 length)
+void OnoffDownloadTask::expand()
 {
+    int length = m_stopTime;
     int curLength = 0;
     while( curLength < length )
     {

@@ -19,10 +19,10 @@
  * \file onoff-download.cpp
  * \ingroup Scripts
  * \brief Test script for on/off download task
- *
+ * 
  * Usage:
  * \code
- * basic <local-address-range> <daemon-address> <daemon-port>
+ * onoff-download <local-address-range> <daemon-address> <daemon-port>
  * \endcode
  */
 

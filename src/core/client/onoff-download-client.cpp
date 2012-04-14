@@ -37,7 +37,9 @@ void OnoffDownloadClient::run()
     
     const QVector<qint32> &onTimes = m_task->getOnTimes();
     const QVector<qint32> &offTimes = m_task->getOffTimes();
-        
+    
+    LOG_DEBUG("size = %d", onTimes.size());
+    
     for(int i = 0; i < onTimes.size(); i++)
     {
         // Sleep during the off time

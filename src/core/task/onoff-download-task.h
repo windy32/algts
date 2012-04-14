@@ -83,7 +83,7 @@ public:
     virtual enum Type getType();
     virtual QString getName();
     virtual void serialize(QDataStream *stream);
-    virtual void expand(qint32 length);
+    virtual void expand();
 };
 
 #endif /* ONOFF_DOWNLOAD_TASK_H */

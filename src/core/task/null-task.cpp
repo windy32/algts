@@ -51,7 +51,7 @@ void NullTask::serialize(QDataStream *stream)
     LOG_WARN("Call to NullTask::serialize()");
 }
 
-void NullTask::expand(qint32 length)
+void NullTask::expand()
 {
     LOG_WARN("Call to NullTask::expand()");
 }

@@ -19,7 +19,7 @@
 RandomVariable *RandomVariableFactory::create(const QString &param)
 {
     QRegExp u0("^Uniform$"); // case sensitive by default
-    QRegExp u2("^Uniform ([0-9]+),\\s*([0-9+])$");
+    QRegExp u2("^Uniform ([0-9]+),\\s*([0-9]+)$");
     
     QRegExp e1("^Exponential ([0-9]+)$");
     QRegExp e2("^Exponential ([0-9]+),\\s*([0-9]+)$");

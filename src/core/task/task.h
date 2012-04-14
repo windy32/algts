@@ -86,7 +86,6 @@ public:
 
     /**
      * \brief Expand the task object
-     * \param length Max length of the tasks (ms)
      *
      * Some tasks have random number generator members, expanding means 
      * generating a random number sequence.
@@ -94,7 +93,7 @@ public:
      * \note The order creating task objects as well as calling expand functions
      *       will both lead to different expanding results.
      */
-    virtual void expand(qint32 length) = 0;
+    virtual void expand() = 0;
 	
     /**
      * \brief Return the type of the task 

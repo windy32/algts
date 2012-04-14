@@ -34,16 +34,17 @@ void CoreApplication::exec(Scenario *s)
 {
     // 1. if no enough local addresses are available, exit
     // 2. create the mapping from user name to local address
-    // 3. connect to server daemon and send layout [TaskType][Port] ...
-    // 4. get response 
+    // 3. expand tasks
+    // 4. connect to server daemon and send layout [TaskType][Port] ...
+    // 5. get response 
     //       [bool: Result][quint32: Address][QString: success description] or
     //       [bool: Result][QString: failure description]
-    // 5. if any error occurred, tasks will no longer continue
-    // 6. create client objects, with generated server addresses & local 
+    // 6. if any error occurred, tasks will no longer continue
+    // 7. create client objects, with generated server addresses & local 
     //    addresses
-    // 7. execute client objects
-    // 8. wait until thread exits
-    // 9. Generate trace file if desired
+    // 8. execute client objects
+    // 9. wait until thread exits
+    // 10. Generate trace file if desired
     
     // 1
     LOG_DEBUG("Checking for addresses available...");
@@ -66,7 +67,16 @@ void CoreApplication::exec(Scenario *s)
             .arg(it.key()).arg(m_localAddrs[index].toString())); 
     }
     
-    // 3, 4, 5, 6
+    // 3
+    for(it = tasks.begin(); it != tasks.end(); ++it)
+    {
+        for(int i = 0; i < it.value().size(); i++)
+        {
+            it.value()[i]->expand();
+        }
+    }
+
+    // 4, 5, 6, 7
     LOG_DEBUG("Setting up server daemon...");
     QList<Client *> clients;
 
@@ -80,7 +90,7 @@ void CoreApplication::exec(Scenario *s)
             
             Task *task = it.value()[i];
             
-            // 3
+            // 4
             // Connect to server daemon
             QTcpSocket socket;
             socket.connectToHost(m_serverDaemonAddr, m_serverDaemonPort);
@@ -101,7 +111,7 @@ void CoreApplication::exec(Scenario *s)
             socket.write(block);
             socket.waitForBytesWritten(-1);
 
-            // 4
+            // 5
             // Receive response
             quint32 blockSize;
             QDataStream in(&socket);
@@ -130,7 +140,7 @@ void CoreApplication::exec(Scenario *s)
 
             in >> ok;
             
-            // 5
+            // 6
             if( !ok )
             {
                 in >> description;
@@ -138,7 +148,7 @@ void CoreApplication::exec(Scenario *s)
                 return;
             }
             
-            // 6
+            // 7
             in >> addr >> description;
 
             Client *client = ClientFactory::create(task->getType(), task, 
@@ -156,7 +166,7 @@ void CoreApplication::exec(Scenario *s)
     }
     
     
-    // 7
+    // 8
     GlobalTimer::start();
     LOG_DEBUG("Starting clients...");
     
@@ -165,14 +175,14 @@ void CoreApplication::exec(Scenario *s)
         clients[i]->start();
     }
     
-    // 8
+    // 9
     LOG_DEBUG("Waiting till all client threads exit...");
     for(int i = 0; i < clients.size(); i++)
     {
         clients[i]->wait();
     }
     
-    // 9
+    // 10
     LOG_DEBUG("Generate trace file...");
     if( TextTrace::enabled())
     {

@@ -16,13 +16,13 @@
 #include "../core/core.h"
 
 /**
- * \file udp-echo.cpp
+ * \file async-udp-echo.cpp
  * \ingroup Scripts
  * \brief Test script for udp echo task
  *
  * Usage:
  * \code
- * basic <local-address-range> <daemon-address> <daemon-port>
+ * async-udp-echo <local-address-range> <daemon-address> <daemon-port>
  * \endcode
  */
 
