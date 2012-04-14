@@ -25,8 +25,8 @@ RandomVariable *RandomVariableFactory::create(const QString &param)
     QRegExp e2("^Exponential ([0-9]+),\\s*([0-9]+)$");
 
     QRegExp p1("^Pareto ([0-9]+)$");
-    QRegExp p2("^Pareto ([0-9]+),\\s*([0-9]+)$");
-    QRegExp p3("^Pareto ([0-9]+),\\s*([0-9]+),\\s*([0-9]+)$");
+    QRegExp p2("^Pareto ([0-9]+),\\s*([0-9]+|[0-9]+\\.[0-9]+)$");
+    QRegExp p3("^Pareto ([0-9]+),\\s*([0-9]+|[0-9]+\\.[0-9]+),\\s*([0-9]+)$");
     
     if( u0.indexIn(param) != -1 )
     {
