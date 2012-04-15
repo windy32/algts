@@ -51,7 +51,7 @@ protected:
     /**
      * \brief The process object for the terminal
      */
-    QProcess *m_process;
+    QProcess m_process;
     /**
      * \brief The executable file name of the terminal
      */

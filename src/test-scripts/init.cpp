@@ -35,16 +35,19 @@
  */
 int main(int argc, char *argv[])
 {
+    ConsoleApplication app(argc, argv);
+    
     // Enable logging
     Log::enable(Log::LOG_LEVEL_DEBUG);
     
     // Setup router
     TelnetTerminal terminal("172.16.0.1");
+    terminal.start();
     terminal.enter("root\n");
     terminal.enter("admin\n");
     terminal.enter("tc qdisc show\n");
     terminal.close();
-    
+
     // Setup emulator
     NetemEmulator emulator("10.0.0.1", 3201);
     emulator.setParam("TxRate", "200kbps");
@@ -52,7 +55,7 @@ int main(int argc, char *argv[])
     emulator.setParam("TxDelay", "20ms");
     emulator.setParam("RxDelay", "20ms");
     emulator.commit();
-        
+
     return 0;
 }
 

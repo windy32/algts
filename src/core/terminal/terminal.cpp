@@ -18,7 +18,6 @@
 Terminal::Terminal()
 {
     //m_responseDelay = 300; // Default response delay 300 ms
-    m_process = NULL;
 }
 
 /*
@@ -31,14 +30,12 @@ void Terminal::waitForResponse()
 bool Terminal::start()
 {
     LOG_DEBUG("Beginning of Terminal::start");
-
     QByteArray data;
     
     // Start process
-    m_process = new QProcess();
-    m_process->start(m_program, m_arguments);
+    m_process.start(m_program, m_arguments);
 
-    if( !m_process->waitForStarted(1000))
+    if( !m_process.waitForStarted(1000))
     {
         LOG_ERROR("Cannot start telnet process");
         return false;
@@ -51,24 +48,32 @@ bool Terminal::start()
 void Terminal::enter(const QString &input)
 {
     LOG_DEBUG("Beginning of Terminal::enter");
-
+    QString buffer;
+    QStringList lines;
+    
     // Read if possible
-    while( m_process->waitForReadyRead(100))
+    while( m_process.waitForReadyRead(100))
     {
-        QStringList lines(
-            QString(m_process->readAll()).split("\n"));
-        
-        for(int i = 0; i < lines.size(); i++)
-        {
-            LOG_INFO(QString("Terminal Output: %1").arg(lines[i]));
-        }
+        buffer += m_process.readAll();
+    }
+    lines = buffer.split("\n");
+    for(int i = 0; i < lines.size(); i++)
+    {
+        LOG_INFO(QString("> %1").arg(lines[i]));
     }
     
     // Write
-    m_process->write(input.toLocal8Bit().data());
-    if( m_process->waitForBytesWritten(100))
+    m_process.write(input.toLocal8Bit().data());
+    if( m_process.waitForBytesWritten(100))
     {
-        LOG_INFO(QString("Terminal Input: %1").arg(input));
+        if( input.endsWith("\n")) // Remove the new line before logging
+        {
+            LOG_INFO(QString("< %1").arg(input.left(input.size() - 1)));
+        }
+        else
+        {
+            LOG_INFO(QString("< %1").arg(input));
+        }
     }
     else
     {
@@ -77,24 +82,26 @@ void Terminal::enter(const QString &input)
     }
     
     // Read again
-    while( m_process->waitForReadyRead(100))
+    buffer = "";
+    while( m_process.waitForReadyRead(100))
     {
-        QStringList lines(
-            QString(m_process->readAll()).split("\n"));
-        
-        for(int i = 0; i < lines.size(); i++)
-        {
-            LOG_INFO(QString("Terminal Output: %1").arg(lines[i]));
-        }
+        buffer += m_process.readAll();
     }
+    lines = buffer.split("\n");
+    for(int i = 0; i < lines.size(); i++)
+    {
+        LOG_INFO(QString("> %1").arg(lines[i]));
+    }
+    
     LOG_DEBUG("End of Terminal::enter");
 }
 
 void Terminal::close()
 {
-    m_process->close();
-    if( !m_process->waitForFinished())
+    m_process.close();
+    if( !m_process.waitForFinished())
     {
         LOG_ERROR("Cannot close terminal");
     }
 }
+
