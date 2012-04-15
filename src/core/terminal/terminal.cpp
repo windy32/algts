@@ -98,7 +98,7 @@ void Terminal::enter(const QString &input)
 
 void Terminal::close()
 {
-    m_process.close();
+    m_process.terminate();
     if( !m_process.waitForFinished())
     {
         LOG_ERROR("Cannot close terminal");
