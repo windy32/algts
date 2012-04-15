@@ -127,6 +127,8 @@ bool parsePort(const QString &str, quint16 &port)
  */
 int main(int argc, char *argv[])
 {
+    Log::enable(Log::LOG_LEVEL_DEBUG); // should be removed later
+    
     // Check arguments
     if( argc != 3 )
     {
@@ -134,9 +136,9 @@ int main(int argc, char *argv[])
             "algts emulator daemon\n"
             "---------------------\n"
             "Usage: \n"
-            "    serverd <daemon-address> <daemon-port>\n"
+            "    emulatord <daemon-address> <daemon-port>\n"
             "Example: \n"
-            "    serverd 10.0.0.1 3201\n");
+            "    emulatord 10.0.0.1 3201\n");
         return 0;
     }
     

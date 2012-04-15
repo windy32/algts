@@ -28,15 +28,17 @@ bool NetemSession::execCommand(const QString &command,
     if( !process.waitForStarted(1000))
     {
         LOG_ERROR(QString("Cannot execute command %1").arg(command));
+        process.terminate();
         return false;
     }
     
-    // Get output
+    // Get output and close the process
     QByteArray output;
     if( process.waitForReadyRead(100))
     {
         output = process.readAll();
     }
+    process.waitForFinished(-1); //terminate();
     
     // Compare and return
     if( output == expectedOutput.toLocal8Bit())
@@ -54,44 +56,100 @@ bool NetemSession::execCommand(const QString &command,
     }
 }
 
-bool NetemSession::execCommit()
+// ! Need reconstruct
+bool NetemSession::execCommit(QMap<QString, QString> &params)
 {
     LOG_DEBUG("Beginning of NetemSession::execCommit");
 
-    if( !execCommand(
-        "tc qdisc add dev eth0 root handle 1: "
-        "tbf rate 10mbit buffer 1600 limit 3000", ""))
-        return false;
+    // Init parameters
+    int txRate = 100000; // 100mbps
+    int rxRate = 100000; // 100mbps
+    int txDelay = 0; // 0ms
+    int rxDelay = 0; // 0ms
     
-    if( !execCommand(
+    // Read parameters (no error handling is necessary here)
+    if( params.contains("TxRate"))
+    {
+        QString number, unit;
+        QRegExp rx("^([0-9]+)(m|M|k|K)bps$");
+        if( rx.indexIn(params["TxRate"]) != -1 )
+        {
+            number = rx.cap(1);
+            unit = rx.cap(2);
+            int inc = ( unit == "M" || unit == "m" ) ? 1024 : 1;
+            txRate = number.toLong() * inc; // unit is kbps
+        }
+    }
+    
+    if( params.contains("RxRate"))
+    {
+        QString number, unit;
+        QRegExp rx("^([0-9]+)(m|M|k|K)bps$");
+        if( rx.indexIn(params["RxRate"]) != -1 )
+        {
+            number = rx.cap(1);
+            unit = rx.cap(2);
+            int inc = ( unit == "M" || unit == "m" ) ? 1024 : 1;
+            rxRate = number.toLong() * inc; // unit is kbps
+        }
+    }
+    
+    if( params.contains("TxDelay"))
+    {
+        QRegExp rx("^([0-9]+)ms$");
+        if( rx.indexIn(params["TxDelay"]) != -1 )
+        {
+            txDelay = rx.cap(1).toLong();
+        }
+    }
+
+    if( params.contains("RxDelay"))
+    {
+        QRegExp rx("^([0-9]+)ms$");
+        if( rx.indexIn(params["RxDelay"]) != -1 )
+        {
+            rxDelay = rx.cap(1).toLong();
+        }
+    }
+
+    // Build commands
+    QString commands[8];
+    commands[0] = QString( // Token 5KB, Queue 10KB
+        "tc qdisc add dev eth0 root handle 1: "
+        "tbf rate %1kbit buffer 5000 limit 10000").arg(rxRate);
+    commands[1] = QString(
         "tc qdisc add dev eth0 parent 1: handle 10: "
-        "netem limit 10000", ""))
-        return false;
-
-    if( !execCommand("modprobe ifb", ""))
-        return false;
-
-    if( !execCommand("ip link set dev ifb0 up", ""))
-        return false;
-
-    if( !execCommand("tc qdisc add dev eth0 ingress", ""))
-        return false;
-
-    if( !execCommand(
+        "netem limit 10000 delay %1ms").arg(rxDelay); // Queue length is 10KB
+    commands[2] = QString("modprobe ifb");
+    commands[3] = QString("ip link set dev ifb0 up");
+    commands[4] = QString("tc qdisc add dev eth0 ingress");
+    commands[5] = QString(
         "tc filter add dev eth0 parent ffff: protocol ip pref 10 "
         "   u32 match u32 0 0 flowid 1:1 "
-        "   action mirred egress redirect dev ifb0", ""))
-        return false;
-
-    if( !execCommand(
+        "   action mirred egress redirect dev ifb0");
+    commands[6] = QString( // Token 5KB, Queue 10KB
         "tc qdisc add dev ifb0 root handle 1: "
-        "tbf rate 10mbit buffer 1600 limit 3000", ""))
-        return false;
-
-    if( !execCommand(
+        "tbf rate %1kbit buffer 5000 limit 10000").arg(txRate);
+    commands[7] = QString(
         "tc qdisc add dev ifb0 parent 1: handle 10: "
-        "netem limit 1000", ""))
-        return false;
+        "netem limit 10000 delay %1ms").arg(txDelay); // Queue length is 10KB
+    
+    // The sixth result appears in a clean ubuntu server 10.04.4
+    QString expectedOutputs[8] = 
+        { "", "", "", "", "", "Action 4 device ifb0 ifindex 3\n", "", "" }; 
+    
+    // Execute commands
+    //
+    // Note:
+    //    Commands below require root privilege, if the emulator daemon doesn't
+    //    have root privilege, the output will always be empty
+    for(int i = 0; i < 8; i++)
+    {
+        if( !execCommand(commands[i], expectedOutputs[i]))
+        {
+            return false;
+        }
+    }
 
     LOG_DEBUG("End of NetemSession::execCommit");
     return true;
@@ -104,10 +162,13 @@ bool NetemSession::execReset()
     if( !execCommand("tc qdisc del dev eth0 root handle 1:", ""))
         return false;
     
-    if( !execCommand("tc qdisc del dev ifb0 root handle 1:", ""))
+    if( !execCommand("tc qdisc del dev eth0 ingress", ""))
         return false;
-        
+    
     if( !execCommand("tc filter del dev eth0 parent ffff: pref 10", ""))
+        return false;
+    
+    if( !execCommand("tc qdisc del dev ifb0 root handle 1:", ""))
         return false;
 
     LOG_DEBUG("End of NetemSession::execReset");
@@ -154,8 +215,8 @@ bool NetemSession::parseCommit(
             qint32 inc = ( unit == "M" || unit == "m" ) ? 1024 * 1024 : 1024;
 
             if( !ok || // cannot convert to long
-                intValue < 1024 || // less than 1kbps
-                intValue > 100 * 1024 * 1024 / inc ); // or greater than 100mbps
+                intValue < 1024 / inc || // less than 1kbps
+                intValue > 100 * 1024 * 1024 / inc ) // or greater than 100mbps
             {
                 LOG_WARN(QString("Invalid value %1 for parameter %2")
                     .arg(it.value()).arg(it.key()));
@@ -165,12 +226,12 @@ bool NetemSession::parseCommit(
                 continue;
             }
         }
-        else if( it.key() == "TxDelay" || "RxRate" )
+        else if( it.key() == "TxDelay" || it.key() == "RxDelay" )
         {
             // Capture number
             QString number;
             QRegExp rx("^([0-9]+)ms$");
-
+            
             if( rx.indexIn(it.value()) == -1 )
             {
                 LOG_WARN(QString("Invalid value %1 for parameter %2")
@@ -189,7 +250,7 @@ bool NetemSession::parseCommit(
 
             if( !ok || // cannot convert to long, 
                 intValue < 10 || // less than 10ms
-                intValue > 1000 ); // or greater than 1000ms
+                intValue > 1000 ) // or greater than 1000ms
             {
                 LOG_WARN(QString("Invalid value %1 for parameter %2")
                     .arg(it.value()).arg(it.key()));
@@ -260,7 +321,7 @@ void NetemSession::parse(QTcpSocket *socket, QMap<QString, QString> &params)
         if( parseCommit(socket, params))
         {
             out << (quint32)0;
-            if( execCommit() == true )
+            if( execCommit(params) == true )
             {
                 out << true;
                 out << QString("Parameters updated successfully");
@@ -306,8 +367,6 @@ void NetemSession::parse(QTcpSocket *socket, QMap<QString, QString> &params)
     }
     
     // Close connection
-    socket->disconnectFromHost();
-    socket->waitForDisconnected();
-
+    socket->close();
     LOG_DEBUG("End of NetemSession::parse");
 }

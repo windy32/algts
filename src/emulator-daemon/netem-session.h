@@ -35,7 +35,7 @@ class NetemSession
 private:
     bool execCommand(const QString &input, const QString &expectedOutput);
 
-    bool execCommit();
+    bool execCommit(QMap<QString, QString> &params);
     bool execReset();
     
     //QTcpSocket *socket, QMap<QString, QString> &params);

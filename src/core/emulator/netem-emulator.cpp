@@ -83,13 +83,11 @@ void NetemEmulator::commit()
     else
     {
         LOG_WARN("Parameter commitment failed");
-        LOG_WARN(QString("Description: %s").arg(description));
+        LOG_WARN(QString("Description: %1").arg(description));
     }
 
     // Close connection
-    socket.disconnectFromHost();
-    socket.waitForDisconnected();
-
+    socket.close();
     LOG_DEBUG("End of NetemEmulator::commit");
 }
 
