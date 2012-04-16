@@ -127,7 +127,7 @@ bool parsePort(const QString &str, quint16 &port)
  */
 int main(int argc, char *argv[])
 {
-    Log::enable(Log::LOG_LEVEL_DEBUG); // should be removed later
+    Log::enable(Log::LOG_LEVEL_INFO);
     
     // Check arguments
     if( argc != 3 )

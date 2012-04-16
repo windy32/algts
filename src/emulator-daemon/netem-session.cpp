@@ -61,6 +61,13 @@ bool NetemSession::execCommit(QMap<QString, QString> &params)
 {
     LOG_DEBUG("Beginning of NetemSession::execCommit");
 
+    LOG_INFO("Updating emulator settings...");
+    QMap<QString, QString>::const_iterator it;
+    for(it = params.constBegin(); it != params.constEnd(); ++it)
+    {
+        LOG_INFO(QString("* %1 = %2").arg(it.key()).arg(it.value()));
+    }
+    
     // Init parameters
     int txRate = 100000; // 100mbps
     int rxRate = 100000; // 100mbps
@@ -158,7 +165,8 @@ bool NetemSession::execCommit(QMap<QString, QString> &params)
 bool NetemSession::execReset()
 {
     LOG_DEBUG("Beginning of NetemSession::execReset");
-
+    LOG_INFO("Reseting emulator...");
+    
     if( !execCommand("tc qdisc del dev eth0 root handle 1:", ""))
         return false;
     

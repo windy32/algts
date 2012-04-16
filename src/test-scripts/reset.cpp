@@ -20,13 +20,13 @@
  */
 
 /**
- * \file init.cpp
+ * \file reset.cpp
  * \ingroup Scripts
- * \brief Test script for initialization (telnet & terminal)
+ * \brief A script that resets the emulator
  *
  * Usage:
  * \code
- * init <local-address-range> <daemon-address> <daemon-port>
+ * reset
  * \endcode
  */
 
@@ -35,27 +35,12 @@
  */
 int main(int argc, char *argv[])
 {
-    ConsoleApplication app(argc, argv);
-    
     // Enable logging
     Log::enable(Log::LOG_LEVEL_DEBUG);
     
-    // Setup router
-    TelnetTerminal terminal("172.16.0.1");
-    terminal.start();
-    terminal.enter("root\n");
-    terminal.enter("admin\n");
-    terminal.enter("tc qdisc show\n");
-    terminal.close();
-
     // Setup emulator
     NetemEmulator emulator("10.0.0.1", 3201);
-    emulator.setParam("TxRate", "200kbps");
-    emulator.setParam("RxRate", "2000kbps");
-    emulator.setParam("TxDelay", "20ms");
-    emulator.setParam("RxDelay", "20ms");
-    emulator.commit();
-    //emulator.reset();
+    emulator.reset();
     
     return 0;
 }

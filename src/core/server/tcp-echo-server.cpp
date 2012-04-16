@@ -48,11 +48,14 @@ void TcpEchoServerSession::run()
 
         while( socket.bytesAvailable() < 4 )
         {
-            if( !socket.waitForReadyRead(3 * 1000))
+            if( !socket.waitForReadyRead(-1)) // Intervals may vary
             {
-                LOG_INFO("TcpEcho session timed out");
-                return;
+                break;
             }
+        }
+        if( socket.state() == QAbstractSocket::UnconnectedState )
+        {
+            break; // Connection closed by client
         }
 
         QDataStream in(&socket);

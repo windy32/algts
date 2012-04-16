@@ -95,18 +95,19 @@ int main(int argc, char *argv[])
     ConsoleApplication app(argc, argv);
     
     // Enable logging
-    Log::enable(Log::LOG_LEVEL_INFO);
+    Log::enable(Log::LOG_LEVEL_DEBUG);
     
     // Enable tracing
     TextTrace::enable(argv[0]);
-
+/*
     // Setup router
     TelnetTerminal terminal("172.16.0.1");
+    terminal.start();
     terminal.enter("root\n");
     terminal.enter("admin\n");
-    terminal.enter("tc qdisc show\n");
+    terminal.enter("tc qdisc show\n"); // No QoS Script is available here
     terminal.close();
-    
+*/
     // Setup emulator
     NetemEmulator emulator("10.0.0.1", 3201);
     emulator.setParam("TxRate", "200kbps");
@@ -116,10 +117,10 @@ int main(int argc, char *argv[])
     emulator.commit();
     
     // Setup scenario
-    Scenario s(12345, 60); // seed & length
+    Scenario s(12345, 30); // seed & length
     s.addUser("Harry");
     s.addUser("Sally");
-
+/*
     s.addTask("Harry", new BulkDownloadTask(80));
     s.task()->setAttribute("MaxBytes", "1MB");
     s.task()->setAttribute("MaxRate", "1Mbps");
@@ -134,19 +135,20 @@ int main(int argc, char *argv[])
     s.task()->setAttribute("MaxRate", "INFINITE");
     s.task()->setAttribute("PacketSize", "1200B");
     s.task()->setAttribute("RequestSize", "50B");
-    
+*/
     s.addTask("Sally", new TcpEchoTask(23));
     s.task()->setAttribute("InputSize", "Uniform 8, 8");
     s.task()->setAttribute("EchoSize", "Exponential 20, 1000");
     s.task()->setAttribute("Interval", "Pareto 500, 1.5, 10000");
-    
+/*
     s.addTask("Sally", new AsyncUdpEchoTask(4000));
     s.task()->setAttribute("InputSize", "Uniform 10, 100");
     s.task()->setAttribute("EchoSize", "Uniform 10, 500");
     s.task()->setAttribute("Interval", "Pareto 600, 1.4");
-    
+*/
     // Execute
     app.exec(&s);
     
     return 0;
 }
+

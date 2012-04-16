@@ -159,8 +159,6 @@ void NetemEmulator::reset()
     }
 
     // Close connection
-    socket.disconnectFromHost();
-    socket.waitForDisconnected();
-
+    socket.close();
     LOG_DEBUG("End of NetemEmulator::reset");
 }

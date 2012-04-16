@@ -321,7 +321,7 @@ int main(int argc, char *argv[])
         return 0;
     }
     
-    Log::enable(Log::LOG_LEVEL_DEBUG);
+    Log::enable(Log::LOG_LEVEL_INFO);
     
     QHostAddress daemonAddr;
     quint16 daemonPort;
