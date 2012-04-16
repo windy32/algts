@@ -50,7 +50,6 @@ void TcpServer::run()
         // Wait for a new connection
         server.waitForNewConnection(-1);
         int socketDescriptor = server.nextPendingDescriptor();
-        LOG_INFO("A new connection established");
         
         // Start a new thread for the session
         TcpServerSession *session = createSession(socketDescriptor);

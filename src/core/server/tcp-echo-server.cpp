@@ -32,7 +32,7 @@ TcpEchoServerSession::TcpEchoServerSession(int socketDescriptor)
 
 void TcpEchoServerSession::run()
 {
-    LOG_DEBUG("Beginning of TcpEchoServerSession::run");
+    LOG_INFO("Beginning of TcpEchoServerSession::run");
 
     QTcpSocket socket;
     if( !socket.setSocketDescriptor(m_socketDescriptor))
@@ -85,6 +85,6 @@ void TcpEchoServerSession::run()
     }
     
     socket.close();
-    LOG_DEBUG("End of TcpEchoServerSession::run");
+    LOG_INFO("End of TcpEchoServerSession::run");
 }
 

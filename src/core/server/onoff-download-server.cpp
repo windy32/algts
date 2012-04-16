@@ -32,7 +32,7 @@ OnoffDownloadServerSession::OnoffDownloadServerSession(int socketDescriptor)
 
 void OnoffDownloadServerSession::run()
 {
-    LOG_DEBUG("Beginning of OnoffDownloadServerSession::run");
+    LOG_INFO("Beginning of OnoffDownloadServerSession::run");
     
     QTcpSocket socket;
     if( !socket.setSocketDescriptor(m_socketDescriptor))
@@ -97,5 +97,5 @@ void OnoffDownloadServerSession::run()
 
     // Close connection
     socket.close();
-    LOG_DEBUG("End of OnoffDownloadServerSession::run");
+    LOG_INFO("End of OnoffDownloadServerSession::run");
 }

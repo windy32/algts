@@ -32,7 +32,7 @@ BulkUploadServerSession::BulkUploadServerSession(int socketDescriptor)
 
 void BulkUploadServerSession::run()
 {
-    LOG_DEBUG("Beginning of BulkUploadServerSession::run");
+    LOG_INFO("Beginning of BulkUploadServerSession::run");
     
     QTcpSocket socket;
     if( !socket.setSocketDescriptor(m_socketDescriptor))
@@ -55,5 +55,5 @@ void BulkUploadServerSession::run()
     
     // Connection closed by client
     socket.close();
-    LOG_DEBUG("End of BulkUploadServerSession::run");
+    LOG_INFO("End of BulkUploadServerSession::run");
 }

@@ -32,7 +32,7 @@ BulkDownloadServerSession::BulkDownloadServerSession(int socketDescriptor)
 
 void BulkDownloadServerSession::run()
 {
-    LOG_DEBUG("Beginning of BulkDownloadServerSession::run");
+    LOG_INFO("Beginning of BulkDownloadServerSession::run");
     
     QTcpSocket socket;
     if( !socket.setSocketDescriptor(m_socketDescriptor))
@@ -89,6 +89,6 @@ void BulkDownloadServerSession::run()
     
     // Connection closed by client, or all bytes sent
     socket.close();
-    LOG_DEBUG("End of BulkDownloadServerSession::run");
+    LOG_INFO("End of BulkDownloadServerSession::run");
 }
 
