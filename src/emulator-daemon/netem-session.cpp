@@ -121,12 +121,12 @@ bool NetemSession::execCommit(QMap<QString, QString> &params)
 
     // Build commands
     QString commands[8];
-    commands[0] = QString( // Token 5KB, Queue 10KB
+    commands[0] = QString( // Token 20KB, Queue 40KB
         "tc qdisc add dev eth0 root handle 1: "
-        "tbf rate %1kbit buffer 5000 limit 10000").arg(rxRate);
+        "tbf rate %1kbit buffer 20000 limit 40000").arg(rxRate);
     commands[1] = QString(
         "tc qdisc add dev eth0 parent 1: handle 10: "
-        "netem limit 10000 delay %1ms").arg(rxDelay); // Queue length is 10KB
+        "netem limit 100000 delay %1ms").arg(rxDelay); // Queue 100KB
     commands[2] = QString("modprobe ifb");
     commands[3] = QString("ip link set dev ifb0 up");
     commands[4] = QString("tc qdisc add dev eth0 ingress");
@@ -139,7 +139,7 @@ bool NetemSession::execCommit(QMap<QString, QString> &params)
         "tbf rate %1kbit buffer 5000 limit 10000").arg(txRate);
     commands[7] = QString(
         "tc qdisc add dev ifb0 parent 1: handle 10: "
-        "netem limit 10000 delay %1ms").arg(txDelay); // Queue length is 10KB
+        "netem limit 100000 delay %1ms").arg(txDelay); // Queue 100KB
     
     // The sixth result appears in a clean ubuntu server 10.04.4
     QString expectedOutputs[8] = 

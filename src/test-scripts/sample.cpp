@@ -109,22 +109,23 @@ int main(int argc, char *argv[])
     terminal.close();
 */
     // Setup emulator
+
     NetemEmulator emulator("10.0.0.1", 3201);
     emulator.setParam("TxRate", "200kbps");
     emulator.setParam("RxRate", "2000kbps");
     emulator.setParam("TxDelay", "20ms");
     emulator.setParam("RxDelay", "20ms");
     emulator.commit();
-    
+
     // Setup scenario
     Scenario s(12345, 30); // seed & length
     s.addUser("Harry");
     s.addUser("Sally");
-/*
-    s.addTask("Harry", new BulkDownloadTask(80));
-    s.task()->setAttribute("MaxBytes", "1MB");
-    s.task()->setAttribute("MaxRate", "1Mbps");
     
+    s.addTask("Harry", new BulkDownloadTask(80));
+    s.task()->setAttribute("MaxBytes", "4MB");
+    //s.task()->setAttribute("MaxRate", "2Mbps");
+/*
     s.addTask("Harry", new BulkUploadTask(80));
     s.task()->setAttribute("MaxBytes", "INFINITE");
     s.task()->setAttribute("MaxRate", "INFINITE");
@@ -136,10 +137,12 @@ int main(int argc, char *argv[])
     s.task()->setAttribute("PacketSize", "1200B");
     s.task()->setAttribute("RequestSize", "50B");
 */
+/*
     s.addTask("Sally", new TcpEchoTask(23));
     s.task()->setAttribute("InputSize", "Uniform 8, 8");
     s.task()->setAttribute("EchoSize", "Exponential 20, 1000");
     s.task()->setAttribute("Interval", "Pareto 500, 1.5, 10000");
+*/
 /*
     s.addTask("Sally", new AsyncUdpEchoTask(4000));
     s.task()->setAttribute("InputSize", "Uniform 10, 100");
@@ -149,6 +152,8 @@ int main(int argc, char *argv[])
     // Execute
     app.exec(&s);
     
+    // Exit
+    //emulator.reset();
     return 0;
 }
 

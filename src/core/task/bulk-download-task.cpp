@@ -19,10 +19,10 @@ BulkDownloadTask::BulkDownloadTask(quint16 serverPort, qint32 startTime,
     qint32 stopTime)
     : Task(serverPort, startTime, stopTime)
 {
-    m_maxBytes = 0;
+    m_maxBytes = -1;
     LOG_DEBUG("MaxBytes set to default value INFINITE");
     
-    m_maxRate = 0;
+    m_maxRate = -1;
     LOG_DEBUG("MaxRate set to default value INFINITE");
 }
 
