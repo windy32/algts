@@ -58,7 +58,7 @@ if [ ! -d "$2-build" ]; then
 fi
 
 cd "$2-build"
-/home/feng32/qt/Desktop/Qt/4.8.0/gcc/bin/qmake "../$2.pro" #Fix later
+    qmake ../$2.pro
 make
 
 # cleanup

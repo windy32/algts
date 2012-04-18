@@ -22,7 +22,7 @@ if test -z "$QTDIR"; then
 fi
 
 # Generate makefile --------------------------------------------------------
-echo -n "  Generating Makefile..."
+echo "  Generating Makefile..."
 
 echo "QMAKE = $QTDIR/bin/qmake" > Makefile
 
@@ -62,4 +62,10 @@ echo 'uninstall:' >> Makefile
 echo '' >> Makefile
 echo 'FORCE:' >> Makefile
 
+# Preparing script helper --------------------------------------------------
+QMAKE=$(echo "$QTDIR/bin/qmake" | sed 's/\//\\\//g')
+echo "  Preparing Script Helper..."
+sed -i "s/ qmake/ $QMAKE/" test-scripts/script
+
 echo " Done"
+
