@@ -77,8 +77,7 @@ void BasicEmulator::commit()
     // Display result
     if( ok )
     {
-        LOG_INFO("Parameters successfully committed");
-        LOG_INFO(QString("Description: %1").arg(description));
+        LOG_INFO(description);
     }
     else
     {

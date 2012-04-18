@@ -107,15 +107,16 @@ bool BasicSession::execCommit(QMap<QString, QString> &params)
     cmds[3] = QString("tc filter add dev eth0 parent ffff: protocol ip pref 10"
                       "   u32 match u32 0 0 flowid 1:1"
                       "   action mirred egress redirect dev ifb0");
+
     cmds[4] = QString("tc qdisc add dev ifb0 root handle 1: htb default 1");
     cmds[5] = QString("tc class add dev ifb0 parent 1: classid 1:1"
                       "   htb rate %1kbit burst 6k quantum 1540").arg(txRate);
     cmds[6] = QString("tc qdisc add dev ifb0 parent 1:1 handle 10:"
-                      "sfq perturb 10");
+                      "   sfq perturb 10");
     
     cmds[7] = QString("tc qdisc add dev eth0 root handle 1: htb default 1");
     cmds[8] = QString("tc class add dev eth0 parent 1: classid 1:1"
-                      "   htb rate %1kbit burst 6k quantum 1540").arg(txRate);
+                      "   htb rate %1kbit burst 6k quantum 1540").arg(rxRate);
     cmds[9] = QString("tc qdisc add dev eth0 parent 1:1 handle 10:"
                       "   sfq perturb 10");
     
@@ -129,7 +130,7 @@ bool BasicSession::execCommit(QMap<QString, QString> &params)
     // Note:
     //    Commands below require root privilege, if the emulator daemon doesn't
     //    have root privilege, the output will always be empty
-    for(int i = 0; i < 8; i++)
+    for(int i = 0; i < 10; i++)
     {
         if( !execCommand(cmds[i], expectedOutputs[i]))
         {

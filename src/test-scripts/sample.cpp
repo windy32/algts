@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
     
     // Enable tracing
     TextTrace::enable(argv[0]);
-/*
+
     // Setup router
     TelnetTerminal terminal("172.16.0.1");
     terminal.start();
@@ -109,12 +109,10 @@ int main(int argc, char *argv[])
     terminal.close();
     
     // Setup emulator
-
     BasicEmulator emulator("10.0.0.1", 3201);
-    emulator.setParam("TxRate", "512kbps");
+    emulator.setParam("TxRate", "500kbps");
     emulator.setParam("RxRate", "2000kbps");
     emulator.commit();
-*/
 
     // Setup scenario
     Scenario s(12345, 40); // seed & length
@@ -150,7 +148,7 @@ int main(int argc, char *argv[])
     app.exec(&s);
     
     // Exit
-    //emulator.reset();
+    emulator.reset();
     return 0;
 }
 

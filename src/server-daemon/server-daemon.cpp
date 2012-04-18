@@ -136,7 +136,7 @@ bool parsePort(const QString &str, quint16 &port)
         LOG_ERROR(QString("Invalid daemon port %1").arg(str));
         return false;
     }
-    else if( port < 1024 || port > 65535 )
+    else if( port < 1024 )
     {
         LOG_ERROR("Daemon port's range is 1024 ~ 65535");
         return false;

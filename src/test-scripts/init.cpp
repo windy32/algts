@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
 
     // Setup emulator
     BasicEmulator emulator("10.0.0.1", 3201);
-    emulator.setParam("TxRate", "200kbps");
+    emulator.setParam("TxRate", "500kbps");
     emulator.setParam("RxRate", "2000kbps");
     emulator.commit();
     //emulator.reset();
