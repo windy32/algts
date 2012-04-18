@@ -107,25 +107,24 @@ int main(int argc, char *argv[])
     terminal.enter("admin\n");
     terminal.enter("tc qdisc show\n"); // No QoS Script is available here
     terminal.close();
-*/
+    
     // Setup emulator
 
-    NetemEmulator emulator("10.0.0.1", 3201);
-    emulator.setParam("TxRate", "200kbps");
+    BasicEmulator emulator("10.0.0.1", 3201);
+    emulator.setParam("TxRate", "512kbps");
     emulator.setParam("RxRate", "2000kbps");
-    emulator.setParam("TxDelay", "20ms");
-    emulator.setParam("RxDelay", "20ms");
     emulator.commit();
+*/
 
     // Setup scenario
-    Scenario s(12345, 30); // seed & length
+    Scenario s(12345, 40); // seed & length
     s.addUser("Harry");
     s.addUser("Sally");
     
     s.addTask("Harry", new BulkDownloadTask(80));
     s.task()->setAttribute("MaxBytes", "4MB");
-    //s.task()->setAttribute("MaxRate", "2Mbps");
-/*
+    s.task()->setAttribute("MaxRate", "2Mbps");
+    
     s.addTask("Harry", new BulkUploadTask(80));
     s.task()->setAttribute("MaxBytes", "INFINITE");
     s.task()->setAttribute("MaxRate", "INFINITE");
@@ -136,19 +135,17 @@ int main(int argc, char *argv[])
     s.task()->setAttribute("MaxRate", "INFINITE");
     s.task()->setAttribute("PacketSize", "1200B");
     s.task()->setAttribute("RequestSize", "50B");
-*/
-/*
+    
     s.addTask("Sally", new TcpEchoTask(23));
     s.task()->setAttribute("InputSize", "Uniform 8, 8");
     s.task()->setAttribute("EchoSize", "Exponential 20, 1000");
     s.task()->setAttribute("Interval", "Pareto 500, 1.5, 10000");
-*/
-/*
+
     s.addTask("Sally", new AsyncUdpEchoTask(4000));
     s.task()->setAttribute("InputSize", "Uniform 10, 100");
     s.task()->setAttribute("EchoSize", "Uniform 10, 500");
     s.task()->setAttribute("Interval", "Pareto 600, 1.4");
-*/
+
     // Execute
     app.exec(&s);
     

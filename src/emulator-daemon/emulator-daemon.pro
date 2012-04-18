@@ -13,8 +13,8 @@ CONFIG   += console
 CONFIG(debug,   debug|release): TARGET = ../../bin/emulatord-debug
 CONFIG(release, debug|release): TARGET = ../../bin/emulatord
 
-SOURCES += emulator-daemon-session.cpp netem-session.cpp emulator-daemon.cpp 
-HEADERS += emulator-daemon-session.h   netem-session.h
+SOURCES += emulator-daemon-session.cpp basic-session.cpp emulator-daemon.cpp 
+HEADERS += emulator-daemon-session.h   basic-session.h
 
 CONFIG(debug,   debug|release): LIBS += ../../bin/libcored.a
 CONFIG(release, debug|release): LIBS += ../../bin/libcore.a

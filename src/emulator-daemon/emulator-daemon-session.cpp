@@ -14,7 +14,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #include "emulator-daemon-session.h"
-#include "netem-session.h"
+#include "basic-session.h"
 
 #include "../core/log.h"
 
@@ -33,7 +33,7 @@ void EmulatorDaemonSession::run()
     // Receive the whole packet
     while( m_socket->bytesAvailable() < 4) 
     {
-        if (!m_socket->waitForReadyRead(3 * 1000)) 
+        if (!m_socket->waitForReadyRead(5 * 1000)) 
         {
             LOG_INFO("Emulator daemon session timed out");
             return;
@@ -45,7 +45,7 @@ void EmulatorDaemonSession::run()
     
     while( m_socket->bytesAvailable() < blockSize ) 
     {
-        if (!m_socket->waitForReadyRead(3 * 1000)) 
+        if (!m_socket->waitForReadyRead(5 * 1000)) 
         {
             LOG_INFO("Emulator daemon session timed out");
             return;
@@ -56,12 +56,12 @@ void EmulatorDaemonSession::run()
     QString emulatorName;
     in >> emulatorName;
     
-    if( emulatorName == "NetEm" )
+    if( emulatorName == "Basic" )
     {
         // Continue parsing emulator specific parameters, and
         // setup emulation environment
-        NetemSession ns;
-        ns.parse(m_socket, m_params);
+        BasicSession bs;
+        bs.parse(m_socket, m_params);
     }
     else
     {
@@ -69,3 +69,4 @@ void EmulatorDaemonSession::run()
     }
     LOG_DEBUG("End of EmulatorDaemonSession::run");
 }
+

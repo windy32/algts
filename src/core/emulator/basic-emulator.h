@@ -13,8 +13,8 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-#ifndef NETEM_EMULATOR_H
-#define NETEM_EMULATOR_H
+#ifndef BASIC_EMULATOR_H
+#define BASIC_EMULATOR_H
 
 #include "emulator.h"
 
@@ -22,7 +22,7 @@
  * \brief The netem emulator
  * \ingroup Emulators
  */
-class NetemEmulator : public Emulator
+class BasicEmulator : public Emulator
 {
 public:
     /**
@@ -30,11 +30,11 @@ public:
      * \param addr IPv4 address of the emulator daemon
      * \param port Port of the emulator daemon
      */
-    NetemEmulator(const QString &addr, quint16 port);
+    BasicEmulator(const QString &addr, quint16 port);
     
     virtual void commit();
     virtual void reset();
 };
 
-#endif /* NETEM_EMULATOR_H */
+#endif /* BASIC_EMULATOR_H */
 

@@ -63,8 +63,8 @@ HEADERS += client/async-udp-echo-client.h   client/client-factory.h
 SOURCES += emulator/emulator.cpp
 HEADERS += emulator/emulator.h
 
-SOURCES += emulator/netem-emulator.cpp emulator/nistnet-emulator.cpp
-HEADERS += emulator/netem-emulator.h   emulator/nistnet-emulator.h
+SOURCES += emulator/basic-emulator.cpp emulator/nistnet-emulator.cpp
+HEADERS += emulator/basic-emulator.h   emulator/nistnet-emulator.h
 
 # terminals
 SOURCES += terminal/terminal.cpp

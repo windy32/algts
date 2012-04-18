@@ -22,7 +22,7 @@ AsyncUdpEchoServer::AsyncUdpEchoServer(const QHostAddress &addr, quint16 port)
 
 void AsyncUdpEchoServer::run()
 {
-    LOG_DEBUG("Beginning of AsyncUdpEchoServer::run");
+    LOG_INFO("Beginning of AsyncUdpEchoServer::run");
 
     while( true )
     {

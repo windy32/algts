@@ -49,11 +49,9 @@ int main(int argc, char *argv[])
     terminal.close();
 
     // Setup emulator
-    NetemEmulator emulator("10.0.0.1", 3201);
+    BasicEmulator emulator("10.0.0.1", 3201);
     emulator.setParam("TxRate", "200kbps");
     emulator.setParam("RxRate", "2000kbps");
-    emulator.setParam("TxDelay", "20ms");
-    emulator.setParam("RxDelay", "20ms");
     emulator.commit();
     //emulator.reset();
     

@@ -30,8 +30,8 @@
  * \ingroup Core
  */
 
-// Emulator support
-#include "emulator/netem-emulator.h"
+// Emulation support
+#include "emulator/basic-emulator.h"
 #include "emulator/nistnet-emulator.h"
 
 // Terminal support

@@ -44,7 +44,7 @@ void BulkUploadServerSession::run()
     qint32 totalBytes = 0;
     
     // Receive data
-    while( socket.waitForReadyRead(3 * 1000))
+    while( socket.waitForReadyRead(5 * 1000))
     {
         qint64 bytesRead = socket.read(buffer, 256 * 1024);
         totalBytes += bytesRead;

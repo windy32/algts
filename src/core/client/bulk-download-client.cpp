@@ -72,7 +72,7 @@ void BulkDownloadClient::run()
     
     while( t.elapsed() < stopTime )
     {
-        if( socket.waitForReadyRead(3 * 1000))
+        if( socket.waitForReadyRead(5 * 1000))
         {
             qint32 bytesRead = (qint32)socket.read(buffer, 256 * 1024);
             totalBytes += bytesRead;

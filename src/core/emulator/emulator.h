@@ -38,40 +38,47 @@
  *  - Upstream delay
  *  - Downstream delay
  * 
- * Here's a typical script that sets the properties above with netem.
+ * Here's a typical script that sets the rate properties above.
  *
  * \code
- * tc qdisc add dev eth0 root handle 1: tbf rate 10mbit buffer 1600 limit 3000
- * tc qdisc add dev eth0 parent 1: handle 10: netem limit 10000
- *
  * modprobe ifb
  * ip link set dev ifb0 up
- * tc qdisc add dev eth0 ingress
- * tc filter add dev eth0 parent ffff: protocol ip pref 10 u32 \ 
- *    match u32 0 0 flowid 1:1 action mirred egress redirect dev ifb0
- * tc qdisc add dev ifb0 root handle 1: tbf rate 10mbit buffer 1600 limit 3000
- * tc qdisc add dev ifb0 parent 1: handle 10: netem limit 1000
+ * tc qdisc add dev eth0 handle ffff: ingress
+ * 
+ * tc filter add dev eth0 parent ffff: protocol ip pref 10 \
+ *    u32 match u32 0 0 flowid 1:1 \
+ *    action mirred egress redirect dev ifb0
+ * 
+ * tc qdisc add dev ifb0 root handle 1: htb default 1
+ * tc class add dev ifb0 parent 1: classid 1:1 \
+ *    htb rate 500kbit burst 6k quantum 1540
+ * tc qdisc add dev ifb0 parent 1:1 handle 10: sfq perturb 10
+ * 
+ * tc qdisc add dev eth0 root handle 1: htb default 1
+ * tc class add dev eth0 parent 1: classid 1:1 \
+ *    htb rate 2000kbit burst 6k quantum 1540
+ * tc qdisc add dev eth0 parent 1:1 handle 10: sfq perturb 10
  * \endcode
  * 
- * As is shown above, setting up emulation proproties involves not only the
- * netem qdisc, but also a tbf qdisc for rate control, an ifb device dealing
- * with incoming packet, as well as Linux commands like *modprobe*. If the
- * NIST Net emulator or something else is used, the scirpt could be quite
- * different. Note that different **solutions** may also lead to different
- * emulation capabilities. 
+ * \note Setting up emulation proproties may involve various detials. \n\n
+ *       e.g., to get the desired throughput, a fair queue is often necessary,
+ *       however in Linux, the stochastic fair queue (sfq) and the netem are
+ *       both classless qdiscs, which means that they cannot work together on a
+ *       certain interface. \n\n
+ *       Therefore with netem/sfq/htb, it's impossible to emulate rate limit and
+ *       delay at the same time. However other solutions may still exist.
  *
- * Therefore, the Emulator class is designed to wrap the underlying
- * implementation details. Currently, two concrete emulator classes are
- * available, NetemEmulator and NistnetEmulator. Each concrete emulator class
- * represents a **solution**, and every concrete emulator class shares a same
- * interface.
+ * Thus the Emulator class is designed to wrap the underlying implementation
+ * details. 
+ * 
+ * Currently, two concrete emulator classes are available, BasicEmulator and 
+ * NistnetEmulator. Each concrete emulator class represents a **solution**, and
+ * every concrete emulator class shares a same interface.
  *
  * \code
- * NetemEmulator emulator("10.0.0.1", 3201);
+ * BasicEmulator emulator("10.0.0.1", 3201);
  * emulator.setParam("TxRate", "200kbps");
  * emulator.setParam("RxRate", "2000kbps");
- * emulator.setParam("TxDelay", "20ms");
- * emulator.setParam("RxDelay", "20ms");
  * emulator.commit();
  * \endcode
  *
@@ -119,7 +126,7 @@ public:
      *     Field        | Type                   | Description
      *     -------------|------------------------|------------
      *     length       | uint32                 | Length of the remaining part
-     *     emulatorName | QString                | "NetEm" or "NistNet"
+     *     emulatorName | QString                | "Basic" or "NistNet"
      *     command      | QString                | "COMMIT"
      *     params       | QMap<QString, QString> | The parameters to commit
      *  3. The emulator daemon sends response
@@ -144,7 +151,7 @@ public:
      *     Field        | Type                   | Description
      *     -------------|------------------------|------------
      *     length       | uint32                 | Length of the remaining part
-     *     emulatorName | QString                | "NetEm" or "NistNet"
+     *     emulatorName | QString                | "Basic" or "NistNet"
      *     command      | QString                | "RESET"
      *  3. The emulator daemon sends response 
      *     Field        | Type                   | Description

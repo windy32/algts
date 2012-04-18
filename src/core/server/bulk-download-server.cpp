@@ -46,7 +46,7 @@ void BulkDownloadServerSession::run()
     
     while( socket.bytesAvailable() < 8 )
     {
-        if( !socket.waitForReadyRead(3 * 1000))
+        if( !socket.waitForReadyRead(5 * 1000))
         {
             LOG_INFO("BulkDownload session timed out");
             return;

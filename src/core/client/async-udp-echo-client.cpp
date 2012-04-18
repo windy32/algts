@@ -51,6 +51,7 @@ void AsyncUdpEchoClient::run()
     
     // Start receiving thread
     AsyncUdpEchoClientReceiver receiver(&socket, this);
+    m_receiving = true;
     receiver.start();
     
     for(int i = 0; i < intervals.size(); i++)
@@ -71,6 +72,8 @@ void AsyncUdpEchoClient::run()
         
         qint64 bytesWritten = socket.writeDatagram(block, 
             QHostAddress(m_serverAddr), serverPort);
+        socket.waitForBytesWritten(-1);
+        
         if( bytesWritten == -1 )
         {
             LOG_INFO("Cannot send input packet %d / %d", 
@@ -188,10 +191,13 @@ void AsyncUdpEchoClientReceiver::run()
                 continue;
             }
             
-            int index;
+            qint32 index;
             QByteArray block(buffer, size);
             QDataStream in(&block, QIODevice::ReadOnly);
             in >> index;
+            
+            LOG_DEBUG("Index %d, Delay %d", 
+                index, GlobalTimer::msec() - m_client->m_trace.time[index]);
             
             // Set delay
             m_client->m_mutex.lock();

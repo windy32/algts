@@ -294,12 +294,7 @@ void ServerDaemonSession::run()
     m_socket->waitForBytesWritten(-1);
     
     // Close connection
-    m_socket->disconnectFromHost();
-    if( m_socket->state() != QAbstractSocket::UnconnectedState )
-    {
-        m_socket->waitForDisconnected();
-    }
-
+    m_socket->close();
     LOG_DEBUG("End of ServerDaemonSession::run");
 }
 

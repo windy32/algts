@@ -28,45 +28,47 @@
  *
  * \see Emulator
  *
- * Currently, there're two defined emulators, "NistNet" and "NetEm", and only
+ * Currently, there're two defined emulators, "NistNet" and "Basic", and only
  * the latter one has been implemented.
  *
- * netem has been implemented as a qdisc that provides Network Emulation 
- * functionality for testing protocols by emulating the properties of wide area
- * networks. The current version emulates variable delay, loss, duplication and
- * re-ordering.
+ * Currently two parameters are supported by emulator daemon: TxRate and RxRate.
  * 
- * In Linux 2.6 distributions, netem is already enabled in the kernel and a
- * current version of iproute2 is included.
+ * Suppport of netem or nistnet for more network emulation functionality is
+ * likely to added lator.
  *
- * Currently four parameters are supported by emulator daemon: TxRate, RxRate, 
- * TxDelay and RxDelay.
- *
- * To perform rate control, the token bucket filter (tbf) is used as a parent
- * qdisc of the netem qdisc. And to deal with incoming traffic, the 
- * intermediate functional block device (ifb) is used.
+ * To perform rate control, the hierarchical token bucket (htb) is used as a
+ * parent qdisc of a stochastic fair queue (sfq). Note that sfq is extremely
+ * important to gain specified throughput. And to deal with incoming traffic, 
+ * the intermediate functional block device (ifb) is used.
  *
  * Typical setup script:
  *
  * \code
- * tc qdisc add dev eth0 root handle 1: tbf rate 10mbit buffer 1600 limit 3000
- * tc qdisc add dev eth0 parent 1: handle 10: netem limit 10000
- *
  * modprobe ifb
  * ip link set dev ifb0 up
- * tc qdisc add dev eth0 ingress
- * tc filter add dev eth0 parent ffff: protocol ip pref 10 u32 \ 
- *    match u32 0 0 flowid 1:1 action mirred egress redirect dev ifb0
- * tc qdisc add dev ifb0 root handle 1: tbf rate 10mbit buffer 1600 limit 3000
- * tc qdisc add dev ifb0 parent 1: handle 10: netem limit 1000 *
+ * tc qdisc add dev eth0 handle ffff: ingress
+ * 
+ * tc filter add dev eth0 parent ffff: protocol ip pref 10 \
+ *    u32 match u32 0 0 flowid 1:1 \
+ *    action mirred egress redirect dev ifb0
+ * 
+ * tc qdisc add dev ifb0 root handle 1: htb default 1
+ * tc class add dev ifb0 parent 1: classid 1:1 \
+ *    htb rate 500kbit burst 6k quantum 1540
+ * tc qdisc add dev ifb0 parent 1:1 handle 10: sfq perturb 10
+ * 
+ * tc qdisc add dev eth0 root handle 1: htb default 1
+ * tc class add dev eth0 parent 1: classid 1:1 \
+ *    htb rate 2000kbit burst 6k quantum 1540
+ * tc qdisc add dev eth0 parent 1:1 handle 10: sfq perturb 10
  * \endcode
  *
  * Typical reset script:
  *
  * \code
  * tc qdisc del dev eth0 root handle 1:
+ * tc qdisc del dev eth0 ingress
  * tc qdisc del dev ifb0 root handle 1:
- * tc filter del dev eth0 parent ffff: pref 10
  * \endcode
  */
 

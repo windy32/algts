@@ -13,13 +13,13 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-#include "netem-session.h"
+#include "basic-session.h"
 #include "../core/log.h"
 
-bool NetemSession::execCommand(const QString &command, 
+bool BasicSession::execCommand(const QString &command, 
                                const QString &expectedOutput)
 {
-    LOG_DEBUG("Beginning of NetemSession::execCommand");
+    LOG_DEBUG("Beginning of BasicSession::execCommand");
 
     // Start process
     QProcess process;
@@ -43,7 +43,7 @@ bool NetemSession::execCommand(const QString &command,
     // Compare and return
     if( output == expectedOutput.toLocal8Bit())
     {
-        LOG_DEBUG("End of NetemSession::execCommand");
+        LOG_DEBUG("End of BasicSession::execCommand");
         return true;
     }
     else
@@ -57,9 +57,9 @@ bool NetemSession::execCommand(const QString &command,
 }
 
 // ! Need reconstruct
-bool NetemSession::execCommit(QMap<QString, QString> &params)
+bool BasicSession::execCommit(QMap<QString, QString> &params)
 {
-    LOG_DEBUG("Beginning of NetemSession::execCommit");
+    LOG_DEBUG("Beginning of BasicSession::execCommit");
 
     LOG_INFO("Updating emulator settings...");
     QMap<QString, QString>::const_iterator it;
@@ -71,8 +71,6 @@ bool NetemSession::execCommit(QMap<QString, QString> &params)
     // Init parameters
     int txRate = 100000; // 100mbps
     int rxRate = 100000; // 100mbps
-    int txDelay = 0; // 0ms
-    int rxDelay = 0; // 0ms
     
     // Read parameters (no error handling is necessary here)
     if( params.contains("TxRate"))
@@ -101,49 +99,30 @@ bool NetemSession::execCommit(QMap<QString, QString> &params)
         }
     }
     
-    if( params.contains("TxDelay"))
-    {
-        QRegExp rx("^([0-9]+)ms$");
-        if( rx.indexIn(params["TxDelay"]) != -1 )
-        {
-            txDelay = rx.cap(1).toLong();
-        }
-    }
-
-    if( params.contains("RxDelay"))
-    {
-        QRegExp rx("^([0-9]+)ms$");
-        if( rx.indexIn(params["RxDelay"]) != -1 )
-        {
-            rxDelay = rx.cap(1).toLong();
-        }
-    }
-
     // Build commands
-    QString commands[8];
-    commands[0] = QString( // Token 20KB, Queue 40KB
-        "tc qdisc add dev eth0 root handle 1: "
-        "tbf rate %1kbit buffer 20000 limit 40000").arg(rxRate);
-    commands[1] = QString(
-        "tc qdisc add dev eth0 parent 1: handle 10: "
-        "netem limit 100000 delay %1ms").arg(rxDelay); // Queue 100KB
-    commands[2] = QString("modprobe ifb");
-    commands[3] = QString("ip link set dev ifb0 up");
-    commands[4] = QString("tc qdisc add dev eth0 ingress");
-    commands[5] = QString(
-        "tc filter add dev eth0 parent ffff: protocol ip pref 10 "
-        "   u32 match u32 0 0 flowid 1:1 "
-        "   action mirred egress redirect dev ifb0");
-    commands[6] = QString( // Token 5KB, Queue 10KB
-        "tc qdisc add dev ifb0 root handle 1: "
-        "tbf rate %1kbit buffer 5000 limit 10000").arg(txRate);
-    commands[7] = QString(
-        "tc qdisc add dev ifb0 parent 1: handle 10: "
-        "netem limit 100000 delay %1ms").arg(txDelay); // Queue 100KB
+    QString cmds[10];
+    cmds[0] = QString("modprobe ifb");
+    cmds[1] = QString("ip link set dev ifb0 up");
+    cmds[2] = QString("tc qdisc add dev eth0 handle ffff: ingress");
+    cmds[3] = QString("tc filter add dev eth0 parent ffff: protocol ip pref 10"
+                      "   u32 match u32 0 0 flowid 1:1"
+                      "   action mirred egress redirect dev ifb0");
+    cmds[4] = QString("tc qdisc add dev ifb0 root handle 1: htb default 1");
+    cmds[5] = QString("tc class add dev ifb0 parent 1: classid 1:1"
+                      "   htb rate %1kbit burst 6k quantum 1540").arg(txRate);
+    cmds[6] = QString("tc qdisc add dev ifb0 parent 1:1 handle 10:"
+                      "sfq perturb 10");
     
-    // The sixth result appears in a clean ubuntu server 10.04.4
-    QString expectedOutputs[8] = 
-        { "", "", "", "", "", "Action 4 device ifb0 ifindex 3\n", "", "" }; 
+    cmds[7] = QString("tc qdisc add dev eth0 root handle 1: htb default 1");
+    cmds[8] = QString("tc class add dev eth0 parent 1: classid 1:1"
+                      "   htb rate %1kbit burst 6k quantum 1540").arg(txRate);
+    cmds[9] = QString("tc qdisc add dev eth0 parent 1:1 handle 10:"
+                      "   sfq perturb 10");
+    
+    // The fourth result appears in a clean ubuntu server 10.04.4
+    QString expectedOutputs[10] = 
+        { "", "", "", "Action 4 device ifb0 ifindex 3\n", 
+          "", "" , "", "", "", "" }; 
     
     // Execute commands
     //
@@ -152,19 +131,19 @@ bool NetemSession::execCommit(QMap<QString, QString> &params)
     //    have root privilege, the output will always be empty
     for(int i = 0; i < 8; i++)
     {
-        if( !execCommand(commands[i], expectedOutputs[i]))
+        if( !execCommand(cmds[i], expectedOutputs[i]))
         {
             return false;
         }
     }
 
-    LOG_DEBUG("End of NetemSession::execCommit");
+    LOG_DEBUG("End of BasicSession::execCommit");
     return true;
 }
 
-bool NetemSession::execReset()
+bool BasicSession::execReset()
 {
-    LOG_DEBUG("Beginning of NetemSession::execReset");
+    LOG_DEBUG("Beginning of BasicSession::execReset");
     LOG_INFO("Reseting emulator...");
     
     if( !execCommand("tc qdisc del dev eth0 root handle 1:", ""))
@@ -172,21 +151,18 @@ bool NetemSession::execReset()
     
     if( !execCommand("tc qdisc del dev eth0 ingress", ""))
         return false;
-    
-    if( !execCommand("tc filter del dev eth0 parent ffff: pref 10", ""))
-        return false;
-    
+        
     if( !execCommand("tc qdisc del dev ifb0 root handle 1:", ""))
         return false;
 
-    LOG_DEBUG("End of NetemSession::execReset");
+    LOG_DEBUG("End of BasicSession::execReset");
     return true;
 }
 
-bool NetemSession::parseCommit(
+bool BasicSession::parseCommit(
     QTcpSocket *socket, QMap<QString, QString> &params)
 {
-    LOG_DEBUG("Beginning of NetemSession::parseCommit");
+    LOG_DEBUG("Beginning of BasicSession::parseCommit");
     
     QMap<QString, QString> newParams;
     QDataStream in(socket);
@@ -234,40 +210,6 @@ bool NetemSession::parseCommit(
                 continue;
             }
         }
-        else if( it.key() == "TxDelay" || it.key() == "RxDelay" )
-        {
-            // Capture number
-            QString number;
-            QRegExp rx("^([0-9]+)ms$");
-            
-            if( rx.indexIn(it.value()) == -1 )
-            {
-                LOG_WARN(QString("Invalid value %1 for parameter %2")
-                    .arg(it.value()).arg(it.key()));
-                paramValid = false;
-                description.append(QString("Invalid value %1 for parameter %2")
-                    .arg(it.value()).arg(it.key()));
-                continue;
-            }
-            
-            number = rx.cap(1);
-            
-            // Convert to bytes with limitation
-            bool ok;
-            qint32 intValue = number.toLong(&ok);
-
-            if( !ok || // cannot convert to long, 
-                intValue < 10 || // less than 10ms
-                intValue > 1000 ) // or greater than 1000ms
-            {
-                LOG_WARN(QString("Invalid value %1 for parameter %2")
-                    .arg(it.value()).arg(it.key()));
-                paramValid = false;
-                description.append(QString("Invalid value %1 for parameter %2")
-                    .arg(it.value()).arg(it.key()));
-                continue;
-            }
-        }
         else
         {
             LOG_WARN(QString("Invalid parameter %1").arg(it.key()));
@@ -298,13 +240,13 @@ bool NetemSession::parseCommit(
         socket->write(block);
         socket->waitForBytesWritten(-1);
     }
-    LOG_DEBUG("End of NetemSession::parseCommit");
+    LOG_DEBUG("End of BasicSession::parseCommit");
     return paramValid;
 }
 
-void NetemSession::parse(QTcpSocket *socket, QMap<QString, QString> &params)
+void BasicSession::parse(QTcpSocket *socket, QMap<QString, QString> &params)
 {
-    LOG_DEBUG("Beginning of NetemSession::parse");
+    LOG_DEBUG("Beginning of BasicSession::parse");
     
     QDataStream in(socket);
 
@@ -376,5 +318,6 @@ void NetemSession::parse(QTcpSocket *socket, QMap<QString, QString> &params)
     
     // Close connection
     socket->close();
-    LOG_DEBUG("End of NetemSession::parse");
+    LOG_DEBUG("End of BasicSession::parse");
 }
+

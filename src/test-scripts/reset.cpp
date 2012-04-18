@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
     Log::enable(Log::LOG_LEVEL_DEBUG);
     
     // Setup emulator
-    NetemEmulator emulator("10.0.0.1", 3201);
+    BasicEmulator emulator("10.0.0.1", 3201);
     emulator.reset();
     
     return 0;
