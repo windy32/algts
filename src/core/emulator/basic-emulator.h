@@ -19,14 +19,14 @@
 #include "emulator.h"
 
 /**
- * \brief The netem emulator
+ * \brief The basic emulator
  * \ingroup Emulators
  */
 class BasicEmulator : public Emulator
 {
 public:
     /**
-     * \brief Initialize the netem emulator
+     * \brief Initialize the basic emulator
      * \param addr IPv4 address of the emulator daemon
      * \param port Port of the emulator daemon
      */

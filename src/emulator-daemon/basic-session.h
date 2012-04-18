@@ -44,7 +44,7 @@ private:
 
 public:
     /**
-     * \brief Parse the NetEm emulator specific part of the request, and execute
+     * \brief Parse the basic emulator specific part of the request, and execute
      *        the emulation requests.
      * \param socket The socket of the session
      * \param params The emulation parameters to be updated
