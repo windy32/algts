@@ -43,7 +43,6 @@ void OnoffDownloadClient::run()
         LOG_DEBUG("Period %d / %d", i + 1, onTimes.size());
         
         // Sleep during the off time
-        LOG_DEBUG("Sleep %d ms...", offTimes[i]);
         msleep(offTimes[i]);
 
         // First line in raw trace for current period

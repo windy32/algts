@@ -49,7 +49,6 @@ void TcpEchoClient::run()
     for(int i = 0; i < intervals.size(); i++)
     {
         // Sleep during the interval
-        LOG_DEBUG("Sleep %d", intervals[i]);
         msleep(intervals[i]);
         
         // Send input

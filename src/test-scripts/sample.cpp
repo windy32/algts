@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
     ConsoleApplication app(argc, argv);
     
     // Enable logging
-    Log::enable(Log::LOG_LEVEL_DEBUG);
+    Log::enable(Log::LOG_LEVEL_INFO);
     
     // Enable tracing
     TextTrace::enable(argv[0]);
@@ -122,7 +122,7 @@ int main(int argc, char *argv[])
     s.addUser("Sally");
     
     s.addTask("Harry", new BulkDownloadTask(80));
-    s.task()->setAttribute("MaxBytes", "4MB");
+    s.task()->setAttribute("MaxBytes", "2MB");
     s.task()->setAttribute("MaxRate", "2Mbps");
     
     s.addTask("Harry", new BulkUploadTask(80));

@@ -25,10 +25,6 @@ bool QBoundTcpSocket::bindAndConnect(
     const QString &serverAddr, quint16 serverPort)
 {
 #ifdef Q_OS_LINUX
-    LOG_DEBUG("Beginning of QBoundTcpSocket::bindAndConnect");
-    LOG_DEBUG(QString("Local address: %1:%2, Server address: %3:%4")
-        .arg(localAddr).arg(localPort).arg(serverAddr).arg(serverPort));
-
     int sockfd;
     int result;
     struct sockaddr_in localSockAddr;
@@ -77,7 +73,6 @@ bool QBoundTcpSocket::bindAndConnect(
         return false;
     }
     
-    LOG_DEBUG("End of QBoundTcpSocket::bindAndConnect");
     return true;
 #else
     qDebug() << "QBoundTcpSocket for Windows/Mac OS is not implemented yet";
