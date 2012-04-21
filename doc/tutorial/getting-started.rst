@@ -281,5 +281,103 @@ The Qt4 libraries can be found in ``$QTDIR/lib``. If the QtSDK is installed into
 Setting Up the Hardware-in-the-Loop Environment
 +++++++++++++++++++++++++++++++++++++++++++++++
 
+The hardware-in-the-loop environment is similar to the standard environment except that the client
+host and the server host are in a same physical host.
+
+To set up such an environment, we have to put the server into a virtual machine, as it's impossible
+to send packets to a local host via an interface that connects to somewhere else. 
+*Hardware-in-the-loop* also means that you have to get at least two ethernet adapters on you client
+host.
+
+.. image:: images/env_hil.jpg
+   :scale: 60 %
+   :align: center
+
+Assume your ethernet adapters are named eth0 and eth1, eth0 is connected to the lan port of your
+gateway, with an automatic ip address like 192.168.1.100, and eth1 is connected to the wan port.
+
+Before going on, delete any existing ip addresses on eth1, then execute the command 
+``ip addr show dev eth1``, you'll see something like the following displayed: 
+
+::
+
+    3: eth1: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc pfifo_fast state DOWN qlen 500
+        link/ether ee:66:97:7d:33:b8 brd ff:ff:ff:ff:ff:ff
+        inet6 fe80::ec66:97ff:fe7d:33b8/64 scope link 
+         valid_lft forever preferred_lft forever
+
+Notice that no IPv4 addresses are available on eth1, which means that TCP or UDP based traffic from
+the client host that relies on a IPv4 address will never pass through eth1.
+
+Now install a mininal linux distribution into the server host in virtual machine. Modem virtual 
+machine softwares like VirtualBox and VMWare support various network configurations including the
+*bridged adapter*, which is critical in algts' hardware-in-the-loop environment (and the pure
+virtual environment as well). Go to the network configuration page of your new virtual machine, 
+and set the network adapter bridged to eth1.
+
+The configuration above makes it possible for the server host in virtual machine to communicate with
+the gateway.
+
+Finally, insert your downloaded cd image for example, ubuntu-10.04.4-server-i386.iso, into the 
+virtual machine, and start installing.
+
+The initialization scripts in the hardware-in-the-loop environment are completely the same. Put a
+script ``setup-clinets.sh`` as shown below into the home directory in the client host:
+
+::
+
+    #!/bin/sh
+    ip addr add dev eth0 192.168.1.8/24
+    ip addr add dev eth0 192.168.1.9/24
+    ip addr add dev eth0 192.168.1.10/24
+    ip addr add dev eth0 192.168.1.11/24
+    ip addr add dev eth0 192.168.1.12/24
+    ip addr add dev eth0 192.168.1.13/24
+    ip addr add dev eth0 192.168.1.14/24
+    ip addr add dev eth0 192.168.1.15/24
+
+And put a script ``setup-servers.sh`` as shown below into the home directory in the server host:
+
+::
+
+    #!/bin/sh
+    ip addr add dev eth0 10.0.0.8/24
+    ip addr add dev eth0 10.0.0.9/24
+    ip addr add dev eth0 10.0.0.10/24
+    ip addr add dev eth0 10.0.0.11/24
+    ip addr add dev eth0 10.0.0.12/24
+    ip addr add dev eth0 10.0.0.13/24
+    ip addr add dev eth0 10.0.0.14/24
+    ip addr add dev eth0 10.0.0.15/24
+
+Finally, put file ``emulatord``, ``serverd``, ``libQtCore.so.4`` and ``libQtNetwork.so.4`` into
+the server host as described in previous section.
+
+There are various ways to get files into a host in the virtual machine:
+
+* Create a cd image containing these files and insert the cd into the virtual machine
+* Start a http server in the server host, configure port forwarding settings in the gateway, 
+  and download those files in the virtual machine
+* Install the VirtualBox/VMWare additions in the server host and share a folder in the client host
+
+For most users that simply want to send files into the virtual machine once, the first method is
+recommend as you shall not need additional servers or linux headers that have to be downloaded
+elsewhere.
+
+Type the following command to create an iso file for the server host (and replace the qt path when
+necessary):
+
+::
+
+    cd ~
+    mkdir algtsiso
+    cp repos/bin/emulatord algtsiso
+    cp repos/bin/serverd algtsiso
+    cp qt/Desktop/Qt/4.8.0/gcc/lib/libQtCore.so.4 algtsiso
+    cp qt/Desktop/Qt/4.8.0/gcc/lib/libQtCore.so.4 algtsiso
+    mkisofs -o algts.iso algtsiso
+
+Setting Up the Pure Virtual Environment
++++++++++++++++++++++++++++++++++++++++
 
 
