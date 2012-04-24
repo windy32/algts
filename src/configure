@@ -27,7 +27,7 @@ echo "  Generating Makefile..."
 echo "QMAKE = $QTDIR/bin/qmake" > Makefile
 
 echo '' >> Makefile
-echo 'all: corelib emulatord serverd' >> Makefile
+echo 'all: corelib emulatord serverd algtsgui' >> Makefile
 echo '' >> Makefile
 echo 'corelib:' >> Makefile
 echo '	mkdir -p core-build; \' >> Makefile
@@ -36,21 +36,31 @@ echo '	$(QMAKE) ../core/core.pro; \' >> Makefile
 echo '	make' >> Makefile
 echo '' >> Makefile
 echo 'emulatord:' >> Makefile
+echo '	rm -rf emulator-daemon-build; \' >> Makefile
 echo '	mkdir -p emulator-daemon-build; \' >> Makefile
 echo '	cd emulator-daemon-build; \' >> Makefile
 echo '	$(QMAKE) ../emulator-daemon/emulator-daemon.pro; \' >> Makefile
 echo '	make' >> Makefile
 echo '' >> Makefile
 echo 'serverd:' >> Makefile
+echo '	rm -rf server-daemon-build; \' >> Makefile
 echo '	mkdir -p server-daemon-build; \' >> Makefile
 echo '	cd server-daemon-build; \' >> Makefile
 echo '	$(QMAKE) ../server-daemon/server-daemon.pro; \' >> Makefile
+echo '	make' >> Makefile
+echo '' >> Makefile
+echo 'algtsgui:' >> Makefile
+echo '	rm -rf gui-build; \' >> Makefile
+echo '	mkdir -p gui-build; \' >> Makefile
+echo '	cd gui-build; \' >> Makefile
+echo '	$(QMAKE) ../gui/algtsgui.pro; \' >> Makefile
 echo '	make' >> Makefile
 echo '' >> Makefile
 echo 'clean:' >> Makefile
 echo '	rm -rf core-build' >> Makefile
 echo '	rm -rf emulator-daemon-build' >> Makefile
 echo '	rm -rf server-daemon-build' >> Makefile
+echo '	rm -rf gui-build' >> Makefile
 echo '	rm -f ../bin/*' >> Makefile
 echo '' >> Makefile
 echo 'distclean: clean' >> Makefile
