@@ -6,21 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>693</width>
-    <height>403</height>
+    <width>842</width>
+    <height>423</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>0</x>
       <y>0</y>
-      <width>641</width>
-      <height>361</height>
+      <width>841</width>
+      <height>391</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="mainLayout">
@@ -37,7 +37,7 @@
      <item>
       <widget class="QStackedWidget" name="pages">
        <property name="currentIndex">
-        <number>0</number>
+        <number>2</number>
        </property>
        <widget class="QWidget" name="pageWelcome">
         <layout class="QVBoxLayout" name="welcomeLayout">
@@ -54,7 +54,7 @@
           <number>12</number>
          </property>
          <item>
-          <widget class="QLabel" name="label1">
+          <widget class="QLabel" name="P1Label1">
            <property name="font">
             <font>
              <family>Sans Serif</family>
@@ -69,14 +69,14 @@
           </widget>
          </item>
          <item>
-          <widget class="Line" name="line1">
+          <widget class="Line" name="P1Line1">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
           </widget>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="layout1">
+          <layout class="QHBoxLayout" name="P1Layout1">
            <item>
             <widget class="QTextBrowser" name="textBrowser">
              <property name="minimumSize">
@@ -114,7 +114,7 @@
           </layout>
          </item>
          <item>
-          <spacer name="verticalSpacer_4">
+          <spacer name="P1Spacer1">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
            </property>
@@ -130,7 +130,7 @@
           </spacer>
          </item>
          <item>
-          <widget class="QLabel" name="label2">
+          <widget class="QLabel" name="P1Label2">
            <property name="font">
             <font>
              <family>Sans Serif</family>
@@ -145,14 +145,14 @@
           </widget>
          </item>
          <item>
-          <widget class="Line" name="line2">
+          <widget class="Line" name="P1Line2">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
           </widget>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="layout2">
+          <layout class="QHBoxLayout" name="P1Layout2">
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_3">
              <item>
@@ -224,7 +224,7 @@
           </layout>
          </item>
          <item>
-          <spacer name="verticalSpacer_5">
+          <spacer name="P1Spacer2">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
            </property>
@@ -240,7 +240,7 @@
           </spacer>
          </item>
          <item>
-          <widget class="QLabel" name="label3">
+          <widget class="QLabel" name="P1Label3">
            <property name="font">
             <font>
              <family>Sans Serif</family>
@@ -255,14 +255,14 @@
           </widget>
          </item>
          <item>
-          <widget class="Line" name="line3">
+          <widget class="Line" name="P1Line3">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
           </widget>
          </item>
          <item>
-          <layout class="QVBoxLayout" name="layout3">
+          <layout class="QVBoxLayout" name="P1Layout3">
            <item>
             <widget class="QLabel" name="lblScenarios">
              <property name="text">
@@ -288,66 +288,1484 @@
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="pageScenario"/>
-       <widget class="QWidget" name="pageScript">
-        <widget class="QComboBox" name="comboBox">
+       <widget class="QWidget" name="pageScenario">
+        <widget class="QWidget" name="">
          <property name="geometry">
           <rect>
-           <x>10</x>
+           <x>0</x>
            <y>10</y>
-           <width>261</width>
-           <height>27</height>
+           <width>691</width>
+           <height>351</height>
           </rect>
          </property>
-        </widget>
-        <widget class="QTextEdit" name="textEdit">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>50</y>
-           <width>261</width>
-           <height>221</height>
-          </rect>
-         </property>
-        </widget>
-        <widget class="QRadioButton" name="radioButton">
-         <property name="geometry">
-          <rect>
-           <x>280</x>
-           <y>10</y>
-           <width>108</width>
-           <height>22</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Setup Script</string>
-         </property>
-        </widget>
-        <widget class="QRadioButton" name="radioButton_2">
-         <property name="geometry">
-          <rect>
-           <x>400</x>
-           <y>10</y>
-           <width>108</width>
-           <height>22</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Reset Script</string>
-         </property>
-        </widget>
-        <widget class="QListView" name="listView">
-         <property name="geometry">
-          <rect>
-           <x>285</x>
-           <y>50</y>
-           <width>231</width>
-           <height>221</height>
-          </rect>
-         </property>
+         <layout class="QVBoxLayout" name="P2Layout">
+          <property name="leftMargin">
+           <number>6</number>
+          </property>
+          <property name="topMargin">
+           <number>6</number>
+          </property>
+          <property name="rightMargin">
+           <number>12</number>
+          </property>
+          <property name="bottomMargin">
+           <number>12</number>
+          </property>
+          <item>
+           <widget class="QWidget" name="scenarioWidget" native="true">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>200</width>
+              <height>100</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QStackedWidget" name="P2TargetProperty">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>200</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>200</height>
+             </size>
+            </property>
+            <property name="currentIndex">
+             <number>2</number>
+            </property>
+            <widget class="QWidget" name="scenario">
+             <widget class="QWidget" name="">
+              <property name="geometry">
+               <rect>
+                <x>10</x>
+                <y>10</y>
+                <width>631</width>
+                <height>171</height>
+               </rect>
+              </property>
+              <layout class="QVBoxLayout" name="P21Layout">
+               <item>
+                <layout class="QHBoxLayout" name="P21Layout0">
+                 <item>
+                  <widget class="QLabel" name="lblP21Scenario">
+                   <property name="maximumSize">
+                    <size>
+                     <width>65</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <family>Sans Serif</family>
+                     <weight>75</weight>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>Scenario</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="Line" name="hlP21">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="P21Layout1">
+                 <item>
+                  <widget class="QLabel" name="lblP21Name">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>56</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>56</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>Name</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLineEdit" name="txtP21Name"/>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="P21Layout2">
+                 <item>
+                  <widget class="QLabel" name="lblP21Length">
+                   <property name="minimumSize">
+                    <size>
+                     <width>56</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>56</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>Length</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QSlider" name="sldP22Length">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLineEdit" name="txtP21Length">
+                   <property name="minimumSize">
+                    <size>
+                     <width>80</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>80</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="lblP21Seconds">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>85</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>85</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>Seconds</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="P21Layout3">
+                 <item>
+                  <widget class="QLabel" name="lblP21Seed">
+                   <property name="minimumSize">
+                    <size>
+                     <width>56</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>56</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>Seed</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QSlider" name="sldP21Seed">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLineEdit" name="txtP21Seed">
+                   <property name="minimumSize">
+                    <size>
+                     <width>80</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>80</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="btnP21Random">
+                   <property name="minimumSize">
+                    <size>
+                     <width>85</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>85</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>Random</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <spacer name="P21Spacer">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>0</width>
+                   <height>200</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+            <widget class="QWidget" name="user">
+             <widget class="QWidget" name="">
+              <property name="geometry">
+               <rect>
+                <x>10</x>
+                <y>10</y>
+                <width>631</width>
+                <height>171</height>
+               </rect>
+              </property>
+              <layout class="QVBoxLayout" name="P22Layout">
+               <item>
+                <layout class="QHBoxLayout" name="P22Layout1">
+                 <item>
+                  <widget class="QLabel" name="lblP22User">
+                   <property name="maximumSize">
+                    <size>
+                     <width>36</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <family>Sans Serif</family>
+                     <weight>75</weight>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>User</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="Line" name="hlP22">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="P22Layout2">
+                 <item>
+                  <widget class="QLabel" name="lblP22Name">
+                   <property name="minimumSize">
+                    <size>
+                     <width>56</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>56</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>Name</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLineEdit" name="txtP22Name"/>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <spacer name="P22Spacer">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+            <widget class="QWidget" name="task">
+             <widget class="QWidget" name="">
+              <property name="geometry">
+               <rect>
+                <x>10</x>
+                <y>10</y>
+                <width>561</width>
+                <height>191</height>
+               </rect>
+              </property>
+              <layout class="QVBoxLayout" name="P23Layout">
+               <item>
+                <layout class="QHBoxLayout" name="P23Layout1">
+                 <item>
+                  <widget class="QLabel" name="lblP23Task">
+                   <property name="maximumSize">
+                    <size>
+                     <width>36</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <family>Sans Serif</family>
+                     <weight>75</weight>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>Task</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="Line" name="hlP23">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="P23Layout2">
+                 <property name="spacing">
+                  <number>10</number>
+                 </property>
+                 <item>
+                  <layout class="QVBoxLayout" name="P23Layout21">
+                   <item>
+                    <layout class="QHBoxLayout" name="P23Layout211">
+                     <item>
+                      <widget class="QLabel" name="lblP23Type">
+                       <property name="text">
+                        <string>Type</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QComboBox" name="cmbP23Type">
+                       <property name="minimumSize">
+                        <size>
+                         <width>175</width>
+                         <height>0</height>
+                        </size>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>175</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <spacer name="P23Spacer">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>20</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <widget class="Line" name="vlP23">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QStackedWidget" name="tasks">
+                   <property name="currentIndex">
+                    <number>2</number>
+                   </property>
+                   <widget class="QWidget" name="P23BdTask">
+                    <widget class="QWidget" name="">
+                     <property name="geometry">
+                      <rect>
+                       <x>10</x>
+                       <y>0</y>
+                       <width>371</width>
+                       <height>131</height>
+                      </rect>
+                     </property>
+                     <layout class="QVBoxLayout" name="P231Layout">
+                      <item>
+                       <layout class="QHBoxLayout" name="P231Layout1">
+                        <item>
+                         <widget class="QLabel" name="lblP231MaxBytes">
+                          <property name="minimumSize">
+                           <size>
+                            <width>70</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>70</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="text">
+                           <string>MaxBytes</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QSlider" name="sldP231MaxBytes">
+                          <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="txtP231MaxBytes">
+                          <property name="minimumSize">
+                           <size>
+                            <width>50</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>50</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                      <item>
+                       <layout class="QHBoxLayout" name="P231Layout2">
+                        <item>
+                         <widget class="QLabel" name="lblP231MaxRate">
+                          <property name="minimumSize">
+                           <size>
+                            <width>70</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>70</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="text">
+                           <string>MaxRate</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QSlider" name="sldP231MaxRate">
+                          <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="txtP231MaxRate">
+                          <property name="minimumSize">
+                           <size>
+                            <width>50</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>50</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                      <item>
+                       <spacer name="P231Spacer">
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>20</width>
+                          <height>40</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                     </layout>
+                    </widget>
+                   </widget>
+                   <widget class="QWidget" name="P23BuTask">
+                    <widget class="QWidget" name="">
+                     <property name="geometry">
+                      <rect>
+                       <x>10</x>
+                       <y>0</y>
+                       <width>371</width>
+                       <height>131</height>
+                      </rect>
+                     </property>
+                     <layout class="QVBoxLayout" name="P232Layout">
+                      <item>
+                       <layout class="QHBoxLayout" name="P232Layout1">
+                        <item>
+                         <widget class="QLabel" name="lblP232MaxBytes">
+                          <property name="minimumSize">
+                           <size>
+                            <width>70</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>70</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="text">
+                           <string>MaxBytes</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QSlider" name="sldP232MaxBytes">
+                          <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="txtP232MaxBytes">
+                          <property name="minimumSize">
+                           <size>
+                            <width>50</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>50</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                      <item>
+                       <layout class="QHBoxLayout" name="P232Layout2">
+                        <item>
+                         <widget class="QLabel" name="lblP232MaxRate">
+                          <property name="minimumSize">
+                           <size>
+                            <width>70</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>70</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="text">
+                           <string>MaxRate</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QSlider" name="sldP232MaxRate">
+                          <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="txtP232MaxRate">
+                          <property name="minimumSize">
+                           <size>
+                            <width>50</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>50</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                      <item>
+                       <spacer name="P232Spacer">
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>20</width>
+                          <height>40</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                     </layout>
+                    </widget>
+                   </widget>
+                   <widget class="QWidget" name="P23OdTask">
+                    <widget class="QWidget" name="">
+                     <property name="geometry">
+                      <rect>
+                       <x>10</x>
+                       <y>0</y>
+                       <width>371</width>
+                       <height>177</height>
+                      </rect>
+                     </property>
+                     <layout class="QVBoxLayout" name="P233Layout">
+                      <item>
+                       <layout class="QHBoxLayout" name="P233Layout1">
+                        <item>
+                         <widget class="QLabel" name="lblP233MaxRate">
+                          <property name="minimumSize">
+                           <size>
+                            <width>80</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>80</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="text">
+                           <string>MaxRate</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QSlider" name="sldP233MaxRate">
+                          <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="txtP233MaxRate">
+                          <property name="minimumSize">
+                           <size>
+                            <width>50</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>50</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                      <item>
+                       <layout class="QHBoxLayout" name="P233Layout2">
+                        <item>
+                         <widget class="QLabel" name="lblP233PacketSize">
+                          <property name="minimumSize">
+                           <size>
+                            <width>80</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>80</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="text">
+                           <string>PacketSize</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QSlider" name="sldP233PacketSize">
+                          <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="txtP233PacketSize">
+                          <property name="minimumSize">
+                           <size>
+                            <width>50</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>50</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                      <item>
+                       <layout class="QHBoxLayout" name="P233Layout3">
+                        <item>
+                         <widget class="QLabel" name="lblP233RequestSize">
+                          <property name="minimumSize">
+                           <size>
+                            <width>80</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>80</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="text">
+                           <string>RequestSize</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QSlider" name="sldP233RequestSize">
+                          <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="txtP233RequestSize">
+                          <property name="minimumSize">
+                           <size>
+                            <width>50</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>50</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                      <item>
+                       <layout class="QHBoxLayout" name="P233Layout4">
+                        <item>
+                         <widget class="QLabel" name="lblP233OnTime">
+                          <property name="minimumSize">
+                           <size>
+                            <width>80</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>80</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="text">
+                           <string>OnTime</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="txtP233OnTime"/>
+                        </item>
+                        <item>
+                         <widget class="QPushButton" name="btnP233OnTime">
+                          <property name="minimumSize">
+                           <size>
+                            <width>50</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>50</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="text">
+                           <string>...</string>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                      <item>
+                       <layout class="QHBoxLayout" name="P233Layout5">
+                        <item>
+                         <widget class="QLabel" name="lblP233OffTime">
+                          <property name="minimumSize">
+                           <size>
+                            <width>80</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>80</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="text">
+                           <string>OffTime</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="txtP233OffTime"/>
+                        </item>
+                        <item>
+                         <widget class="QPushButton" name="btnP233OffTime">
+                          <property name="minimumSize">
+                           <size>
+                            <width>50</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>50</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="text">
+                           <string>...</string>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                      <item>
+                       <spacer name="P233Spacer">
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>20</width>
+                          <height>40</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                     </layout>
+                    </widget>
+                   </widget>
+                   <widget class="QWidget" name="P23TeTask">
+                    <widget class="QWidget" name="">
+                     <property name="geometry">
+                      <rect>
+                       <x>0</x>
+                       <y>0</y>
+                       <width>381</width>
+                       <height>151</height>
+                      </rect>
+                     </property>
+                     <layout class="QVBoxLayout" name="P234Layout">
+                      <item>
+                       <layout class="QHBoxLayout" name="P234Layout1">
+                        <item>
+                         <widget class="QLabel" name="lblP234InputSize">
+                          <property name="minimumSize">
+                           <size>
+                            <width>70</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>70</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="text">
+                           <string>InputSize</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="txtP234InputSize"/>
+                        </item>
+                        <item>
+                         <widget class="QPushButton" name="btnP234InputSize">
+                          <property name="minimumSize">
+                           <size>
+                            <width>50</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>50</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="text">
+                           <string>...</string>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                      <item>
+                       <layout class="QHBoxLayout" name="P234Layout2">
+                        <item>
+                         <widget class="QLabel" name="lblP234EchoSize">
+                          <property name="minimumSize">
+                           <size>
+                            <width>70</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>70</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="text">
+                           <string>EchoSize</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="txtP234EchoSize"/>
+                        </item>
+                        <item>
+                         <widget class="QPushButton" name="btnP234EchoSize">
+                          <property name="minimumSize">
+                           <size>
+                            <width>50</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>50</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="text">
+                           <string>...</string>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                      <item>
+                       <layout class="QHBoxLayout" name="P234Layout3">
+                        <item>
+                         <widget class="QLabel" name="lblP234Interval">
+                          <property name="minimumSize">
+                           <size>
+                            <width>70</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>70</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="text">
+                           <string>Interval</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="txtP234Interval"/>
+                        </item>
+                        <item>
+                         <widget class="QPushButton" name="btnP234Interval">
+                          <property name="minimumSize">
+                           <size>
+                            <width>50</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>50</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="text">
+                           <string>...</string>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                      <item>
+                       <spacer name="P234Spacer">
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>20</width>
+                          <height>40</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                     </layout>
+                    </widget>
+                   </widget>
+                   <widget class="QWidget" name="P23AueTask">
+                    <widget class="QWidget" name="">
+                     <property name="geometry">
+                      <rect>
+                       <x>0</x>
+                       <y>0</y>
+                       <width>381</width>
+                       <height>151</height>
+                      </rect>
+                     </property>
+                     <layout class="QVBoxLayout" name="P235Layout">
+                      <item>
+                       <layout class="QHBoxLayout" name="P235Layout1">
+                        <item>
+                         <widget class="QLabel" name="lblP235InputSize">
+                          <property name="minimumSize">
+                           <size>
+                            <width>70</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>70</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="text">
+                           <string>InputSize</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="txtP235InputSize"/>
+                        </item>
+                        <item>
+                         <widget class="QPushButton" name="btnP235InputSize">
+                          <property name="minimumSize">
+                           <size>
+                            <width>50</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>50</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="text">
+                           <string>...</string>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                      <item>
+                       <layout class="QHBoxLayout" name="P235Layout2">
+                        <item>
+                         <widget class="QLabel" name="lblP235EchoSize">
+                          <property name="minimumSize">
+                           <size>
+                            <width>70</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>70</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="text">
+                           <string>EchoSize</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="txtP235EchoSize"/>
+                        </item>
+                        <item>
+                         <widget class="QPushButton" name="btnP235EchoSize">
+                          <property name="minimumSize">
+                           <size>
+                            <width>50</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>50</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="text">
+                           <string>...</string>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                      <item>
+                       <layout class="QHBoxLayout" name="horizontalLayout_3">
+                        <item>
+                         <widget class="QLabel" name="lblP235Interval">
+                          <property name="minimumSize">
+                           <size>
+                            <width>70</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>70</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="text">
+                           <string>Interval</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="txtP235Interval"/>
+                        </item>
+                        <item>
+                         <widget class="QPushButton" name="btnP235Interval">
+                          <property name="minimumSize">
+                           <size>
+                            <width>50</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>50</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="text">
+                           <string>...</string>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                      <item>
+                       <spacer name="P235Spacer">
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>20</width>
+                          <height>40</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                     </layout>
+                    </widget>
+                   </widget>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </widget>
-       <widget class="QWidget" name="pageNewTest"/>
+       <widget class="QWidget" name="pageScript">
+        <widget class="QWidget" name="">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>10</y>
+           <width>571</width>
+           <height>351</height>
+          </rect>
+         </property>
+         <layout class="QVBoxLayout" name="scriptLayout">
+          <item>
+           <layout class="QHBoxLayout" name="P3Layout1">
+            <item>
+             <widget class="QComboBox" name="cmbP3Scripts"/>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="rdoP3SetupScript">
+              <property name="text">
+               <string>Setup Script</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="rdoP3ResetScript">
+              <property name="text">
+               <string>Reset Script</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="P3Layout2">
+            <item>
+             <widget class="QTextEdit" name="txtP3Script"/>
+            </item>
+            <item>
+             <widget class="QListView" name="lstP3Params"/>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="P3Layout3">
+            <item>
+             <spacer name="P3Spacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnP3Auto">
+              <property name="text">
+               <string>Auto</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnP3AddSelected">
+              <property name="text">
+               <string>Add Selected</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnP3DeleteSelected">
+              <property name="text">
+               <string>Delete Selected</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="pageNewTest">
+        <widget class="QWidget" name="">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>0</y>
+           <width>441</width>
+           <height>261</height>
+          </rect>
+         </property>
+         <layout class="QVBoxLayout" name="newTestLayout">
+          <item>
+           <layout class="QHBoxLayout" name="P4Layout1">
+            <item>
+             <widget class="QLabel" name="lblP4Scenario">
+              <property name="text">
+               <string>Scenario</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="txtP4Scenario"/>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnP4Scenario">
+              <property name="text">
+               <string>...</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="P4Layout2">
+            <item>
+             <widget class="QLabel" name="lblP4Script">
+              <property name="text">
+               <string>Script</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="txtP4Script"/>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnP4Script">
+              <property name="text">
+               <string>...</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="P4Layout3">
+            <item>
+             <widget class="QLabel" name="lblP4Progress">
+              <property name="text">
+               <string>Progress</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QProgressBar" name="pgsP4">
+              <property name="value">
+               <number>24</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnP4Run">
+              <property name="text">
+               <string>Run</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <spacer name="SpacerP4">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </widget>
        <widget class="QWidget" name="pageViewTests"/>
       </widget>
      </item>
@@ -359,7 +1777,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>693</width>
+     <width>842</width>
      <height>25</height>
     </rect>
    </property>

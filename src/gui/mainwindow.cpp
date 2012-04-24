@@ -6,8 +6,24 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    // Layouts
     ui->centralWidget->setLayout(ui->mainLayout);
     ui->pageWelcome->setLayout(ui->welcomeLayout);
+
+    ui->pageScenario->setLayout(ui->P2Layout);
+    ui->scenario->setLayout(ui->P21Layout);
+    ui->user->setLayout(ui->P22Layout);
+    ui->task->setLayout(ui->P23Layout);
+
+    ui->P23BdTask->setLayout(ui->P231Layout);
+    ui->P23BuTask->setLayout(ui->P232Layout);
+    ui->P23OdTask->setLayout(ui->P233Layout);
+    ui->P23TeTask->setLayout(ui->P234Layout);
+    ui->P23AueTask->setLayout(ui->P235Layout);
+
+    ui->pageScript->setLayout(ui->scriptLayout);
+    ui->pageNewTest->setLayout(ui->newTestLayout);
 
     // Menus
     connect(ui->stakcList, SIGNAL(OnPageChanged(int)),
@@ -22,6 +38,12 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionNewTest, SIGNAL(triggered()), this, SLOT(MenuNewTest()));
     connect(ui->actionViewTests, SIGNAL(triggered()),
             this, SLOT(MenuViewTests()));
+
+    ui->cmbP23Type->addItem("Bulk Download");
+    ui->cmbP23Type->addItem("Bulk Upload");
+    ui->cmbP23Type->addItem("On/Off Download");
+    ui->cmbP23Type->addItem("TCP Echo");
+    ui->cmbP23Type->addItem("Asynchronous UDP Echo");
 }
 
 MainWindow::~MainWindow()
