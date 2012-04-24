@@ -226,6 +226,9 @@ file's name would be sample.trace.
 
     TextTrace::enable(argv[0]);
 
+A trace file keeps the details of the tests, which is used for analyzing QoS strategies applied at
+the gateway.
+
 Terminal
 ++++++++
 

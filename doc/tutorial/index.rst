@@ -18,6 +18,6 @@ source code.
    introduction
    getting-started
    conceptual-overview
-   logging-and-tracing
+   further-analysis
    conclusion
 
