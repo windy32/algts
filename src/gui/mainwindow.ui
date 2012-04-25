@@ -32,13 +32,12 @@
         <height>0</height>
        </size>
       </property>
-      <zorder>pages</zorder>
      </widget>
     </item>
     <item>
      <widget class="QStackedWidget" name="pages">
       <property name="currentIndex">
-       <number>4</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="pageWelcome">
        <layout class="QVBoxLayout" name="welcomeLayout">
@@ -2227,7 +2226,7 @@
            <attribute name="title">
             <string>Script</string>
            </attribute>
-           <widget class="QWidget" name="">
+           <widget class="QWidget" name="layoutWidget">
             <property name="geometry">
              <rect>
               <x>10</x>
@@ -2314,7 +2313,7 @@
            <attribute name="title">
             <string>Rating</string>
            </attribute>
-           <widget class="QWidget" name="">
+           <widget class="QWidget" name="layoutWidget">
             <property name="geometry">
              <rect>
               <x>0</x>
@@ -2535,7 +2534,7 @@
                      <widget class="QWidget" name="P53GlobalTx"/>
                      <widget class="QWidget" name="P53GlobalRx"/>
                      <widget class="QWidget" name="P53CustomUnary">
-                      <widget class="QWidget" name="">
+                      <widget class="QWidget" name="layoutWidget">
                        <property name="geometry">
                         <rect>
                          <x>0</x>
@@ -2604,12 +2603,12 @@
                       </widget>
                      </widget>
                      <widget class="QWidget" name="P53CustomBinary">
-                      <widget class="QWidget" name="">
+                      <widget class="QWidget" name="layoutWidget">
                        <property name="geometry">
                         <rect>
                          <x>0</x>
                          <y>0</y>
-                         <width>251</width>
+                         <width>256</width>
                          <height>91</height>
                         </rect>
                        </property>
