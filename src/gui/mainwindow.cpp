@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->centralWidget->setLayout(ui->mainLayout);
     ui->pageWelcome->setLayout(ui->welcomeLayout);
 
-    ui->pageScenario->setLayout(ui->P2Layout);
+    ui->pageScenario->setLayout(ui->scenarioLayout);
     ui->scenario->setLayout(ui->P21Layout);
     ui->user->setLayout(ui->P22Layout);
     ui->task->setLayout(ui->P23Layout);
@@ -24,6 +24,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->pageScript->setLayout(ui->scriptLayout);
     ui->pageNewTest->setLayout(ui->newTestLayout);
+    ui->pageViewTests->setLayout(ui->viewTestsLayout);
+
+    ui->tabP5Script->setLayout(ui->P52Layout);
+    ui->tabP5Rating->setLayout(ui->P53Layout);
+    ui->P53CustomUnary->setLayout(ui->P533Layout);
+    ui->P53CustomBinary->setLayout(ui->P534Layout);
 
     // Menus
     connect(ui->stakcList, SIGNAL(OnPageChanged(int)),
