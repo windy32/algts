@@ -1,12 +1,14 @@
 #include <QtGui/QApplication>
+
 #include "mainwindow.h"
-#include "ipaddrdialog.h"
-#include "emulatordialog.h"
-#include "distributiondialog.h"
-#include "selectscenariodialog.h"
-#include "selectscriptdialog.h"
-#include "savetestdialog.h"
-#include "ratingmethoddialog.h"
+
+#include "dialog/ipaddrdialog.h"
+#include "dialog/emulatordialog.h"
+#include "dialog/distributiondialog.h"
+#include "dialog/selectscenariodialog.h"
+#include "dialog/selectscriptdialog.h"
+#include "dialog/savetestdialog.h"
+#include "dialog/ratingmethoddialog.h"
 
 int main(int argc, char *argv[])
 {
@@ -14,6 +16,7 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
+/*
     IpAddrDialog d1;
     d1.show();
 
@@ -34,6 +37,6 @@ int main(int argc, char *argv[])
 
     RatingMethodDialog d7;
     d7.show();
-    
+*/
     return a.exec();
 }
