@@ -19,8 +19,15 @@ private:
     Ui::DistributionDialog *ui;
 
 private slots:
-    void onSliderChanged(int /*value*/);
-    void onDistributionChanged(int page);
+    void onSliderUniformMin(int value);
+    void onSliderUniformMax(int value);
+    void onSliderParetoMean(int value);
+    void onSliderParetoShape(int value);
+    void onSliderParetoBound(int value);
+    void onSliderExponentialMean(int value);
+    void onSliderExponentialBound(int value);
+
+    void updateText(int page);
 };
 
 #endif // DISTRIBUTIONDIALOG_H

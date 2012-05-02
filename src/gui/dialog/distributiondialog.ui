@@ -51,7 +51,7 @@
           </size>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="tabUniform">
           <attribute name="title">
@@ -115,6 +115,9 @@
                <property name="text">
                 <string>10</string>
                </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
               </widget>
              </item>
             </layout>
@@ -163,6 +166,9 @@
                </property>
                <property name="text">
                 <string>500</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -245,6 +251,9 @@
                <property name="text">
                 <string>500</string>
                </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
               </widget>
              </item>
             </layout>
@@ -294,6 +303,9 @@
                <property name="text">
                 <string>1.5</string>
                </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
               </widget>
              </item>
             </layout>
@@ -342,6 +354,9 @@
                </property>
                <property name="text">
                 <string>1450</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -433,6 +448,9 @@
                 <property name="text">
                  <string>500</string>
                 </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
                </widget>
               </item>
              </layout>
@@ -482,6 +500,9 @@
                 <property name="text">
                  <string>1450</string>
                 </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
                </widget>
               </item>
              </layout>
@@ -505,17 +526,21 @@
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="txtDistribution"/>
+        <widget class="QLineEdit" name="txtDistribution">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
      <item>
       <layout class="QVBoxLayout" name="Layout12" stretch="0,0">
        <item>
-        <widget class="QWidget" name="pdfWidget" native="true"/>
+        <widget class="PdfWidget" name="pdfWidget" native="true"/>
        </item>
        <item>
-        <widget class="QWidget" name="cdfWidget" native="true"/>
+        <widget class="CdfWidget" name="cdfWidget" native="true"/>
        </item>
       </layout>
      </item>
@@ -533,6 +558,20 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CdfWidget</class>
+   <extends>QWidget</extends>
+   <header>widget/cdfwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>PdfWidget</class>
+   <extends>QWidget</extends>
+   <header>widget/pdfwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>
