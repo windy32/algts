@@ -46,5 +46,11 @@ void PdfWidget::paintEvent(QPaintEvent *event)
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setBrush(Qt::white);
 
-    painter.drawRect(0, 0, width - 1, height - 1);
-}
+    // Draw widget bg
+    painter.drawRect(0, 0, width - 1, height - 10 - 4 - 1);
+
+    // Draw text
+    painter.setFont(QFont("Sans", 10));
+    painter.setPen(Qt::darkGray);
+    painter.drawText(0, height - 10, width, 11, Qt::AlignCenter,
+                     "Probability Density Function");}

@@ -36,7 +36,7 @@ private:
     } m_exponentialParam;
 
 protected:
-    void paintEvent(QPaintEvent *event);
+    void paintEvent(QPaintEvent * /* event */);
 
 public:
     explicit CdfWidget(QWidget *parent = 0);
