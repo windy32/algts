@@ -17,6 +17,10 @@ public:
     
 private:
     Ui::DistributionDialog *ui;
+
+private slots:
+    void onSliderChanged(int /*value*/);
+    void onDistributionChanged(int page);
 };
 
 #endif // DISTRIBUTIONDIALOG_H

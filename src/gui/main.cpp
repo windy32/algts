@@ -16,15 +16,14 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
+    DistributionDialog d3;
+    d3.show();
 /*
     IpAddrDialog d1;
     d1.show();
 
     EmulatorDialog d2;
     d2.show();
-
-    DistributionDialog d3;
-    d3.show();
 
     SelectScenarioDialog d4;
     d4.show();

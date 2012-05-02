@@ -8,6 +8,7 @@ class CdfWidget : public QWidget
     Q_OBJECT
 public:
     explicit CdfWidget(QWidget *parent = 0);
+    void setDistribution(QString distribution);
     
 signals:
     
