@@ -12,7 +12,7 @@ TEMPLATE = app
 CONFIG(debug,   debug|release): TARGET = ../../bin/algtsgui-debug
 CONFIG(release, debug|release): TARGET = ../../bin/algtsgui
 
-SOURCES += mainwindow.cpp main.cpp \
+SOURCES += mainwindow.cpp main.cpp
 
 SOURCES += widget/stacklist.cpp
 SOURCES += widget/ipaddresswidget.cpp
