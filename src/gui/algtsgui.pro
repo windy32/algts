@@ -13,6 +13,7 @@ CONFIG(debug,   debug|release): TARGET = ../../bin/algtsgui-debug
 CONFIG(release, debug|release): TARGET = ../../bin/algtsgui
 
 SOURCES += mainwindow.cpp main.cpp
+SOURCES += linegraph.cpp
 
 SOURCES += widget/stacklist.cpp
 SOURCES += widget/ipaddresswidget.cpp
@@ -30,6 +31,7 @@ SOURCES += dialog/savetestdialog.cpp
 SOURCES += dialog/ratingmethoddialog.cpp
 
 HEADERS += mainwindow.h
+HEADERS += linegraph.h
 
 HEADERS += widget/stacklist.h
 HEADERS += widget/ipaddresswidget.h
