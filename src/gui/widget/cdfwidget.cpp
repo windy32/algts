@@ -65,6 +65,8 @@ void CdfWidget::paintEvent(QPaintEvent * /* event */)
         int minX = m_uniformParam.min * 0.9 - m_uniformParam.max * 0.1;
         minX = qMax(0, minX);
         int maxX = m_uniformParam.max * 1.1 - m_uniformParam.min * 0.1;
+        maxX = qMax(1, maxX);
+        maxX = qMax(m_uniformParam.max + 1, maxX);
 
         LineGraph g(&painter, width, height - 10 - 4, minX, maxX, 0.0, 1.0);
         g.addBorder();
@@ -81,16 +83,15 @@ void CdfWidget::paintEvent(QPaintEvent * /* event */)
     }
     else if( m_curDistribution == PARETO )
     {
-        // CDF(x) = 1 - (xm / x) ^ alpha (x >= xm)
-        // PDF(x) = alpha * xm ^ alpha / x ^ (alpha + 1)
-        // mean = alpha / (alpha - 1) * xm
+        // CDF(x) = 1 - (xm / x) ^ shape (x >= xm)
+        // PDF(x) = shape * xm ^ shape / x ^ (shape + 1)
+        // mean = shape / (shape - 1) * xm
 
-        // shape = alpha
-        // xm = mean * (alpha - 1) / alpha
+        // xm = mean * (alpha - 1) / shape
         double xm = (m_paretoParam.mean *
                        (m_paretoParam.shape - 1) / m_paretoParam.shape);
         int minX = 0;
-        int maxX = xm * 3;
+        int maxX = qMax(1, (int)(xm * 3));
 
         LineGraph g(&painter, width, height - 10 - 4, minX, maxX, 0.0, 1.0);
         g.addBorder();
@@ -101,11 +102,63 @@ void CdfWidget::paintEvent(QPaintEvent * /* event */)
         g.addYScale(Qt::AlignBottom, 0.0);
         g.addYScale(Qt::AlignTop, 1.0);
 
-        for(double x1 = xm; x1 < maxX; x1 += 1.0)
+        double step = 2 * xm / 200.0;
+
+        g.addLine(0, xm, 0, 0);
+
+        for(double x1 = xm; x1 < maxX; x1 += step)
         {
-            double x2 = x1 + 1;
+            double x2 = x1 + step;
             double y1 = 1 - pow(xm / x1, m_paretoParam.shape);
             double y2 = 1 - pow(xm / x2, m_paretoParam.shape);
+
+            if( m_paretoParam.bound > 0 && x2 < m_paretoParam.bound )
+            {
+                y1 /= 1 - pow(xm / m_paretoParam.bound, m_paretoParam.shape);
+                y2 /= 1 - pow(xm / m_paretoParam.bound, m_paretoParam.shape);
+            }
+            else if( m_paretoParam.bound > 0 && x2 > m_paretoParam.bound )
+            {
+                y1 = 1.0;
+                y2 = 1.0;
+            }
+            g.addLine(x1, x2, y1, y2);
+        }
+    }
+    else if( m_curDistribution == EXPONENTIAL )
+    {
+        // CDF(x) = 1 - e ^ (- lamda * x) (x >= 0)
+        // mean = 1 / lamda
+        int minX = 0;
+        int maxX = qMax(1, (m_exponentialParam.mean * 3));
+
+        LineGraph g(&painter, width, height - 10 - 4, minX, maxX, 0.0, 1.0);
+        g.addBorder();
+
+        g.addXScale(Qt::AlignLeft, minX);
+        g.addXScale(Qt::AlignRight, maxX);
+
+        g.addYScale(Qt::AlignBottom, 0.0);
+        g.addYScale(Qt::AlignTop, 1.0);
+
+        double step = (maxX - minX) / 200.0;
+
+        for(double x1 = 0; x1 < maxX; x1 += step)
+        {
+            double x2 = x1 + step;
+            double y1 = 1 - exp(-1.0 / m_exponentialParam.mean * x1);
+            double y2 = 1 - exp(-1.0 / m_exponentialParam.mean * x2);
+
+            if( m_exponentialParam.bound > 0 && x2 < m_exponentialParam.bound )
+            {
+                y1 /= 1 - exp(-1.0 / m_exponentialParam.mean * m_exponentialParam.bound);
+                y2 /= 1 - exp(-1.0 / m_exponentialParam.mean * m_exponentialParam.bound);
+            }
+            else if( m_exponentialParam.bound > 0 && x2 > m_exponentialParam.bound )
+            {
+                y1 = 1.0;
+                y2 = 1.0;
+            }
             g.addLine(x1, x2, y1, y2);
         }
     }

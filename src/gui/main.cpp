@@ -1,4 +1,5 @@
 #include <QtGui/QApplication>
+#include <QDebug>
 
 #include "mainwindow.h"
 
@@ -16,8 +17,11 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
-    DistributionDialog d3;
-    d3.show();
+    QString d;
+    DistributionDialog d3(d);
+    d3.exec();
+
+    qDebug() << d;
 /*
     IpAddrDialog d1;
     d1.show();

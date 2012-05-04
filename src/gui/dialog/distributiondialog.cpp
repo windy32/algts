@@ -5,10 +5,10 @@
 #include "../widget/pdfwidget.h"
 
 #include <math.h>
-
-DistributionDialog::DistributionDialog(QWidget *parent) :
+DistributionDialog::DistributionDialog(QString &distribution, QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::DistributionDialog)
+    ui(new Ui::DistributionDialog),
+    m_distribution(distribution)
 {
     ui->setupUi(this);
     setLayout(ui->mainLayout);
@@ -30,6 +30,8 @@ DistributionDialog::DistributionDialog(QWidget *parent) :
             this, SLOT(onSliderExponentialMean(int)));
     connect(ui->sldExponentialBound, SIGNAL(valueChanged(int)),
             this, SLOT(onSliderExponentialBound(int)));
+
+    connect(ui->buttonBox, SIGNAL(rejected()), this, SLOT(onCancel()));
 
     connect(ui->tabs, SIGNAL(currentChanged(int)), this, SLOT(updateText(int)));
 
@@ -141,6 +143,11 @@ void DistributionDialog::onSliderParetoBound(int value)
 
 void DistributionDialog::onSliderExponentialMean(int value)
 {
+    if( value < 39 )
+    {
+        ui->sldExponentialMean->setValue(39);
+        return;
+    }
     if( value > ui->sldExponentialBound->value())
     {
         ui->sldExponentialMean->setValue(ui->sldExponentialBound->value());
@@ -163,6 +170,11 @@ void DistributionDialog::onSliderExponentialBound(int value)
             (int)(1250.0 * (pow(1.000219747, ui->sldExponentialBound->value()) - 1.0));
     ui->txtExponentialBound->setText(QString("%1").arg(transformedValue));
     updateText(ui->tabs->currentIndex());
+}
+
+void DistributionDialog::onCancel()
+{
+    m_distribution = "";
 }
 
 void DistributionDialog::updateText(int page)
@@ -203,6 +215,8 @@ void DistributionDialog::updateText(int page)
                         .arg(transformedMean)
                         .arg(transformedBound));
     }
+
+    m_distribution = ui->txtDistribution->text();
 
     ui->cdfWidget->setDistribution(ui->txtDistribution->text());
     ui->pdfWidget->setDistribution(ui->txtDistribution->text());
