@@ -64,8 +64,8 @@ public:
      * \return The max integer that the random variable can generate
      */
     virtual quint32 getMax() = 0;
-	
-    //virtual void serialize(QDataStream *pStream) = 0;
+
+    virtual void serialize(QDataStream *pStream) = 0;
 
 protected:
     /**
@@ -135,6 +135,8 @@ public:
     
     virtual quint32 getMin();
     virtual quint32 getMax();
+    
+    virtual void serialize(QDataStream *pStream);
 };
 
 /**
@@ -198,6 +200,8 @@ public:
     
     virtual quint32 getMin();
     virtual quint32 getMax();
+    
+    virtual void serialize(QDataStream *pStream);
 
 private:
 	double m_min;
@@ -271,6 +275,8 @@ public:
     
     virtual quint32 getMin();
     virtual quint32 getMax();
+
+    virtual void serialize(QDataStream *pStream);
 
 private:
 	double m_mean;  // Mean value of RV

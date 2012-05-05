@@ -138,7 +138,16 @@ QString BulkUploadTask::getName()
 
 void BulkUploadTask::serialize(QDataStream *stream)
 {
-    LOG_DEBUG("BulkUploadTask::serialize() not implemented yet");
+    if( stream->device()->openMode == QIODevice::ReadOnly )
+    {
+        Task::serialize(stream);
+        stream >> m_maxBytes >> m_maxRate;
+    }
+    else if( stream->device()->openMode == QIODevice::WriteOnly )
+    {
+        Task::serialize(stream);
+        stream << m_maxBytes << m_maxRate;
+    }
 }
 
 void BulkUploadTask::expand()

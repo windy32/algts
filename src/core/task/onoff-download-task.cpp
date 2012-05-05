@@ -185,9 +185,26 @@ QString OnoffDownloadTask::getName()
     return "On/Off Download Task";
 }
 
-void OnoffDownloadTask::serialize(QDataStream *stream)
+void OnoffDownloadTask::serialize(QDataStream &stream)
 {
-    LOG_DEBUG("OnoffDownloadTask::serialize() not implemented yet");
+    QString onTime, offTime;
+    
+    if( stream->device()->openMode == QIODevice::ReadOnly )
+    {
+        Task::serialize(stream);
+        stream >> m_maxRate >> m_packetSize >> m_requestSize;
+        stream >> onTime >> offTime;
+        
+        m_onTime = RandomVariableFactory::create(onTime);
+        m_offTime = RandomVariableFactory::create(offTime);
+    }
+    else if( stream->device()->openMode == QIODevice::WriteOnly )
+    {
+        Task::serialize(stream);
+        stream << m_maxRate << m_packetSize << m_requestSize;
+        m_onTime.serialize(stream);
+        m_offTime.serialize(stream);
+    }
 }
 
 void OnoffDownloadTask::expand()

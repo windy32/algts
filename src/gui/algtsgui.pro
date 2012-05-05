@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network
+QT       += core gui network sql
 
 TARGET = algtsgui
 TEMPLATE = app
@@ -13,7 +13,7 @@ CONFIG(debug,   debug|release): TARGET = ../../bin/algtsgui-debug
 CONFIG(release, debug|release): TARGET = ../../bin/algtsgui
 
 SOURCES += mainwindow.cpp main.cpp
-SOURCES += linegraph.cpp
+SOURCES += linegraph.cpp globaldatabase.cpp
 
 SOURCES += widget/stacklist.cpp
 SOURCES += widget/ipaddresswidget.cpp
@@ -31,7 +31,7 @@ SOURCES += dialog/savetestdialog.cpp
 SOURCES += dialog/ratingmethoddialog.cpp
 
 HEADERS += mainwindow.h
-HEADERS += linegraph.h
+HEADERS += linegraph.h globaldatabase.h
 
 HEADERS += widget/stacklist.h
 HEADERS += widget/ipaddresswidget.h

@@ -22,6 +22,18 @@ Task::Task(quint16 serverPort, qint32 startTime, qint32 stopTime)
 {
 }
 
+void Task::serialize(QDataStream &stream)
+{
+    if( stream->device()->openMode == QIODevice::ReadOnly )
+    {
+        stream >> m_serverPort >> m_startTime >> m_stopTime;
+    }
+    else if( stream->device()->openMode == QIODevice::WriteOnly )
+    {
+        stream << m_serverPort << m_startTime << m_stopTime;
+    }
+}
+
 quint16 Task::getServerPort()
 {
     return m_serverPort;

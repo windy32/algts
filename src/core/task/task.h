@@ -82,7 +82,7 @@ public:
      * \brief Serialize the task object
      * \param stream The target device of the serialization
      */
-    virtual void serialize(QDataStream *stream) = 0;
+    virtual void serialize(QDataStream &stream);
 
     /**
      * \brief Expand the task object
