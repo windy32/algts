@@ -17,6 +17,20 @@ public:
     
 private:
     Ui::EmulatorDialog *ui;
+    bool m_infiniteTxRate;
+    bool m_infiniteRxRate;
+
+private slots:
+    void onSliderTxRate();
+    void onSliderRxRate();
+    void onClearTxRate();
+    void onClearRxRate();
+
+    void onDefault();
+    void onOK();
+    void onCancel();
+
+    void updateText();
 };
 
 #endif // EMULATORDIALOG_H

@@ -16,19 +16,23 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     MainWindow w;
     w.show();
-
+/*
     QString d;
     DistributionDialog d3(d);
     d3.exec();
-
     qDebug() << d;
+*/
 /*
-    IpAddrDialog d1;
+    QString interface;
+    QList<QHostAddress> addrs;
+    IpAddrDialog d1(interface, addrs);
     d1.show();
-
+*/
+/*
     EmulatorDialog d2;
     d2.show();
-
+*/
+/*
     SelectScenarioDialog d4;
     d4.show();
 
