@@ -87,11 +87,11 @@ QString TcpEchoTask::getName()
     return "TCP Echo Task";
 }
 
-void TcpEchoTask::serialize(QDataStream *stream)
+void TcpEchoTask::serialize(QDataStream &stream)
 {
     QString inputSize, echoSize, interval;
     
-    if( stream->device()->openMode == QIODevice::ReadOnly )
+    if( stream.device()->openMode() == QIODevice::ReadOnly )
     {
         Task::serialize(stream);
         stream >> inputSize >> echoSize >> interval;
@@ -100,13 +100,13 @@ void TcpEchoTask::serialize(QDataStream *stream)
         m_echoSize = RandomVariableFactory::create(echoSize);
         m_interval = RandomVariableFactory::create(interval);
     }
-    else if( stream->device()->openMode == QIODevice::WriteOnly )
+    else if( stream.device()->openMode() == QIODevice::WriteOnly )
     {
         Task::serialize(stream);
         
-        m_inputSize.serialize(stream);
-        m_echoSize.serialize(stream);
-        m_interval.serialize(stream);
+        m_inputSize->serialize(stream);
+        m_echoSize->serialize(stream);
+        m_interval->serialize(stream);
     }
 }
 

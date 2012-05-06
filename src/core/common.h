@@ -55,7 +55,7 @@ public:
      *
      * Otherwise, an error is generated.
      */
-	virtual void serialize(QDataStream &stream) = 0;
+     virtual void serialize(QDataStream &stream) = 0;
 };
 
 #endif /* COMMON_H */

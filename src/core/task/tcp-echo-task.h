@@ -68,7 +68,7 @@ public: // interface for client
 public:
     virtual enum Type getType();
     virtual QString getName();
-    virtual void serialize(QDataStream *pStream);
+    virtual void serialize(QDataStream &stream);
     virtual void expand();
 };
 

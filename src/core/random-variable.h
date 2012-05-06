@@ -65,7 +65,7 @@ public:
      */
     virtual quint32 getMax() = 0;
 
-    virtual void serialize(QDataStream *pStream) = 0;
+    virtual void serialize(QDataStream &stream) = 0;
 
 protected:
     /**
@@ -136,7 +136,7 @@ public:
     virtual quint32 getMin();
     virtual quint32 getMax();
     
-    virtual void serialize(QDataStream *pStream);
+    virtual void serialize(QDataStream &stream);
 };
 
 /**
@@ -201,7 +201,7 @@ public:
     virtual quint32 getMin();
     virtual quint32 getMax();
     
-    virtual void serialize(QDataStream *pStream);
+    virtual void serialize(QDataStream &stream);
 
 private:
 	double m_min;
@@ -276,7 +276,7 @@ public:
     virtual quint32 getMin();
     virtual quint32 getMax();
 
-    virtual void serialize(QDataStream *pStream);
+    virtual void serialize(QDataStream &stream);
 
 private:
 	double m_mean;  // Mean value of RV
@@ -358,7 +358,10 @@ public:
     virtual quint32 getMin();
     virtual quint32 getMax();
 
+    virtual void serialize(QDataStream &stream);
+
 private:
+    double m_mean;
 	double m_scale; // Scale value of RV
 	double m_shape; // Shape parameter
 	double m_bound; // Upper bound on value (if non-zero)

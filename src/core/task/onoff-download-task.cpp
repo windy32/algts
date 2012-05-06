@@ -189,7 +189,7 @@ void OnoffDownloadTask::serialize(QDataStream &stream)
 {
     QString onTime, offTime;
     
-    if( stream->device()->openMode == QIODevice::ReadOnly )
+    if( stream.device()->openMode() == QIODevice::ReadOnly )
     {
         Task::serialize(stream);
         stream >> m_maxRate >> m_packetSize >> m_requestSize;
@@ -198,12 +198,12 @@ void OnoffDownloadTask::serialize(QDataStream &stream)
         m_onTime = RandomVariableFactory::create(onTime);
         m_offTime = RandomVariableFactory::create(offTime);
     }
-    else if( stream->device()->openMode == QIODevice::WriteOnly )
+    else if( stream.device()->openMode() == QIODevice::WriteOnly )
     {
         Task::serialize(stream);
         stream << m_maxRate << m_packetSize << m_requestSize;
-        m_onTime.serialize(stream);
-        m_offTime.serialize(stream);
+        m_onTime->serialize(stream);
+        m_offTime->serialize(stream);
     }
 }
 

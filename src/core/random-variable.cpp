@@ -66,7 +66,7 @@ quint32 NullVariable::getMax()
     return 0;
 }
 
-void NullVariable::serialize(QDataStream *pStream)
+void NullVariable::serialize(QDataStream & /*stream*/)
 {
     LOG_WARN("Call to NullVariable::serialize");
 }
@@ -104,13 +104,13 @@ quint32 UniformVariable::getMax()
     return static_cast<quint32>(m_max);
 }
 
-void UniformVariable::serialize(QDataStream *pStream)
+void UniformVariable::serialize(QDataStream &stream)
 {
-    if( stream->device()->openMode == QIODevice::ReadOnly )
+    if( stream.device()->openMode() == QIODevice::ReadOnly )
     {
         LOG_WARN("Call to UniformVariable::serialize() with ReadOnly mode");
     }
-    else if( stream->device()->openMode == QIODevice::WriteOnly )
+    else if( stream.device()->openMode() == QIODevice::WriteOnly )
     {
         stream << QString("Uniform %1, %2").arg(m_min).arg(m_max);
     }
@@ -174,13 +174,13 @@ quint32 ExponentialVariable::getMax()
     return (m_bound == 0) ? 0xFFFFFFFF : static_cast<quint32>(m_bound);
 }
 
-void ExponentialVariable::serialize(QDataStream *pStream)
+void ExponentialVariable::serialize(QDataStream &stream)
 {
-    if( stream->device()->openMode == QIODevice::ReadOnly )
+    if( stream.device()->openMode() == QIODevice::ReadOnly )
     {
         LOG_WARN("Call to ExponentialVariable::serialize() with ReadOnly mode");
     }
-    else if( stream->device()->openMode == QIODevice::WriteOnly )
+    else if( stream.device()->openMode() == QIODevice::WriteOnly )
     {
         stream << QString("Exponential %1, %2").arg(m_mean).arg(m_bound);
     }
@@ -189,7 +189,8 @@ void ExponentialVariable::serialize(QDataStream *pStream)
 // Pareto Variable
 
 ParetoVariable::ParetoVariable()
-    : m_scale(0.5 / 1.5), 
+    : m_mean(1.0),
+      m_scale(1.0 * 0.5 / 1.5), 
       m_shape(1.5), 
       m_bound(0)
 {
@@ -197,7 +198,8 @@ ParetoVariable::ParetoVariable()
 }
 
 ParetoVariable::ParetoVariable(double m)
-    : m_scale(m * 0.5 / 1.5), 
+    : m_mean(m),
+      m_scale(m * 0.5 / 1.5), 
       m_shape(1.5), 
       m_bound(0)
 {
@@ -205,7 +207,8 @@ ParetoVariable::ParetoVariable(double m)
 
 
 ParetoVariable::ParetoVariable(double m, double s)
-    : m_scale(m * (s - 1.0) / s), 
+    : m_mean(m),
+      m_scale(m * (s - 1.0) / s), 
       m_shape(s), 
       m_bound(0)
 {
@@ -213,7 +216,8 @@ ParetoVariable::ParetoVariable(double m, double s)
 
 
 ParetoVariable::ParetoVariable(double m, double s, double b)
-    : m_scale(m * (s - 1.0) / s), 
+    : m_mean(m),
+      m_scale(m * (s - 1.0) / s), 
       m_shape(s), 
       m_bound(b)
 {
@@ -247,15 +251,15 @@ quint32 ParetoVariable::getMax()
     return (m_bound == 0) ? 0xFFFFFFFF : static_cast<quint32>(m_bound);
 }
 
-void ParetoVariable::serialize(QDataStream *pStream)
+void ParetoVariable::serialize(QDataStream &stream)
 {
-    if( stream->device()->openMode == QIODevice::ReadOnly )
+    if( stream.device()->openMode() == QIODevice::ReadOnly )
     {
         LOG_WARN("Call to ParetoVariable::serialize() with ReadOnly mode");
     }
-    else if( stream->device()->openMode == QIODevice::WriteOnly )
+    else if( stream.device()->openMode() == QIODevice::WriteOnly )
     {
-        stream << QString("Pareto %1, %2")
+        stream << QString("Pareto %1, %2, %3")
             .arg(m_mean).arg(m_shape).arg(m_bound);
     }
 }

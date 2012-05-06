@@ -73,7 +73,7 @@ public:
     /**
      * \brief Generate a warning message and return immediately
      */
-    virtual void serialize(QDataStream *stream);
+    virtual void serialize(QDataStream &stream);
 
     /**
      * \brief Generate a warning message and return immediately

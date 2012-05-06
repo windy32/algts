@@ -31,7 +31,7 @@ NullTask *NullTask::getInstance()
     return m_instance;
 }
 
-void NullTask::setAttribute(const QString &attribute, const QString &value)
+void NullTask::setAttribute(const QString & /*attribute*/, const QString &/*value*/)
 {
     LOG_WARN("Call to NullTask::setAttribute()");
 }
@@ -46,7 +46,7 @@ QString NullTask::getName()
     return "Null Task";
 }
 
-void NullTask::serialize(QDataStream *stream)
+void NullTask::serialize(QDataStream &/*stream*/)
 {
     LOG_WARN("Call to NullTask::serialize()");
 }

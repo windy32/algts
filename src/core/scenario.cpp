@@ -16,6 +16,12 @@
 #include "scenario.h"
 #include "task/null-task.h"
 
+#include "task/bulk-download-task.h"
+#include "task/bulk-upload-task.h"
+#include "task/onoff-download-task.h"
+#include "task/tcp-echo-task.h"
+#include "task/async-udp-echo-task.h"
+
 Scenario::Scenario(qint32 seed, qint32 length)
     : m_seed(seed), 
       m_length(length),
@@ -71,7 +77,7 @@ QMap<QString, QVector<Task *> > &Scenario::tasks()
     return m_tasks;
 }
 
-void Scenario::serialize(QDataStream *stream)
+void Scenario::serialize(QDataStream &stream)
 {
     // Format
     // int32 seed
@@ -89,9 +95,9 @@ void Scenario::serialize(QDataStream *stream)
     //       | - int32       task2-1-type
     //       | - Task-Object task2-1
     //       | - ...
-    int32 count = 0;
+    qint32 count = 0;
     
-    if( stream->device()->openMode == QIODevice::ReadOnly )
+    if( stream.device()->openMode() == QIODevice::ReadOnly )
     {
         stream >> m_seed >> m_length;
         stream >> count;
@@ -99,29 +105,29 @@ void Scenario::serialize(QDataStream *stream)
         for(int i = 0; i < count; i++)
         {
             QString username;
-            int32 type;
+            qint32 type;
             Task *task;
             
             stream >> username >> type;
-            if( type == (int32)Task::BULK_DOWNLOAD )
+            if( type == (qint32)Task::BULK_DOWNLOAD )
             {
                 task = new BulkDownloadTask(0);
             }
-            else if( type == (int32)Task::BULK_UPLOAD )
+            else if( type == (qint32)Task::BULK_UPLOAD )
             {
                 task = new BulkUploadTask(0);
             }
-            else if( type == (int32)Task::ONOFF_DOWNLOAD )
+            else if( type == (qint32)Task::ONOFF_DOWNLOAD )
             {
                 task = new OnoffDownloadTask(0);
             }
-            else if( type == (int32)Task::TCP_ECHO )
+            else if( type == (qint32)Task::TCP_ECHO )
             {
                 task = new TcpEchoTask(0);
             }
-            else if( type == (int32)Task::ASYNC_UDP_ECHO )
+            else if( type == (qint32)Task::ASYNC_UDP_ECHO )
             {
-                task = new UdpEchoTask(0);
+                task = new AsyncUdpEchoTask(0);
             }
             task->serialize(stream);
             
@@ -132,12 +138,12 @@ void Scenario::serialize(QDataStream *stream)
             m_tasks[username].append(task);
         }
     }
-    else if( stream->device()->openMode == QIODevice::WriteOnly )
+    else if( stream.device()->openMode() == QIODevice::WriteOnly )
     {
         stream << m_seed << m_length;
         
         QMap<QString, QVector<Task *> >::iterator it;
-        for(it = tasks.begin(); it != tasks.end(); ++it)
+        for(it = m_tasks.begin(); it != m_tasks.end(); ++it)
         {
             for(int i = 0; i < it.value().size(); i++)
             {
@@ -146,7 +152,7 @@ void Scenario::serialize(QDataStream *stream)
         }
 
         stream << count;
-        for(it = tasks.begin(); it != tasks.end(); ++it)
+        for(it = m_tasks.begin(); it != m_tasks.end(); ++it)
         {
             for(int i = 0; i < it.value().size(); i++)
             {

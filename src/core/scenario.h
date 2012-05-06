@@ -116,7 +116,7 @@ public:
     QMap<QString, QVector<Task *> > &tasks();
 
 public:
-    virtual void serialize(QDataStream *stream);
+    virtual void serialize(QDataStream &stream);
 };
 
 #endif /* SCENARIO_H */

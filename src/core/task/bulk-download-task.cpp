@@ -137,12 +137,12 @@ QString BulkDownloadTask::getName()
 
 void BulkDownloadTask::serialize(QDataStream &stream)
 {
-    if( stream->device()->openMode == QIODevice::ReadOnly )
+    if( stream.device()->openMode() == QIODevice::ReadOnly )
     {
         Task::serialize(stream);
         stream >> m_maxBytes >> m_maxRate;
     }
-    else if( stream->device()->openMode == QIODevice::WriteOnly )
+    else if( stream.device()->openMode() == QIODevice::WriteOnly )
     {
         Task::serialize(stream);
         stream << m_maxBytes << m_maxRate;
