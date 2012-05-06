@@ -1,5 +1,19 @@
 #include "script.h"
 
+ScriptParam::ScriptParam()
+{
+    this->line = 0;
+    this->pos = 0;
+    this->defValue = "";
+}
+
+ScriptParam::ScriptParam(qint32 line, qint32 pos, const QString &defValue)
+{
+    this->line = line;
+    this->pos = pos;
+    this->defValue = defValue;
+}
+
 QDataStream &operator<<(QDataStream &out, const ScriptParam &param)
 {
     out << param.line << param.pos << param.defValue;

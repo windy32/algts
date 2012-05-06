@@ -14,15 +14,17 @@ private:
     GlobalDatabase();
 
 public:
-    GlobalDatabase *instance();
+    static GlobalDatabase *instance();
+    static void destroy();
 
+public:
     int getScenarioCount();
-    bool getScenario(int index, Scenario &scenario);
-    bool addScenario(Scenario &scenario);
+    void getScenario(int index, Scenario &scenario); // index starts with 1
+    void addScenario(Scenario &scenario);
 
     int getScriptCount();
-    bool getScript(int index, Script &script);
-    bool addScript(Script &script);
+    void getScript(int index, Script &script); // index starts with 1
+    void addScript(Script &script);
 };
 
 #endif // GLOBALDATABASE_H

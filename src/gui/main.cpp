@@ -11,11 +11,37 @@
 #include "dialog/savetestdialog.h"
 #include "dialog/ratingmethoddialog.h"
 
+#include "globaldatabase.h"
+
+void dbtest()
+{
+    qDebug() << "Scenarios: " << GlobalDatabase::instance()->getScenarioCount();
+    qDebug() << "Scripts: " << GlobalDatabase::instance()->getScriptCount();
+
+    Script s;
+    s.text = "Hello\n123\n";
+    s.params.append(ScriptParam(1, 4, "180"));
+    GlobalDatabase::instance()->addScript(s);
+
+    qDebug() << "Scenarios: " << GlobalDatabase::instance()->getScenarioCount();
+    qDebug() << "Scripts: " << GlobalDatabase::instance()->getScriptCount();
+
+    Script ss;
+    GlobalDatabase::instance()->getScript(1, ss);
+    qDebug() << "Text: " << ss.text;
+    qDebug() << "First Param: "
+             << ss.params[0].line << ", "
+             << ss.params[0].pos << ", "
+             << ss.params[0].defValue;
+}
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     MainWindow w;
     w.show();
+
+    dbtest();
 /*
     QString d;
     DistributionDialog d3(d);
@@ -45,5 +71,7 @@ int main(int argc, char *argv[])
     RatingMethodDialog d7;
     d7.show();
 */
+    GlobalDatabase::destroy();
+
     return a.exec();
 }

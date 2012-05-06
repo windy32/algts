@@ -8,6 +8,9 @@ struct ScriptParam
     qint32 line;
     qint32 pos;
     QString defValue;
+
+    ScriptParam();
+    ScriptParam(qint32 line, qint32 pos, const QString &defValue);
 };
 
 QDataStream &operator<<(QDataStream &out, const ScriptParam &param);

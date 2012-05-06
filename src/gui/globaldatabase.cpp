@@ -1,5 +1,15 @@
 #include "globaldatabase.h"
 
+// algts.db consists of following tables:
+//
+// - Scenario
+//    - UID          [Key] : Integer
+//    - Data               : Blob
+//
+// - Script
+//    - UID          [Key] : Integer
+//    - Data               : Blob
+
 GlobalDatabase *GlobalDatabase::m_instance = NULL;
 
 GlobalDatabase::GlobalDatabase()
@@ -9,6 +19,25 @@ GlobalDatabase::GlobalDatabase()
     if( !m_db.open())
     {
         qDebug() << "Cannot open database";
+    }
+    else
+    {
+        QSqlQuery query;
+        query.exec(
+            "Create Table If Not Exists Scenario("
+            "    UID         Integer,"
+            "    Data        Blob,"
+            "    "
+            "    Primary Key (UID)"
+            ");");
+
+        query.exec(
+            "Create Table If Not Exists Script("
+            "    UID         Integer,"
+            "    Data        Blob,"
+            "    "
+            "    Primary Key (UID)"
+            ");");
     }
 }
 
@@ -21,32 +50,87 @@ GlobalDatabase *GlobalDatabase::instance()
     return m_instance;
 }
 
+void GlobalDatabase::destroy()
+{
+    if( m_instance != NULL )
+    {
+        m_instance->m_db.close();
+        delete m_instance;
+        m_instance = NULL;
+    }
+}
+
 int GlobalDatabase::getScenarioCount()
 {
-    return 0;
+    QSqlQuery query;
+    query.exec("Select Count(*) From Scenario");
+    query.next();
+    return query.value(0).toInt();
 }
 
-bool GlobalDatabase::getScenario(int index, Scenario &scenario)
+void GlobalDatabase::getScenario(int index, Scenario &scenario)
 {
-    return false;
+    QSqlQuery query(QString("Select Data From Scenario where UID = %1").arg(index));
+
+    if( query.next())
+    {
+        QByteArray data;
+        QDataStream in(&data, QIODevice::ReadOnly);
+
+        data = query.value(0).toByteArray();
+        in >> scenario;
+    }
+    else
+    {
+        qDebug() << QString("No scenario with index %1 found").arg(index);
+    }
 }
 
-bool GlobalDatabase::addScenario(Scenario &scenario)
+void GlobalDatabase::addScenario(Scenario &scenario)
 {
-    return false;
+    QByteArray data;
+    QDataStream out(&data, QIODevice::WriteOnly);
+    out << scenario;
+
+    QSqlQuery query;
+    query.prepare("Insert Into Scenario(Data) values (:data)");
+    query.bindValue(":data", data);
+    query.exec();
 }
 
 int GlobalDatabase::getScriptCount()
 {
-    return 0;
+    QSqlQuery query;
+    query.exec("Select Count(*) From Script");
+    query.next();
+    return query.value(0).toInt();
 }
 
-bool GlobalDatabase::getScript(int index, Script &script)
+void GlobalDatabase::getScript(int index, Script &script)
 {
-    return false;
+    QSqlQuery query(QString("Select Data From Script where UID = %1").arg(index));
+    if( query.next())
+    {
+        QByteArray data;
+        QDataStream in(&data, QIODevice::ReadOnly);
+
+        data = query.value(0).toByteArray();
+        in >> script;
+    }
+    else
+    {
+        qDebug() << QString("No script with index %1 found").arg(index);
+    }
 }
 
-bool GlobalDatabase::addScript(Script &script)
+void GlobalDatabase::addScript(Script &script)
 {
-    return false;
+    QByteArray data;
+    QDataStream out(&data, QIODevice::WriteOnly);
+    out << script;
+
+    QSqlQuery query;
+    query.prepare("Insert Into Script(Data) values (:data)");
+    query.bindValue(":data", data);
+    query.exec();
 }
