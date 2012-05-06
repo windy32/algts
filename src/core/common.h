@@ -36,27 +36,5 @@
 #include <QMap>
 #include <QFile>
 
-/**
- * \brief The serialization interface
- */
-class Serializable
-{
-public:
-    /**
-     * \brief Serialize the object
-     *
-     * If the I/O device associated with the stream is in reading mode 
-     * (QIODevice::ReadOnly), the function will serialize the object from the
-     * device.
-     * 
-     * If the I/O device associated with the stream is in writing mode
-     * (QIODevice::WriteOnly), the function will serialize the object to the
-     * device.
-     *
-     * Otherwise, an error is generated.
-     */
-     virtual void serialize(QDataStream &stream) = 0;
-};
-
 #endif /* COMMON_H */
 

@@ -66,9 +66,10 @@ quint32 NullVariable::getMax()
     return 0;
 }
 
-void NullVariable::serialize(QDataStream & /*stream*/)
+QString NullVariable::toString()
 {
-    LOG_WARN("Call to NullVariable::serialize");
+    LOG_WARN("Call to NullVariable::toString");
+    return "NullVariable";
 }
 
 // Uniform variable
@@ -104,16 +105,9 @@ quint32 UniformVariable::getMax()
     return static_cast<quint32>(m_max);
 }
 
-void UniformVariable::serialize(QDataStream &stream)
+QString UniformVariable::toString()
 {
-    if( stream.device()->openMode() == QIODevice::ReadOnly )
-    {
-        LOG_WARN("Call to UniformVariable::serialize() with ReadOnly mode");
-    }
-    else if( stream.device()->openMode() == QIODevice::WriteOnly )
-    {
-        stream << QString("Uniform %1, %2").arg(m_min).arg(m_max);
-    }
+    return QString("Uniform %1, %2").arg(m_min).arg(m_max);
 }
 
 double UniformVariable::getValue(double s, double l)
@@ -174,20 +168,12 @@ quint32 ExponentialVariable::getMax()
     return (m_bound == 0) ? 0xFFFFFFFF : static_cast<quint32>(m_bound);
 }
 
-void ExponentialVariable::serialize(QDataStream &stream)
+QString ExponentialVariable::toString()
 {
-    if( stream.device()->openMode() == QIODevice::ReadOnly )
-    {
-        LOG_WARN("Call to ExponentialVariable::serialize() with ReadOnly mode");
-    }
-    else if( stream.device()->openMode() == QIODevice::WriteOnly )
-    {
-        stream << QString("Exponential %1, %2").arg(m_mean).arg(m_bound);
-    }
+    return QString("Exponential %1, %2").arg(m_mean).arg(m_bound);
 }
 
 // Pareto Variable
-
 ParetoVariable::ParetoVariable()
     : m_mean(1.0),
       m_scale(1.0 * 0.5 / 1.5), 
@@ -251,16 +237,14 @@ quint32 ParetoVariable::getMax()
     return (m_bound == 0) ? 0xFFFFFFFF : static_cast<quint32>(m_bound);
 }
 
-void ParetoVariable::serialize(QDataStream &stream)
+QString ParetoVariable::toString()
 {
-    if( stream.device()->openMode() == QIODevice::ReadOnly )
-    {
-        LOG_WARN("Call to ParetoVariable::serialize() with ReadOnly mode");
-    }
-    else if( stream.device()->openMode() == QIODevice::WriteOnly )
-    {
-        stream << QString("Pareto %1, %2, %3")
-            .arg(m_mean).arg(m_shape).arg(m_bound);
-    }
+    return QString("Pareto %1, %2, %3").arg(m_mean).arg(m_shape).arg(m_bound);
+}
+
+QDataStream &operator<<(QDataStream &out, RandomVariable *variable)
+{
+    out << variable->toString();
+    return out;
 }
 

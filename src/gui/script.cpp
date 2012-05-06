@@ -1,29 +1,26 @@
 #include "script.h"
 
-QDataStream &operator<<(QDataStream &out, const Script::Param &param)
+QDataStream &operator<<(QDataStream &out, const ScriptParam &param)
 {
     out << param.line << param.pos << param.defValue;
     return out;
 }
 
-QDataStream &operator>>(QDataStream &in, Script::Param &param)
+QDataStream &operator>>(QDataStream &in, ScriptParam &param)
 {
     in >> param.line >> param.pos >> param.defValue;
     return in;
 }
 
-Script::Script()
+QDataStream &operator<<(QDataStream &out, const Script &script)
 {
+    out << script.text << script.params;
+    return out;
 }
 
-void Script::serialize(QDataStream &stream)
+QDataStream &operator>>(QDataStream &in, Script &script)
 {
-    if( stream.device()->openMode() == QIODevice::ReadOnly )
-    {
-        stream >> m_script >> m_params;
-    }
-    else if( stream.device()->openMode() == QIODevice::WriteOnly )
-    {
-        stream << m_script << m_params;
-    }
+    in >> script.text >> script.params;
+    return in;
 }
+

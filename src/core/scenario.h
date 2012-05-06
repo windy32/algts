@@ -69,7 +69,7 @@
  * 
  * \see Task, CoreApplication
  */
-class Scenario : public Serializable
+class Scenario
 {
 private:
     // Task related members
@@ -109,15 +109,19 @@ public: // Task management interfaces for scripting
     Task *task();
 
 public:
+    friend QDataStream &operator<<(QDataStream &out, const Scenario &scenario);
+    friend QDataStream &operator>>(QDataStream &in, Scenario &scenario);
+
+public:
     /**
      * \brief Returns all tasks in the scenario
      * \return All tasks in the scenario
      */
     QMap<QString, QVector<Task *> > &tasks();
-
-public:
-    virtual void serialize(QDataStream &stream);
 };
+
+QDataStream &operator<<(QDataStream &out, const Scenario &scenario);
+QDataStream &operator>>(QDataStream &in, Scenario &scenario);
 
 #endif /* SCENARIO_H */
 

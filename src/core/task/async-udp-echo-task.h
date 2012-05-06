@@ -67,11 +67,17 @@ public: // interface for client
     const QVector<qint32> &getIntervals();
 
 public:
+    friend QDataStream &operator<<(QDataStream &out, const AsyncUdpEchoTask &task);
+    friend QDataStream &operator>>(QDataStream &in, AsyncUdpEchoTask &task);
+
+public:
     virtual enum Type getType();
     virtual QString getName();
-    virtual void serialize(QDataStream &stream);
     virtual void expand();
 };
+
+QDataStream &operator<<(QDataStream &out, const AsyncUdpEchoTask &task);
+QDataStream &operator>>(QDataStream &in, AsyncUdpEchoTask &task);
 
 #endif /* ASYNC_UDP_ECHO_TASK_H */
 

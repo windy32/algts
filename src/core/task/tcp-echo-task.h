@@ -64,13 +64,19 @@ public: // interface for client
      * \return The length (ms) of each intervals
      */
     const QVector<qint32> &getIntervals();
-    
+
+public:
+    friend QDataStream &operator<<(QDataStream &out, const TcpEchoTask &task);
+    friend QDataStream &operator>>(QDataStream &in, TcpEchoTask &task);
+
 public:
     virtual enum Type getType();
     virtual QString getName();
-    virtual void serialize(QDataStream &stream);
     virtual void expand();
 };
+
+QDataStream &operator<<(QDataStream &out, const TcpEchoTask &task);
+QDataStream &operator>>(QDataStream &in, TcpEchoTask &task);
 
 #endif /* TCP_ECHO_TASK_H */
 

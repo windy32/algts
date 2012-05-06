@@ -3,24 +3,24 @@
 
 #include "../core/core.h"
 
-class Script : public Serializable
+struct ScriptParam
 {
-public:
-    struct Param
-    {
-        qint32 line;
-        qint32 pos;
-        QString defValue;
-    };
-
-private:
-    QString m_script;
-    QList<Param> m_params;
-
-public:
-    Script();
-
-    virtual void serialize(QDataStream &stream);
+    qint32 line;
+    qint32 pos;
+    QString defValue;
 };
 
+QDataStream &operator<<(QDataStream &out, const ScriptParam &param);
+QDataStream &operator>>(QDataStream &in, ScriptParam &param);
+
+struct Script
+{
+    QString text;
+    QList<ScriptParam> params;
+};
+
+QDataStream &operator<<(QDataStream &out, const Script &script);
+QDataStream &operator>>(QDataStream &in, Script &script);
+
 #endif // SCRIPT_H
+

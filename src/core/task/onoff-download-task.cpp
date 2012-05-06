@@ -185,28 +185,6 @@ QString OnoffDownloadTask::getName()
     return "On/Off Download Task";
 }
 
-void OnoffDownloadTask::serialize(QDataStream &stream)
-{
-    QString onTime, offTime;
-    
-    if( stream.device()->openMode() == QIODevice::ReadOnly )
-    {
-        Task::serialize(stream);
-        stream >> m_maxRate >> m_packetSize >> m_requestSize;
-        stream >> onTime >> offTime;
-        
-        m_onTime = RandomVariableFactory::create(onTime);
-        m_offTime = RandomVariableFactory::create(offTime);
-    }
-    else if( stream.device()->openMode() == QIODevice::WriteOnly )
-    {
-        Task::serialize(stream);
-        stream << m_maxRate << m_packetSize << m_requestSize;
-        m_onTime->serialize(stream);
-        m_offTime->serialize(stream);
-    }
-}
-
 void OnoffDownloadTask::expand()
 {
     int length = m_stopTime;
@@ -225,3 +203,24 @@ void OnoffDownloadTask::expand()
         curLength += offTime + onTime; // It may overflow in some cases
     }
 }
+
+QDataStream &operator<<(QDataStream &out, const OnoffDownloadTask &task)
+{
+    out << task.m_serverPort << task.m_startTime << task.m_stopTime;
+    out << task.m_maxRate << task.m_packetSize << task.m_requestSize;
+    out << task.m_onTime << task.m_offTime;
+    return out;
+}
+
+QDataStream &operator>>(QDataStream &in, OnoffDownloadTask &task)
+{
+    QString onTime, offTime;
+    in >> task.m_serverPort >> task.m_startTime >> task.m_stopTime;
+    in >> task.m_maxRate >> task.m_packetSize >> task.m_requestSize;
+    in >> onTime >> offTime;
+    
+    task.m_onTime = RandomVariableFactory::create(onTime);
+    task.m_offTime = RandomVariableFactory::create(offTime);
+    return in;
+}
+

@@ -80,11 +80,17 @@ public: // interface for client
     const QVector<qint32> &getOffTimes();
 
 public:
+    friend QDataStream &operator<<(QDataStream &out, const OnoffDownloadTask &task);
+    friend QDataStream &operator>>(QDataStream &in, OnoffDownloadTask &task);
+
+public:
     virtual enum Type getType();
     virtual QString getName();
-    virtual void serialize(QDataStream &stream);
     virtual void expand();
 };
+
+QDataStream &operator<<(QDataStream &out, const OnoffDownloadTask &task);
+QDataStream &operator>>(QDataStream &in, OnoffDownloadTask &task);
 
 #endif /* ONOFF_DOWNLOAD_TASK_H */
 

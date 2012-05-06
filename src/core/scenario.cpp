@@ -77,90 +77,15 @@ QMap<QString, QVector<Task *> > &Scenario::tasks()
     return m_tasks;
 }
 
-void Scenario::serialize(QDataStream &stream)
+QDataStream &operator<<(QDataStream &out, const Scenario &scenario)
 {
-    // Format
-    // int32 seed
-    // int32 length
-    // tasks | - int32       number-of-tasks
-    //       |------------------------------
-    //       | - QString     username1
-    //       | - int32       task1-1-type
-    //       | - Task-Object task1-1
-    //       | - QString     username1
-    //       | - Task-Object task1-2-type
-    //       | - Task-Object task1-2
-    //       | - ...
-    //       | - QString     username2
-    //       | - int32       task2-1-type
-    //       | - Task-Object task2-1
-    //       | - ...
-    qint32 count = 0;
-    
-    if( stream.device()->openMode() == QIODevice::ReadOnly )
-    {
-        stream >> m_seed >> m_length;
-        stream >> count;
-        
-        for(int i = 0; i < count; i++)
-        {
-            QString username;
-            qint32 type;
-            Task *task;
-            
-            stream >> username >> type;
-            if( type == (qint32)Task::BULK_DOWNLOAD )
-            {
-                task = new BulkDownloadTask(0);
-            }
-            else if( type == (qint32)Task::BULK_UPLOAD )
-            {
-                task = new BulkUploadTask(0);
-            }
-            else if( type == (qint32)Task::ONOFF_DOWNLOAD )
-            {
-                task = new OnoffDownloadTask(0);
-            }
-            else if( type == (qint32)Task::TCP_ECHO )
-            {
-                task = new TcpEchoTask(0);
-            }
-            else if( type == (qint32)Task::ASYNC_UDP_ECHO )
-            {
-                task = new AsyncUdpEchoTask(0);
-            }
-            task->serialize(stream);
-            
-            //if( !m_tasks.contains(username))
-            //{
-            //    m_tasks.insert(username, QVector<Task *>());
-            //}
-            m_tasks[username].append(task);
-        }
-    }
-    else if( stream.device()->openMode() == QIODevice::WriteOnly )
-    {
-        stream << m_seed << m_length;
-        
-        QMap<QString, QVector<Task *> >::iterator it;
-        for(it = m_tasks.begin(); it != m_tasks.end(); ++it)
-        {
-            for(int i = 0; i < it.value().size(); i++)
-            {
-                count += 1;
-            }
-        }
-
-        stream << count;
-        for(it = m_tasks.begin(); it != m_tasks.end(); ++it)
-        {
-            for(int i = 0; i < it.value().size(); i++)
-            {
-                Task *task = it.value()[i];
-                stream << it.key();
-                stream << (qint32)task->getType();
-                task->serialize(stream);
-            }
-        }
-    }
+    out << scenario.m_seed << scenario.m_length << scenario.m_tasks;
+    return out;
 }
+
+QDataStream &operator>>(QDataStream &in, Scenario &scenario)
+{
+    in >> scenario.m_seed >> scenario.m_length >> scenario.m_tasks;
+    return in;
+}
+

@@ -64,8 +64,12 @@ public:
      * \return The max integer that the random variable can generate
      */
     virtual quint32 getMax() = 0;
-
-    virtual void serialize(QDataStream &stream) = 0;
+    
+    /**
+     * \brief Returns a string that describes the random variable
+     * \return A string that describes the random variable
+     */
+    virtual QString toString() = 0;
 
 protected:
     /**
@@ -136,7 +140,7 @@ public:
     virtual quint32 getMin();
     virtual quint32 getMax();
     
-    virtual void serialize(QDataStream &stream);
+    virtual QString toString();
 };
 
 /**
@@ -200,8 +204,8 @@ public:
     
     virtual quint32 getMin();
     virtual quint32 getMax();
-    
-    virtual void serialize(QDataStream &stream);
+
+    virtual QString toString();
 
 private:
 	double m_min;
@@ -276,7 +280,7 @@ public:
     virtual quint32 getMin();
     virtual quint32 getMax();
 
-    virtual void serialize(QDataStream &stream);
+    virtual QString toString();
 
 private:
 	double m_mean;  // Mean value of RV
@@ -358,7 +362,7 @@ public:
     virtual quint32 getMin();
     virtual quint32 getMax();
 
-    virtual void serialize(QDataStream &stream);
+    virtual QString toString();
 
 private:
     double m_mean;
@@ -366,6 +370,8 @@ private:
 	double m_shape; // Shape parameter
 	double m_bound; // Upper bound on value (if non-zero)
 };
+
+QDataStream &operator<<(QDataStream &out, RandomVariable *variable);
 
 #endif /* RANDOM_VARIABLE_H */
 

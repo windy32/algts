@@ -87,29 +87,6 @@ QString TcpEchoTask::getName()
     return "TCP Echo Task";
 }
 
-void TcpEchoTask::serialize(QDataStream &stream)
-{
-    QString inputSize, echoSize, interval;
-    
-    if( stream.device()->openMode() == QIODevice::ReadOnly )
-    {
-        Task::serialize(stream);
-        stream >> inputSize >> echoSize >> interval;
-        
-        m_inputSize = RandomVariableFactory::create(inputSize);
-        m_echoSize = RandomVariableFactory::create(echoSize);
-        m_interval = RandomVariableFactory::create(interval);
-    }
-    else if( stream.device()->openMode() == QIODevice::WriteOnly )
-    {
-        Task::serialize(stream);
-        
-        m_inputSize->serialize(stream);
-        m_echoSize->serialize(stream);
-        m_interval->serialize(stream);
-    }
-}
-
 void TcpEchoTask::expand()
 {
     int length = m_stopTime;
@@ -133,3 +110,23 @@ void TcpEchoTask::expand()
         curLength += interval; // It may overflow in some cases
     }
 }
+
+QDataStream &operator<<(QDataStream &out, const TcpEchoTask &task)
+{
+    out << task.m_serverPort << task.m_startTime << task.m_stopTime;
+    out << task.m_inputSize << task.m_echoSize << task.m_interval;
+    return out;
+}
+
+QDataStream &operator>>(QDataStream &in, TcpEchoTask &task)
+{
+    QString inputSize, echoSize, interval;
+    in >> task.m_serverPort >> task.m_startTime >> task.m_stopTime;
+    in >> inputSize >> echoSize >> interval;
+
+    task.m_inputSize = RandomVariableFactory::create(inputSize);
+    task.m_echoSize = RandomVariableFactory::create(echoSize);
+    task.m_interval = RandomVariableFactory::create(interval);
+    return in;
+}
+

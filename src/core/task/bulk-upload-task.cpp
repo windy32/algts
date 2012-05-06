@@ -136,22 +136,22 @@ QString BulkUploadTask::getName()
     return "Bulk Upload Task";
 }
 
-void BulkUploadTask::serialize(QDataStream &stream)
-{
-    if( stream.device()->openMode() == QIODevice::ReadOnly )
-    {
-        Task::serialize(stream);
-        stream >> m_maxBytes >> m_maxRate;
-    }
-    else if( stream.device()->openMode() == QIODevice::WriteOnly )
-    {
-        Task::serialize(stream);
-        stream << m_maxBytes << m_maxRate;
-    }
-}
-
 void BulkUploadTask::expand()
 {
     // nothing to do here
+}
+
+QDataStream &operator<<(QDataStream &out, const BulkUploadTask &task)
+{
+    out << task.m_serverPort << task.m_startTime << task.m_stopTime;
+    out << task.m_maxBytes << task.m_maxRate;
+    return out;
+}
+
+QDataStream &operator>>(QDataStream &in, BulkUploadTask &task)
+{
+    in >> task.m_serverPort >> task.m_startTime >> task.m_stopTime;
+    in >> task.m_maxBytes >> task.m_maxRate;
+    return in;
 }
 

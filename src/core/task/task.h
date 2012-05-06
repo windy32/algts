@@ -28,7 +28,7 @@
  * \brief The base class of all tasks
  * \ingroup Tasks
  */
-class Task : public Serializable
+class Task
 {
 protected:
     /**
@@ -79,12 +79,6 @@ public:
                               const QString &value) = 0;
     
     /**
-     * \brief Serialize the task object
-     * \param stream The target device of the serialization
-     */
-    virtual void serialize(QDataStream &stream);
-
-    /**
      * \brief Expand the task object
      *
      * Some tasks have random number generator members, expanding means 
@@ -124,13 +118,20 @@ public:
      * \return Stop time (ms) of the task
      */
     qint32  getStopTime();
-    
+
     /**
      * \brief Set the stop time of the task
      * \param stopTime Stop time in milliseconds
      */
     void setStopTime(qint32 stopTime);
+
+public:
+    friend QDataStream &operator<<(QDataStream &out, Task* task);
+    friend QDataStream &operator>>(QDataStream &in, Task* &task);
 };
+
+QDataStream &operator<<(QDataStream &out, Task* task);
+QDataStream &operator>>(QDataStream &in, Task* &task);
 
 #endif /* TASK_H */
 

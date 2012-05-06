@@ -55,11 +55,17 @@ public: //interface for client
     qint32 getMaxRate();
 
 public:
+    friend QDataStream &operator<<(QDataStream &out, const BulkUploadTask &task);
+    friend QDataStream &operator>>(QDataStream &in, BulkUploadTask &task);
+
+public:
     virtual enum Type getType();
     virtual QString getName();
-    virtual void serialize(QDataStream &stream);
     virtual void expand();
 };
+
+QDataStream &operator<<(QDataStream &out, const BulkUploadTask &task);
+QDataStream &operator>>(QDataStream &in, BulkUploadTask &task);
 
 #endif /* BULK_UPLOAD_TASK_H */
 
