@@ -16,7 +16,7 @@ protected:
 
 public:
     explicit IpAddressWidget(QWidget *parent = 0);
-    void setAddress(QString interface, QList<QHostAddress> addrs);
+    void setAddress(const QString &interface, const QList<QHostAddress> &addrs);
 
 signals:
     

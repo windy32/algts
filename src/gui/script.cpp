@@ -28,13 +28,15 @@ QDataStream &operator>>(QDataStream &in, ScriptParam &param)
 
 QDataStream &operator<<(QDataStream &out, const Script &script)
 {
-    out << script.text << script.params;
+    out << script.setupText << script.setupParams
+        << script.resetText << script.resetParams;
     return out;
 }
 
 QDataStream &operator>>(QDataStream &in, Script &script)
 {
-    in >> script.text >> script.params;
+    in >> script.setupText >> script.setupParams
+       >> script.resetText >> script.resetParams;
     return in;
 }
 

@@ -1,9 +1,9 @@
 #include "emulatordialog.h"
 #include "ui_emulatordialog.h"
 
-EmulatorDialog::EmulatorDialog(QWidget *parent) :
+EmulatorDialog::EmulatorDialog(int &txRate, int &rxRate, QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::EmulatorDialog)
+    ui(new Ui::EmulatorDialog), m_txRate(txRate), m_rxRate(rxRate)
 {
     ui->setupUi(this);
     setLayout(ui->mainLayout);
@@ -64,11 +64,13 @@ void EmulatorDialog::onDefault()
 
 void EmulatorDialog::onOK()
 {
+    m_txRate = m_infiniteTxRate ? -1 : ui->sldTxRate->value() * 32;
+    m_rxRate = m_infiniteRxRate ? -1 : ui->sldRxRate->value() * 32;
 }
 
 void EmulatorDialog::onCancel()
 {
-
+    // nothing to do here
 }
 
 void EmulatorDialog::updateText()

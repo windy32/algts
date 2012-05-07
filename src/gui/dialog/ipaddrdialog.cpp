@@ -36,8 +36,8 @@ IpAddrDialog::~IpAddrDialog()
 void IpAddrDialog::updateAddrs()
 {
     m_interface = ui->cmbInterface->currentText();
+    m_model->clear();
 
-    // Init combo box
     QList<QNetworkInterface> interfaces = QNetworkInterface::allInterfaces();
     for(int i = 0; i < interfaces.size(); i++)
     {

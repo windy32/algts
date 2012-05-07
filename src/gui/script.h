@@ -18,8 +18,11 @@ QDataStream &operator>>(QDataStream &in, ScriptParam &param);
 
 struct Script
 {
-    QString text;
-    QList<ScriptParam> params;
+    QString setupText;
+    QList<ScriptParam> setupParams;
+
+    QString resetText;
+    QList<ScriptParam> resetParams;
 };
 
 QDataStream &operator<<(QDataStream &out, const Script &script);

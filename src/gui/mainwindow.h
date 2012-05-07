@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QHostAddress>
 
 namespace Ui {
 class MainWindow;
@@ -21,9 +22,20 @@ private slots:
     void MenuScript();
     void MenuNewTest();
     void MenuViewTests();
-    
+
+    void btnAddrSetting();
+    void btnEmulationSetting();
+    void updateEmulationState();
+    void updateStatistics();
+
 private:
     Ui::MainWindow *ui;
+
+    QString m_interface;
+    QList<QHostAddress> m_addrs;
+
+    int m_txRate; // kbps, -1 for infinite
+    int m_rxRate; // kbps, -1 for infinite
 };
 
 #endif // MAINWINDOW_H

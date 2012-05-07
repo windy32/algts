@@ -67,7 +67,7 @@ void IpAddressWidget::paintEvent(QPaintEvent */*event*/)
     }
 }
 
-void IpAddressWidget::setAddress(QString interface, QList<QHostAddress> addrs)
+void IpAddressWidget::setAddress(const QString &interface, const QList<QHostAddress> &addrs)
 {
     m_interface = interface;
     m_addrs = addrs;

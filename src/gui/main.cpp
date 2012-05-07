@@ -13,6 +13,7 @@
 
 #include "globaldatabase.h"
 
+/*
 void dbtest()
 {
     qDebug() << "Scenarios: " << GlobalDatabase::instance()->getScenarioCount();
@@ -34,6 +35,7 @@ void dbtest()
              << ss.params[0].pos << ", "
              << ss.params[0].defValue;
 }
+*/
 
 int main(int argc, char *argv[])
 {
@@ -41,7 +43,7 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
-    dbtest();
+    //dbtest();
 /*
     QString d;
     DistributionDialog d3(d);

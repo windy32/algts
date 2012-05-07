@@ -43,7 +43,7 @@
     <item>
      <widget class="QStackedWidget" name="pages">
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="pageWelcome">
        <layout class="QVBoxLayout" name="welcomeLayout" stretch="0,0,1,0,0,0,0,0,0,0,0">
@@ -1584,24 +1584,12 @@
          <number>12</number>
         </property>
         <item>
-         <layout class="QHBoxLayout" name="P3Layout1">
+         <layout class="QHBoxLayout" name="P3Layout1" stretch="1,0,0,0">
           <item>
            <widget class="QComboBox" name="cmbP3Scripts"/>
           </item>
           <item>
            <widget class="QRadioButton" name="rdoP3SetupScript">
-            <property name="minimumSize">
-             <size>
-              <width>120</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>120</width>
-              <height>16777215</height>
-             </size>
-            </property>
             <property name="text">
              <string>Setup Script</string>
             </property>
@@ -1609,20 +1597,15 @@
           </item>
           <item>
            <widget class="QRadioButton" name="rdoP3ResetScript">
-            <property name="minimumSize">
-             <size>
-              <width>120</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>120</width>
-              <height>16777215</height>
-             </size>
-            </property>
             <property name="text">
              <string>Reset Script</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnP3New">
+            <property name="text">
+             <string>New...</string>
             </property>
            </widget>
           </item>
@@ -1634,7 +1617,20 @@
            <widget class="QTextEdit" name="txtP3Script"/>
           </item>
           <item>
-           <widget class="QListView" name="lstP3Params"/>
+           <widget class="QListView" name="lstP3Params">
+            <property name="minimumSize">
+             <size>
+              <width>315</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>315</width>
+              <height>16777215</height>
+             </size>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
@@ -1655,6 +1651,9 @@
           </item>
           <item>
            <widget class="QPushButton" name="btnP3Auto">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="minimumSize">
              <size>
               <width>70</width>
@@ -1674,15 +1673,18 @@
           </item>
           <item>
            <widget class="QPushButton" name="btnP3AddSelected">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="minimumSize">
              <size>
-              <width>120</width>
+              <width>125</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>120</width>
+              <width>124</width>
               <height>16777215</height>
              </size>
             </property>
@@ -1693,15 +1695,18 @@
           </item>
           <item>
            <widget class="QPushButton" name="btnP3DeleteSelected">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="minimumSize">
              <size>
-              <width>135</width>
+              <width>144</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>135</width>
+              <width>144</width>
               <height>16777215</height>
              </size>
             </property>
