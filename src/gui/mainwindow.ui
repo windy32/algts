@@ -1603,11 +1603,17 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="btnP3New">
-            <property name="text">
-             <string>New...</string>
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
             </property>
-           </widget>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>90</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </item>
@@ -1617,7 +1623,7 @@
            <widget class="QTextEdit" name="txtP3Script"/>
           </item>
           <item>
-           <widget class="QListView" name="lstP3Params">
+           <widget class="QTableView" name="lstP3Params">
             <property name="minimumSize">
              <size>
               <width>315</width>
@@ -1630,12 +1636,29 @@
               <height>16777215</height>
              </size>
             </property>
+            <attribute name="verticalHeaderVisible">
+             <bool>false</bool>
+            </attribute>
            </widget>
           </item>
          </layout>
         </item>
         <item>
          <layout class="QHBoxLayout" name="P3Layout3">
+          <item>
+           <widget class="QPushButton" name="btnP3New">
+            <property name="text">
+             <string>New...</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnP3Save">
+            <property name="text">
+             <string>Save</string>
+            </property>
+           </widget>
+          </item>
           <item>
            <spacer name="P3Spacer">
             <property name="orientation">

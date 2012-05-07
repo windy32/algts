@@ -18,6 +18,8 @@ QDataStream &operator>>(QDataStream &in, ScriptParam &param);
 
 struct Script
 {
+    QString name;
+
     QString setupText;
     QList<ScriptParam> setupParams;
 

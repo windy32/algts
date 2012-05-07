@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <QInputDialog>
+
 #include "dialog/ipaddrdialog.h"
 #include "dialog/emulatordialog.h"
 
@@ -65,6 +67,30 @@ MainWindow::MainWindow(QWidget *parent) :
     m_rxRate = -1;
     updateEmulationState();
     updateStatistics();
+
+    // Page 3: Script
+    m_model = new QStandardItemModel;
+    m_model->setColumnCount(3);
+    m_model->setHeaderData(0, Qt::Horizontal, QString("Line"));
+    m_model->setHeaderData(1, Qt::Horizontal, QString("Position"));
+    m_model->setHeaderData(2, Qt::Horizontal, QString("Default Value"));
+
+    ui->lstP3Params->setModel(m_model);
+    ui->lstP3Params->setColumnWidth(0, 60);
+    ui->lstP3Params->setColumnWidth(1, 80);
+    ui->lstP3Params->setColumnWidth(2, 172);
+
+    connect(ui->btnP3New, SIGNAL(clicked()), this, SLOT(btnP3New()));
+    connect(ui->btnP3Save, SIGNAL(clicked()), this, SLOT(btnP3Save()));
+    connect(ui->btnP3Auto, SIGNAL(clicked()), this, SLOT(btnP3Auto()));
+    connect(ui->btnP3AddSelected, SIGNAL(clicked()),
+            this, SLOT(btnP3AddSelected()));
+    connect(ui->btnP3DeleteSelected, SIGNAL(clicked()),
+            this, SLOT(btnP3DelSelected()));
+    connect(ui->rdoP3SetupScript, SIGNAL(clicked()),
+            this, SLOT(rdoP3ResetScript()));
+    connect(ui->rdoP3ResetScript, SIGNAL(clicked()),
+            this, SLOT(rdoP3ResetScript()));
 }
 
 MainWindow::~MainWindow()
@@ -155,4 +181,55 @@ void MainWindow::updateStatistics()
         QString("Scenarios: %1").arg(GlobalDatabase::instance()->getScenarioCount()));
     ui->lblScripts->setText(
         QString("Scripts: %1").arg(GlobalDatabase::instance()->getScriptCount()));
+}
+
+void MainWindow::btnP3New()
+{
+    bool ok;
+    QString name = QInputDialog::getText(
+                this, "Script", "Enter the name of the script",
+                QLineEdit::Normal, "", &ok);
+    if( ok && !name.isEmpty())
+    {
+
+    }
+    else if( ok && !name.isEmpty())
+    {
+
+    }
+}
+
+void MainWindow::btnP3Save()
+{
+
+}
+
+void MainWindow::btnP3Auto()
+{
+
+}
+
+void MainWindow::btnP3AddSelected()
+{
+
+}
+
+void MainWindow::btnP3DelSelected()
+{
+
+}
+
+void MainWindow::rdoP3SetupScript()
+{
+
+}
+
+void MainWindow::rdoP3ResetScript()
+{
+
+}
+
+void MainWindow::p3UpdateList()
+{
+
 }
