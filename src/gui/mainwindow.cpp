@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 
 #include <QInputDialog>
+#include <QMessageBox>
 
 #include "dialog/ipaddrdialog.h"
 #include "dialog/emulatordialog.h"
@@ -91,6 +92,15 @@ MainWindow::MainWindow(QWidget *parent) :
             this, SLOT(rdoP3ResetScript()));
     connect(ui->rdoP3ResetScript, SIGNAL(clicked()),
             this, SLOT(rdoP3ResetScript()));
+    connect(ui->cmbP3Scripts, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(cmbP3ScriptChanged(int)));
+    connect(ui->txtP3Script, SIGNAL(textChanged()),
+            this, SLOT(txtP3ScriptChanged()));
+    connect(m_model, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
+            this, SLOT(lstP3ParamsChanged()));
+    m_curIndex = 0;
+    m_modified = false;
+    p3UpdateList();
 }
 
 MainWindow::~MainWindow()
@@ -191,17 +201,36 @@ void MainWindow::btnP3New()
                 QLineEdit::Normal, "", &ok);
     if( ok && !name.isEmpty())
     {
+        if( GlobalDatabase::instance()->existScript(name))
+        {
+            QMessageBox msgBox;
+            msgBox.setText("The name exists.");
+            msgBox.setIcon(QMessageBox::Warning);
+            msgBox.exec();
+        }
+        else
+        {
+            Script newScript;
+            newScript.name = name; // Other fields are left empty
+            GlobalDatabase::instance()->addScript(newScript);
 
+            p3UpdateList();
+            ui->cmbP3Scripts->setCurrentIndex(ui->cmbP3Scripts->count() - 1);
+            m_curIndex = ui->cmbP3Scripts->count() - 1;
+        }
     }
-    else if( ok && !name.isEmpty())
+    else if( ok && name.isEmpty())
     {
-
+        QMessageBox msgBox;
+        msgBox.setText("The name cannot be empty.");
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.exec();
     }
 }
 
 void MainWindow::btnP3Save()
 {
-
+    // TODO
 }
 
 void MainWindow::btnP3Auto()
@@ -229,7 +258,79 @@ void MainWindow::rdoP3ResetScript()
 
 }
 
+void MainWindow::cmbP3ScriptChanged(int index)
+{
+    m_curIndex = index;
+
+    // Load script from database
+    Script script;
+    GlobalDatabase::instance()->getScript(m_curIndex, script);
+    if( ui->rdoP3SetupScript->isChecked())
+    {
+        ui->txtP3Script->setText(script.setupText);
+    }
+    else
+    {
+        ui->txtP3Script->setText(script.resetText);
+    }
+
+    m_modified = false; // Reset modified after setting script text
+    p3UpdateModifiedState();
+}
+
+void MainWindow::txtP3ScriptChanged()
+{
+    m_modified = true;
+    p3UpdateModifiedState();
+}
+
+void MainWindow::lstP3ParamsChanged()
+{
+    m_modified = true;
+    p3UpdateModifiedState();
+}
+
 void MainWindow::p3UpdateList()
 {
+    int count = GlobalDatabase::instance()->getScriptCount();
+    Script script;
 
+    // Clear the combo box
+    ui->cmbP3Scripts->clear();
+
+    if( count == 0 )
+    {
+        m_curIndex = -1; // nothing selected
+    }
+
+    // Insert items
+    for(int i = 0; i < count; i++)
+    {
+        GlobalDatabase::instance()->getScript(i, script);
+        ui->cmbP3Scripts->addItem(script.name);
+    }
+}
+
+void MainWindow::p3UpdateModifiedState()
+{
+    for(int i = 0; i < ui->cmbP3Scripts->count(); i++)
+    {
+        if( m_curIndex == i && m_modified ) // Add modified indicator
+        {
+            if( !ui->cmbP3Scripts->itemText(i).endsWith(" *"))
+            {
+                ui->cmbP3Scripts->setItemText(
+                            i, ui->cmbP3Scripts->itemText(i) + " *");
+            }
+        }
+        else // Remove modified indicator
+        {
+            if( ui->cmbP3Scripts->itemText(i).endsWith(" *"))
+            {
+                ui->cmbP3Scripts->setItemText(i,
+                            ui->cmbP3Scripts->itemText(i).left(
+                                ui->cmbP3Scripts->itemText(i).size() - 2));
+            }
+        }
+    }
 }

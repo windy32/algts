@@ -19,11 +19,12 @@ public:
 
 public:
     int getScenarioCount();
-    void getScenario(int index, Scenario &scenario); // index starts with 1
+    void getScenario(int index, Scenario &scenario); // index starts with 0
     void addScenario(Scenario &scenario);
 
     int getScriptCount();
-    void getScript(int index, Script &script); // index starts with 1
+    bool existScript(const QString &name);
+    void getScript(int index, Script &script); // index starts with 0
     void addScript(Script &script);
 };
 

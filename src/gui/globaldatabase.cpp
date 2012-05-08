@@ -70,7 +70,7 @@ int GlobalDatabase::getScenarioCount()
 
 void GlobalDatabase::getScenario(int index, Scenario &scenario)
 {
-    QSqlQuery query(QString("Select Data From Scenario where UID = %1").arg(index));
+    QSqlQuery query(QString("Select Data From Scenario where UID = %1").arg(index + 1));
 
     if( query.next())
     {
@@ -100,15 +100,38 @@ void GlobalDatabase::addScenario(Scenario &scenario)
 
 int GlobalDatabase::getScriptCount()
 {
+    // qDebug() << "Entering GlobalDatabase::getScriptCount";
+
     QSqlQuery query;
     query.exec("Select Count(*) From Script");
     query.next();
     return query.value(0).toInt();
 }
 
+bool GlobalDatabase::existScript(const QString &name)
+{
+    // qDebug() << "Entering GlobalDatabase::existScript";
+
+    // Should be optimized later
+    Script script;
+    int count = getScriptCount();
+
+    for(int i = 0; i < count; i++)
+    {
+        getScript(i, script);
+        if( name == script.name)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 void GlobalDatabase::getScript(int index, Script &script)
 {
-    QSqlQuery query(QString("Select Data From Script where UID = %1").arg(index));
+    // qDebug() << "Entering GlobalDatabase::getScript";
+
+    QSqlQuery query(QString("Select Data From Script where UID = %1").arg(index + 1));
     if( query.next())
     {
         QByteArray data;
@@ -125,6 +148,8 @@ void GlobalDatabase::getScript(int index, Script &script)
 
 void GlobalDatabase::addScript(Script &script)
 {
+    // qDebug() << "Entering GlobalDatabase::addScript";
+
     QByteArray data;
     QDataStream out(&data, QIODevice::WriteOnly);
     out << script;

@@ -41,7 +41,12 @@ private slots:
     void rdoP3SetupScript();
     void rdoP3ResetScript();
 
+    void cmbP3ScriptChanged(int index);
+    void txtP3ScriptChanged();
+    void lstP3ParamsChanged();
+
     void p3UpdateList();
+    void p3UpdateModifiedState();
 
 private:
     Ui::MainWindow *ui;
@@ -55,6 +60,8 @@ private:
 
     // Page 3: Script
     QStandardItemModel *m_model;
+    bool m_modified;
+    int m_curIndex;
 };
 
 #endif // MAINWINDOW_H
