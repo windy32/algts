@@ -69,6 +69,13 @@ MainWindow::MainWindow(QWidget *parent) :
     updateEmulationState();
     updateStatistics();
 
+    // Page 2: Scenario
+    ScenarioEx *s = new ScenarioEx(); // Test only
+    s->addUser("Harry");
+    s->addUser("Sally");
+    ui->scenarioWidget->setScenario(s);
+    ui->scenarioWidget->update();
+
     // Page 3: Script
     m_setupModel = new QStandardItemModel;
     m_setupModel->setColumnCount(3);

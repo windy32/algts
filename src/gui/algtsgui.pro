@@ -12,9 +12,12 @@ TEMPLATE = app
 CONFIG(debug,   debug|release): TARGET = ../../bin/algtsgui-debug
 CONFIG(release, debug|release): TARGET = ../../bin/algtsgui
 
-SOURCES += mainwindow.cpp main.cpp
+SOURCES += mainwindow.cpp main.cpp \
+    scenarioex.cpp \
+    widget/scenarioview.cpp
 SOURCES += linegraph.cpp globaldatabase.cpp script.cpp
 
+SOURCES +=
 SOURCES += widget/stacklist.cpp
 SOURCES += widget/ipaddresswidget.cpp
 SOURCES += widget/cdfwidget.cpp
@@ -30,9 +33,12 @@ SOURCES += dialog/selectscriptdialog.cpp
 SOURCES += dialog/savetestdialog.cpp
 SOURCES += dialog/ratingmethoddialog.cpp
 
-HEADERS += mainwindow.h
+HEADERS += mainwindow.h \
+    scenarioex.h \
+    widget/scenarioview.h
 HEADERS += linegraph.h globaldatabase.h script.h
 
+HEADERS +=
 HEADERS += widget/stacklist.h
 HEADERS += widget/ipaddresswidget.h
 HEADERS += widget/cdfwidget.h

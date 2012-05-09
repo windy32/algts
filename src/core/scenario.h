@@ -71,7 +71,7 @@
  */
 class Scenario
 {
-private:
+protected:
     // Task related members
     qint32 m_seed;
     qint32 m_length;
