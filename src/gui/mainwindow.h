@@ -5,6 +5,8 @@
 #include <QHostAddress>
 #include <QStandardItemModel>
 
+#include "script.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -45,8 +47,10 @@ private slots:
     void txtP3ScriptChanged();
     void lstP3ParamsChanged();
 
-    void p3UpdateList();
+    void p3RebuildScriptList();
     void p3UpdateModifiedState();
+    void p3UpdateScript();
+    void p3UpdateParamList();
 
 private:
     Ui::MainWindow *ui;
@@ -59,9 +63,17 @@ private:
     int m_rxRate; // kbps, -1 for infinite
 
     // Page 3: Script
-    QStandardItemModel *m_model;
-    bool m_modified;
+    QStandardItemModel *m_setupModel;
+    QStandardItemModel *m_resetModel;
+    Script m_curScript;
     int m_curIndex;
+    bool m_modified;
+
+    enum TextState
+    {
+        PlainText = 0,
+        HtmlText  = 1
+    } m_textState;
 };
 
 #endif // MAINWINDOW_H

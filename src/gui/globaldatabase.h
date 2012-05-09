@@ -25,6 +25,7 @@ public:
     int getScriptCount();
     bool existScript(const QString &name);
     void getScript(int index, Script &script); // index starts with 0
+    void setScript(int index, Script &script);
     void addScript(Script &script);
 };
 

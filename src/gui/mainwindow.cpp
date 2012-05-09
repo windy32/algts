@@ -70,13 +70,19 @@ MainWindow::MainWindow(QWidget *parent) :
     updateStatistics();
 
     // Page 3: Script
-    m_model = new QStandardItemModel;
-    m_model->setColumnCount(3);
-    m_model->setHeaderData(0, Qt::Horizontal, QString("Line"));
-    m_model->setHeaderData(1, Qt::Horizontal, QString("Position"));
-    m_model->setHeaderData(2, Qt::Horizontal, QString("Default Value"));
+    m_setupModel = new QStandardItemModel;
+    m_setupModel->setColumnCount(3);
+    m_setupModel->setHeaderData(0, Qt::Horizontal, QString("Line"));
+    m_setupModel->setHeaderData(1, Qt::Horizontal, QString("Position"));
+    m_setupModel->setHeaderData(2, Qt::Horizontal, QString("Default Value"));
 
-    ui->lstP3Params->setModel(m_model);
+    m_resetModel = new QStandardItemModel;
+    m_resetModel->setColumnCount(3);
+    m_resetModel->setHeaderData(0, Qt::Horizontal, QString("Line"));
+    m_resetModel->setHeaderData(1, Qt::Horizontal, QString("Position"));
+    m_resetModel->setHeaderData(2, Qt::Horizontal, QString("Default Value"));
+
+    ui->lstP3Params->setModel(m_setupModel);
     ui->lstP3Params->setColumnWidth(0, 60);
     ui->lstP3Params->setColumnWidth(1, 80);
     ui->lstP3Params->setColumnWidth(2, 172);
@@ -96,11 +102,14 @@ MainWindow::MainWindow(QWidget *parent) :
             this, SLOT(cmbP3ScriptChanged(int)));
     connect(ui->txtP3Script, SIGNAL(textChanged()),
             this, SLOT(txtP3ScriptChanged()));
-    connect(m_model, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
+    connect(m_setupModel, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
             this, SLOT(lstP3ParamsChanged()));
+    connect(m_resetModel, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
+            this, SLOT(lstP3ParamsChanged()));
+
     m_curIndex = 0;
     m_modified = false;
-    p3UpdateList();
+    p3RebuildScriptList();
 }
 
 MainWindow::~MainWindow()
@@ -208,13 +217,13 @@ void MainWindow::btnP3New()
             msgBox.setIcon(QMessageBox::Warning);
             msgBox.exec();
         }
-        else
+        else // Add new script
         {
             Script newScript;
             newScript.name = name; // Other fields are left empty
             GlobalDatabase::instance()->addScript(newScript);
 
-            p3UpdateList();
+            p3RebuildScriptList();
             ui->cmbP3Scripts->setCurrentIndex(ui->cmbP3Scripts->count() - 1);
             m_curIndex = ui->cmbP3Scripts->count() - 1;
         }
@@ -230,67 +239,269 @@ void MainWindow::btnP3New()
 
 void MainWindow::btnP3Save()
 {
-    // TODO
+    m_curScript.setupParams.clear();
+    m_curScript.resetParams.clear();
+
+    if( m_textState == HtmlText )
+    {
+        for(int i = 0; i < m_setupModel->rowCount(); i++)
+        {
+            qDebug() << "Setup " << i << " / " << m_setupModel->rowCount();
+            m_curScript.setupParams.append(
+                        ScriptParam(m_setupModel->item(i, 0)->text().toInt(),
+                                    m_setupModel->item(i, 1)->text().toInt(),
+                                    m_setupModel->item(i, 2)->text()));
+        }
+        for(int i = 0; i < m_resetModel->rowCount(); i++)
+        {
+            qDebug() << "Setup " << i << " / " << m_resetModel->rowCount();
+            m_curScript.resetParams.append(
+                        ScriptParam(m_resetModel->item(i, 0)->text().toInt(),
+                                    m_resetModel->item(i, 1)->text().toInt(),
+                                    m_resetModel->item(i, 2)->text()));
+        }
+    }
+
+    GlobalDatabase::instance()->setScript(
+                ui->cmbP3Scripts->currentIndex(), m_curScript);
+
+    m_modified = false;
+    p3UpdateModifiedState();
 }
 
 void MainWindow::btnP3Auto()
 {
+    disconnect(ui->txtP3Script, SIGNAL(textChanged()),
+            this, SLOT(txtP3ScriptChanged()));
+    disconnect(m_setupModel, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
+            this, SLOT(lstP3ParamsChanged()));
+    disconnect(m_resetModel, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
+            this, SLOT(lstP3ParamsChanged()));
 
+    QString &script = ui->rdoP3SetupScript->isChecked() ?
+                m_curScript.setupText : m_curScript.resetText;
+    QStringList lines = script.split('\n');
+    QStandardItemModel *model = ui->rdoP3SetupScript->isChecked() ?
+                m_setupModel : m_resetModel;
+    model->removeRows(0, model->rowCount());
+
+    QRegExp rx("^([A-Z][A-Z0-9]*)( |)=( |)(.+)$");
+
+    int count = 0;
+    for(int i = 0; i < lines.size(); i++)
+    {
+        int pos = rx.indexIn(lines[i]);
+        if( pos != -1 )
+        {
+            QString value = rx.cap(4);
+            QStandardItem *itemLine = new QStandardItem(QString("%1").arg(i));
+            QStandardItem *itemPos = new QStandardItem(
+                        QString("%1").arg(
+                            pos + rx.cap(1).size() + rx.cap(2).size() +
+                            1 + rx.cap(3).size()));
+            itemLine->setEditable(false);
+            itemPos->setEditable(false);
+
+            model->setItem(count, 0, itemLine);
+            model->setItem(count, 1, itemPos);
+            model->setItem(count++, 2, new QStandardItem(QString("%1").arg(value)));
+
+            lines[i] = lines[i].left(lines[i].size() - value.size());
+        }
+    }
+    script = lines.join("\n");
+
+    m_textState = HtmlText;
+    p3UpdateScript();
+
+    connect(ui->txtP3Script, SIGNAL(textChanged()),
+            this, SLOT(txtP3ScriptChanged()));
+    connect(m_setupModel, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
+            this, SLOT(lstP3ParamsChanged()));
+    connect(m_resetModel, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
+            this, SLOT(lstP3ParamsChanged()));
 }
 
 void MainWindow::btnP3AddSelected()
 {
-
+    // This button is temporarily unavailable
 }
 
 void MainWindow::btnP3DelSelected()
 {
-
+    // This button is temporarily unavailable
 }
 
 void MainWindow::rdoP3SetupScript()
 {
+    disconnect(ui->txtP3Script, SIGNAL(textChanged()),
+            this, SLOT(txtP3ScriptChanged()));
+    disconnect(m_setupModel, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
+            this, SLOT(lstP3ParamsChanged()));
+    disconnect(m_resetModel, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
+            this, SLOT(lstP3ParamsChanged()));
 
+    p3UpdateScript();
+    p3UpdateParamList();
+
+    connect(ui->txtP3Script, SIGNAL(textChanged()),
+            this, SLOT(txtP3ScriptChanged()));
+    connect(m_setupModel, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
+            this, SLOT(lstP3ParamsChanged()));
+    connect(m_resetModel, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
+            this, SLOT(lstP3ParamsChanged()));
 }
 
 void MainWindow::rdoP3ResetScript()
 {
+    disconnect(ui->txtP3Script, SIGNAL(textChanged()),
+            this, SLOT(txtP3ScriptChanged()));
+    disconnect(m_setupModel, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
+            this, SLOT(lstP3ParamsChanged()));
+    disconnect(m_resetModel, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
+            this, SLOT(lstP3ParamsChanged()));
 
+    p3UpdateScript();
+    p3UpdateParamList();
+
+    connect(ui->txtP3Script, SIGNAL(textChanged()),
+            this, SLOT(txtP3ScriptChanged()));
+    connect(m_setupModel, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
+            this, SLOT(lstP3ParamsChanged()));
+    connect(m_resetModel, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
+            this, SLOT(lstP3ParamsChanged()));
 }
 
 void MainWindow::cmbP3ScriptChanged(int index)
 {
-    m_curIndex = index;
+    disconnect(m_setupModel, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
+            this, SLOT(lstP3ParamsChanged()));
+    disconnect(m_resetModel, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
+            this, SLOT(lstP3ParamsChanged()));
+    disconnect(ui->txtP3Script, SIGNAL(textChanged()),
+            this, SLOT(txtP3ScriptChanged()));
 
     // Load script from database
-    Script script;
-    GlobalDatabase::instance()->getScript(m_curIndex, script);
-    if( ui->rdoP3SetupScript->isChecked())
+    m_curIndex = index;
+    GlobalDatabase::instance()->getScript(m_curIndex, m_curScript);
+
+    // Update models
+    m_setupModel->removeRows(0, m_setupModel->rowCount());
+    m_resetModel->removeRows(0, m_resetModel->rowCount());
+
+    for(int i = 0; i < m_curScript.setupParams.size(); i++)
     {
-        ui->txtP3Script->setText(script.setupText);
-    }
-    else
-    {
-        ui->txtP3Script->setText(script.resetText);
+        QStandardItem *itemLine = new QStandardItem(
+                    QString("%1").arg(m_curScript.setupParams[i].line));
+        QStandardItem *itemPos = new QStandardItem(
+                    QString("%1").arg(m_curScript.setupParams[i].pos));
+        itemLine->setEditable(false);
+        itemPos->setEditable(false);
+
+        m_setupModel->setItem(i, 0, itemLine);
+        m_setupModel->setItem(i, 1, itemPos);
+        m_setupModel->setItem(i, 2, new QStandardItem(
+                                  m_curScript.setupParams[i].defValue));
     }
 
-    m_modified = false; // Reset modified after setting script text
+    for(int i = 0; i < m_curScript.resetParams.size(); i++)
+    {
+        QStandardItem *itemLine = new QStandardItem(
+                    QString("%1").arg(m_curScript.resetParams[i].line));
+        QStandardItem *itemPos = new QStandardItem(
+                    QString("%1").arg(m_curScript.resetParams[i].pos));
+        itemLine->setEditable(false);
+        itemPos->setEditable(false);
+
+        m_resetModel->setItem(i, 0, itemLine);
+        m_resetModel->setItem(i, 1, itemPos);
+        m_resetModel->setItem(i, 2, new QStandardItem(
+                                  m_curScript.resetParams[i].defValue));
+    }
+
+    m_textState = HtmlText;
+
+    p3UpdateScript();
+    p3UpdateParamList();
+
+    ui->lstP3Params->setModel(ui->rdoP3SetupScript->isChecked() ?
+                                  m_setupModel : m_resetModel);
+
+    // Set unmodified
+    m_modified = false;
     p3UpdateModifiedState();
+
+    connect(m_setupModel, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
+            this, SLOT(lstP3ParamsChanged()));
+    connect(m_resetModel, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
+            this, SLOT(lstP3ParamsChanged()));
+    connect(ui->txtP3Script, SIGNAL(textChanged()),
+            this, SLOT(txtP3ScriptChanged()));
 }
 
 void MainWindow::txtP3ScriptChanged()
 {
     m_modified = true;
     p3UpdateModifiedState();
+
+    // [State 1: Plain Text] ---------------------------> [State 1: Plain Text]
+    if( m_textState == PlainText ) // Update script object
+    {
+        if( ui->rdoP3SetupScript->isChecked())
+        {
+            m_curScript.setupText = ui->txtP3Script->toPlainText();
+        }
+        else
+        {
+            m_curScript.resetText = ui->txtP3Script->toPlainText();
+        }
+    }
+    // [State 2: HTML Text] ----------------------------> [State 1: Plain Text]
+    else if( m_textState == HtmlText )
+    {
+        disconnect(m_setupModel, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
+                this, SLOT(lstP3ParamsChanged()));
+        disconnect(m_resetModel, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
+                this, SLOT(lstP3ParamsChanged()));
+        disconnect(ui->txtP3Script, SIGNAL(textChanged()),
+                this, SLOT(txtP3ScriptChanged()));
+
+        if( ui->rdoP3SetupScript->isChecked())
+        {
+            m_curScript.setupText = ui->txtP3Script->toPlainText();
+            m_setupModel->removeRows(0, m_setupModel->rowCount());
+        }
+        else
+        {
+            m_curScript.resetText = ui->txtP3Script->toPlainText();
+            m_resetModel->removeRows(0, m_resetModel->rowCount());
+        }
+        m_textState = PlainText;
+        p3UpdateScript();
+
+        connect(m_setupModel, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
+                this, SLOT(lstP3ParamsChanged()));
+        connect(m_resetModel, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
+                this, SLOT(lstP3ParamsChanged()));
+        connect(ui->txtP3Script, SIGNAL(textChanged()),
+                this, SLOT(txtP3ScriptChanged()));
+    }
+    ui->btnP3Auto->setEnabled(!ui->txtP3Script->toPlainText().isEmpty());
 }
 
 void MainWindow::lstP3ParamsChanged()
 {
     m_modified = true;
     p3UpdateModifiedState();
+
+    disconnect(ui->txtP3Script, SIGNAL(textChanged()),
+            this, SLOT(txtP3ScriptChanged()));
+    p3UpdateScript();
+    connect(ui->txtP3Script, SIGNAL(textChanged()),
+            this, SLOT(txtP3ScriptChanged()));
 }
 
-void MainWindow::p3UpdateList()
+void MainWindow::p3RebuildScriptList()
 {
     int count = GlobalDatabase::instance()->getScriptCount();
     Script script;
@@ -333,4 +544,61 @@ void MainWindow::p3UpdateModifiedState()
             }
         }
     }
+}
+
+void MainWindow::p3UpdateScript()
+{
+    QString &scriptText = ui->rdoP3SetupScript->isChecked() ?
+                m_curScript.setupText : m_curScript.resetText;
+    if( m_textState == PlainText )
+    {
+        ui->txtP3Script->setPlainText(scriptText);
+    }
+    else if( m_textState == HtmlText ) // Insert parameters with bgcolor
+    {
+        QStringList lines = scriptText.split('\n');
+        QStandardItemModel *model = ui->rdoP3SetupScript->isChecked() ?
+                    m_setupModel : m_resetModel;
+        QString htmlBuffer;
+
+        int paramIndex = 0;
+        for(int i = 0; i < lines.size(); i++) // It's assumed that each line contains not more than one parameter
+        {
+            if( paramIndex < model->rowCount())
+            {
+                int paramLine = model->item(paramIndex, 0)->text().toInt();
+                int paramPos = model->item(paramIndex, 1)->text().toInt();
+                QString paramValue = model->item(paramIndex, 2)->text();
+
+                if( i == paramLine )
+                {
+                    htmlBuffer += lines[i].left(paramPos);
+                    htmlBuffer +=
+                            QString("<span style='background-color: #EEEEEE'>%1</span>").arg(paramValue);
+                    htmlBuffer += lines[i].right(lines[i].size() - paramPos);
+                    htmlBuffer += "<br>\n";
+
+                    paramIndex += 1;
+                }
+                else
+                {
+                    htmlBuffer += lines[i] + "<br>\n";
+                }
+            }
+            else
+            {
+                htmlBuffer += lines[i] + "<br>\n";
+            }
+        }
+
+        // Remove the extra newline and display
+        htmlBuffer =  htmlBuffer.left(htmlBuffer.size() - strlen("<br>\n"));
+        ui->txtP3Script->setHtml(htmlBuffer);
+    }
+}
+
+void MainWindow::p3UpdateParamList()
+{
+        ui->lstP3Params->setModel(ui->rdoP3SetupScript->isChecked() ?
+                                      m_setupModel : m_resetModel);
 }

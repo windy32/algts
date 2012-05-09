@@ -146,6 +146,18 @@ void GlobalDatabase::getScript(int index, Script &script)
     }
 }
 
+void GlobalDatabase::setScript(int index, Script &script)
+{
+    QByteArray data;
+    QDataStream out(&data, QIODevice::WriteOnly);
+    out << script;
+
+    QSqlQuery query;
+    query.prepare(QString("Update Script set Data = :data Where UID = %1").arg(index + 1));
+    query.bindValue(":data", data);
+    query.exec();
+}
+
 void GlobalDatabase::addScript(Script &script)
 {
     // qDebug() << "Entering GlobalDatabase::addScript";
