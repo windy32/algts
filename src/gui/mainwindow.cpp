@@ -71,8 +71,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Page 2: Scenario
     ScenarioEx *s = new ScenarioEx(); // Test only
+    s->name() = "My Scenario 1";
     s->addUser("Harry");
     s->addUser("Sally");
+    s->addTask("Harry", new BulkDownloadTask(80));
+    s->addTask("Harry", new BulkDownloadTask(80));
+    s->addTask("Sally", new BulkDownloadTask(80));
     ui->scenarioWidget->setScenario(s);
     ui->scenarioWidget->update();
 

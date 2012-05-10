@@ -288,7 +288,7 @@
        </layout>
       </widget>
       <widget class="QWidget" name="pageScenario">
-       <layout class="QVBoxLayout" name="scenarioLayout">
+       <layout class="QVBoxLayout" name="scenarioLayout" stretch="1,0">
         <property name="leftMargin">
          <number>6</number>
         </property>
@@ -760,7 +760,7 @@
               <item>
                <widget class="QStackedWidget" name="tasks">
                 <property name="currentIndex">
-                 <number>0</number>
+                 <number>2</number>
                 </property>
                 <widget class="QWidget" name="P23BdTask">
                  <layout class="QVBoxLayout" name="P231Layout">

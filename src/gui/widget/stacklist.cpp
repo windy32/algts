@@ -31,7 +31,7 @@ void StackList::paintEvent(QPaintEvent * /* event */)
     // Draw buttons
     const char *text[5] =
     {
-        "Welcom", "Scenario", "Script", "New Test", "View Tests"
+        "Welcome", "Scenario", "Script", "New Test", "View Tests"
     };
 
     for(int i = 0; i < 5; i++)
