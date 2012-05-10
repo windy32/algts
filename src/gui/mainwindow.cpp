@@ -70,15 +70,36 @@ MainWindow::MainWindow(QWidget *parent) :
     updateStatistics();
 
     // Page 2: Scenario
-    ScenarioEx *s = new ScenarioEx(); // Test only
-    s->name() = "My Scenario 1";
-    s->addUser("Harry");
-    s->addUser("Sally");
-    s->addTask("Harry", new BulkDownloadTask(80));
-    s->addTask("Harry", new BulkDownloadTask(80));
-    s->addTask("Sally", new BulkDownloadTask(80));
-    ui->scenarioWidget->setScenario(s);
+    //ScenarioEx *s = new ScenarioEx(); // Test only
+    m_scenario.name() = "My Scenario 1";
+    m_scenario.addUser("Harry");
+    m_scenario.addUser("Sally");
+    m_scenario.addTask("Harry", new BulkDownloadTask(80));
+    m_scenario.addTask("Harry", new BulkDownloadTask(80));
+    m_scenario.addTask("Sally", new BulkDownloadTask(80));
+    ui->scenarioWidget->setScenario(&m_scenario);
     ui->scenarioWidget->update();
+
+    connect(ui->txtP21Name, SIGNAL(textChanged(QString)),
+            this, SLOT(txtP21NameChanged()));
+    connect(ui->sldP21Length, SIGNAL(valueChanged(int)),
+            this, SLOT(sldP21LengthChange()));
+    connect(ui->sldP21Seed, SIGNAL(valueChanged(int)),
+            this, SLOT(sldP21SeedChanged()));
+    connect(ui->btnP21Random, SIGNAL(clicked()), this, SLOT(btnP21RandomSeed()));
+
+    connect(ui->scenarioWidget, SIGNAL(scenarioSelected()),
+            this, SLOT(p21ScenarioSelected()));
+    connect(ui->scenarioWidget, SIGNAL(userSelected(QString)),
+            this, SLOT(p21UserSelected(QString)));
+    connect(ui->scenarioWidget, SIGNAL(taskSelected(QString,int)),
+            this, SLOT(p21TaskSelected(QString,int)));
+    p21ScenarioSelected();
+
+    connect(ui->txtP22Name, SIGNAL(textChanged(QString)),
+            this, SLOT(txtP22NameChanged(QString)));
+    connect(ui->cmbP23Type, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(cmbP23TaskTypeChanged(int)));
 
     // Page 3: Script
     m_setupModel = new QStandardItemModel;
@@ -158,6 +179,8 @@ void MainWindow::MenuViewTests()
     ui->stakcList->SetPage(4);
 }
 
+// Page 1: Welcome ////////////////////////////////////////////////////////////
+
 void MainWindow::btnAddrSetting()
 {
     IpAddrDialog dialog(m_interface, m_addrs);
@@ -212,6 +235,81 @@ void MainWindow::updateStatistics()
     ui->lblScripts->setText(
         QString("Scripts: %1").arg(GlobalDatabase::instance()->getScriptCount()));
 }
+
+// Page 2: Scenario ///////////////////////////////////////////////////////////
+
+void MainWindow::txtP21NameChanged()
+{
+    m_scenario.name() = ui->txtP21Name->text();
+    ui->scenarioWidget->update();
+}
+
+void MainWindow::sldP21LengthChange()
+{
+    m_scenario.length() = ui->sldP21Length->value();
+    ui->scenarioWidget->update();
+    ui->txtP21Length->setText(QString("%1").arg(ui->sldP21Length->value()));
+}
+
+void MainWindow::sldP21SeedChanged()
+{
+    m_scenario.seed() = ui->sldP21Length->value();
+    ui->scenarioWidget->update();
+    ui->txtP21Seed->setText(QString("%1").arg(ui->sldP21Seed->value()));
+}
+
+void MainWindow::btnP21RandomSeed()
+{
+    qsrand((uint)QTime::currentTime().msec());
+    double randomValue = (double)qrand() / RAND_MAX;
+    int seed = (int)(randomValue * 2000000000);
+    ui->sldP21Seed->setValue(seed);
+}
+
+void MainWindow::p21ScenarioSelected()
+{
+    ui->P2TargetProperty->setCurrentIndex(0);
+
+    ui->txtP21Name->setText(m_scenario.name());
+    ui->sldP21Length->setValue(m_scenario.length());
+    ui->sldP21Seed->setValue(m_scenario.seed());
+
+    ui->txtP21Length->setText(QString("%1").arg(ui->sldP21Length->value()));
+    ui->txtP21Seed->setText(QString("%1").arg(ui->sldP21Seed->value()));
+}
+
+void MainWindow::p21UserSelected(const QString &username)
+{
+    disconnect(ui->txtP22Name, SIGNAL(textChanged(QString)),
+            this, SLOT(txtP22NameChanged(QString)));
+
+    ui->P2TargetProperty->setCurrentIndex(1);
+    ui->txtP22Name->setText(username);
+    m_p2user = username;
+
+    connect(ui->txtP22Name, SIGNAL(textChanged(QString)),
+            this, SLOT(txtP22NameChanged(QString)));
+}
+
+void MainWindow::p21TaskSelected(const QString &username, int index)
+{
+    ui->P2TargetProperty->setCurrentIndex(2);
+}
+
+void MainWindow::txtP22NameChanged(const QString &newUsername)
+{
+    m_scenario.renameUser(m_p2user, newUsername);
+    ui->scenarioWidget->update();
+    ui->scenarioWidget->onUserSelected(newUsername);
+    m_p2user = newUsername;
+}
+
+void MainWindow::cmbP23TaskTypeChanged(int index)
+{
+    ui->tasks->setCurrentIndex(index);
+}
+
+// Page 3: Script /////////////////////////////////////////////////////////////
 
 void MainWindow::btnP3New()
 {

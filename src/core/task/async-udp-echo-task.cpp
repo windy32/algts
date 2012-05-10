@@ -79,6 +79,21 @@ const QVector<qint32> &AsyncUdpEchoTask::getIntervals()
     return m_intervals;
 }
 
+RandomVariable *AsyncUdpEchoTask::getInputSize()
+{
+    return m_inputSize;
+}
+
+RandomVariable *AsyncUdpEchoTask::getEchoSize()
+{
+    return m_echoSize;
+}
+
+RandomVariable *AsyncUdpEchoTask::getInterval()
+{
+    return m_interval;
+}
+
 enum Task::Type AsyncUdpEchoTask::getType()
 {
     return ASYNC_UDP_ECHO;

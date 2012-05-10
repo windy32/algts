@@ -77,6 +77,21 @@ const QVector<qint32> &TcpEchoTask::getIntervals()
     return m_intervals;
 }
 
+RandomVariable *TcpEchoTask::getInputSize()
+{
+    return m_inputSize;
+}
+
+RandomVariable *TcpEchoTask::getEchoSize()
+{
+    return m_echoSize;
+}
+
+RandomVariable *TcpEchoTask::getInterval()
+{
+    return m_interval;
+}
+    
 enum Task::Type TcpEchoTask::getType()
 {
     return TCP_ECHO;

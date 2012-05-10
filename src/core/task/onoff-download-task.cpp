@@ -175,6 +175,16 @@ const QVector<qint32> &OnoffDownloadTask::getOffTimes()
     return m_offTimes;
 }
 
+RandomVariable *OnoffDownloadTask::getOnTime()
+{
+    return m_onTime;
+}
+
+RandomVariable *OnoffDownloadTask::getOffTime()
+{
+    return m_offTime;
+}
+
 enum Task::Type OnoffDownloadTask::getType()
 {
     return ONOFF_DOWNLOAD;

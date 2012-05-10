@@ -65,6 +65,23 @@ public: // interface for client
      */
     const QVector<qint32> &getIntervals();
 
+public: // interface for gui client
+    /**
+     * \brief Return the random variable InputSize
+     * \return Pointer to the random variable
+     */
+    RandomVariable *getInputSize();
+    /**
+     * \brief Return the random variable EchoSize
+     * \return Pointer to the random variable
+     */
+    RandomVariable *getEchoSize();
+    /**
+     * \brief Return the random variable Interval
+     * \return Pointer to the random variable
+     */
+    RandomVariable *getInterval();
+
 public:
     friend QDataStream &operator<<(QDataStream &out, const TcpEchoTask &task);
     friend QDataStream &operator>>(QDataStream &in, TcpEchoTask &task);

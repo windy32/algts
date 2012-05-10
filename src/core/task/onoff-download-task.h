@@ -78,6 +78,18 @@ public: // interface for client
      * \return The length (ms) of each "Off" periods
      */
     const QVector<qint32> &getOffTimes();
+    
+public: // interface for gui client
+    /**
+     * \brief Return the random variable OnTime
+     * \return Pointer to the random variable
+     */
+    RandomVariable *getOnTime();
+    /**
+     * \brief Return the random variable OffTime
+     * \return Pointer to the random variable
+     */
+    RandomVariable *getOffTime();
 
 public:
     friend QDataStream &operator<<(QDataStream &out, const OnoffDownloadTask &task);

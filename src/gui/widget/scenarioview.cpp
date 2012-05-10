@@ -319,7 +319,7 @@ void ScenarioView::update()
     m_scene->addItem(titleItem);
 
     // Add timeline item
-    TimelineItem *timelineItem = new TimelineItem(60, 10 + maxWidth + 40);
+    TimelineItem *timelineItem = new TimelineItem(m_scenario->length(), 10 + maxWidth + 40);
     timelineItem->setWidth(this->rect().width() - 3);
     timelineItem->setPos(0, this->rect().height() - 17);
     m_scene->addItem(timelineItem);
@@ -355,6 +355,10 @@ void ScenarioView::onUserSelected(const QString &username)
         if( m_userItems[i]->getName() != username )
         {
             m_userItems[i]->setSelectionState(false);
+        }
+        else
+        {
+            m_userItems[i]->setSelectionState(true);
         }
     }
 

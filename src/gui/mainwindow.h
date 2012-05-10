@@ -6,6 +6,7 @@
 #include <QStandardItemModel>
 
 #include "script.h"
+#include "scenarioex.h"
 
 namespace Ui {
 class MainWindow;
@@ -32,6 +33,23 @@ private slots:
     void btnEmulationSetting();
     void updateEmulationState();
     void updateStatistics();
+
+    // Page 2: Scenario
+    //void p21UpdateLength();
+    //void p21UpdateSeed();
+
+    void txtP21NameChanged();
+    void sldP21LengthChange();
+    void sldP21SeedChanged();
+    void btnP21RandomSeed();
+
+    void p21ScenarioSelected();
+    void p21UserSelected(const QString &username);
+    void p21TaskSelected(const QString &username, int index);
+
+    void txtP22NameChanged(const QString &newUsername);
+
+    void cmbP23TaskTypeChanged(int index);
 
     // Page 3: Script
     void btnP3New();
@@ -61,6 +79,11 @@ private:
 
     int m_txRate; // kbps, -1 for infinite
     int m_rxRate; // kbps, -1 for infinite
+
+    // Page 2: Scenario
+    ScenarioEx m_scenario;
+    QString m_p2user;
+    int m_p2index;
 
     // Page 3: Script
     QStandardItemModel *m_setupModel;
