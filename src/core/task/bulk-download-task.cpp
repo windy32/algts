@@ -125,6 +125,16 @@ qint32 BulkDownloadTask::getMaxRate()
     return m_maxRate;
 }
 
+void BulkDownloadTask::setMaxBytes(qint32 maxBytes)
+{
+    m_maxBytes = maxBytes;
+}
+
+void BulkDownloadTask::setMaxRate(qint32 maxRate)
+{
+    m_maxRate = maxRate;
+}
+
 enum Task::Type BulkDownloadTask::getType()
 {
     return BULK_DOWNLOAD;

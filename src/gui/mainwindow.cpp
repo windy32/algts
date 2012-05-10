@@ -75,7 +75,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_scenario.addUser("Harry");
     m_scenario.addUser("Sally");
     m_scenario.addTask("Harry", new BulkDownloadTask(80));
-    m_scenario.addTask("Harry", new BulkDownloadTask(80));
+    m_scenario.task("Harry", 0)->setAttribute("MaxBytes", "64MB");
+    m_scenario.addTask("Harry", new BulkUploadTask(80));
     m_scenario.addTask("Sally", new BulkDownloadTask(80));
     ui->scenarioWidget->setScenario(&m_scenario);
     ui->scenarioWidget->update();
@@ -89,17 +90,27 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->btnP21Random, SIGNAL(clicked()), this, SLOT(btnP21RandomSeed()));
 
     connect(ui->scenarioWidget, SIGNAL(scenarioSelected()),
-            this, SLOT(p21ScenarioSelected()));
+            this, SLOT(p2ScenarioSelected()));
     connect(ui->scenarioWidget, SIGNAL(userSelected(QString)),
-            this, SLOT(p21UserSelected(QString)));
+            this, SLOT(p2UserSelected(QString)));
     connect(ui->scenarioWidget, SIGNAL(taskSelected(QString,int)),
-            this, SLOT(p21TaskSelected(QString,int)));
-    p21ScenarioSelected();
+            this, SLOT(p2TaskSelected(QString,int)));
+    p2ScenarioSelected();
 
     connect(ui->txtP22Name, SIGNAL(textChanged(QString)),
             this, SLOT(txtP22NameChanged(QString)));
     connect(ui->cmbP23Type, SIGNAL(currentIndexChanged(int)),
             this, SLOT(cmbP23TaskTypeChanged(int)));
+
+    connect(ui->sldP231MaxBytes, SIGNAL(valueChanged(int)),
+            this, SLOT(sldP231MaxBytesChanged(int)));
+    connect(ui->sldP231MaxRate, SIGNAL(valueChanged(int)),
+            this, SLOT(sldP231MaxRateChanged(int)));
+
+    connect(ui->sldP232MaxBytes, SIGNAL(valueChanged(int)),
+            this, SLOT(sldP232MaxBytesChanged(int)));
+    connect(ui->sldP232MaxRate, SIGNAL(valueChanged(int)),
+            this, SLOT(sldP232MaxRateChanged(int)));
 
     // Page 3: Script
     m_setupModel = new QStandardItemModel;
@@ -266,7 +277,7 @@ void MainWindow::btnP21RandomSeed()
     ui->sldP21Seed->setValue(seed);
 }
 
-void MainWindow::p21ScenarioSelected()
+void MainWindow::p2ScenarioSelected()
 {
     ui->P2TargetProperty->setCurrentIndex(0);
 
@@ -278,7 +289,7 @@ void MainWindow::p21ScenarioSelected()
     ui->txtP21Seed->setText(QString("%1").arg(ui->sldP21Seed->value()));
 }
 
-void MainWindow::p21UserSelected(const QString &username)
+void MainWindow::p2UserSelected(const QString &username)
 {
     disconnect(ui->txtP22Name, SIGNAL(textChanged(QString)),
             this, SLOT(txtP22NameChanged(QString)));
@@ -291,9 +302,38 @@ void MainWindow::p21UserSelected(const QString &username)
             this, SLOT(txtP22NameChanged(QString)));
 }
 
-void MainWindow::p21TaskSelected(const QString &username, int index)
+void MainWindow::p2TaskSelected(const QString &username, int index)
 {
     ui->P2TargetProperty->setCurrentIndex(2);
+
+    m_p2user = username;
+    m_p2index = index;
+    Task *task = m_scenario.task(username, index);
+
+    if( task->getType() == Task::BULK_DOWNLOAD )
+    {
+        int maxBytes = ((BulkDownloadTask *)task)->getMaxBytes();
+        int maxRate = ((BulkDownloadTask *)task)->getMaxRate();
+
+        ui->sldP231MaxBytes->setValue(
+                    (maxBytes == -1) ? 32 * 1024 + 1 : maxBytes / (32 * 1024));
+        ui->sldP231MaxRate->setValue(
+                    (maxRate == -1) ? 32 * 100 + 1 : maxRate * 8 / (32 * 1024));
+
+        ui->cmbP23Type->setCurrentIndex(0);
+    }
+    else if( task->getType() == Task::BULK_UPLOAD )
+    {
+        int maxBytes = ((BulkDownloadTask *)task)->getMaxBytes();
+        int maxRate = ((BulkDownloadTask *)task)->getMaxRate();
+
+        ui->sldP232MaxBytes->setValue(
+                    (maxBytes == -1) ? 32 * 1024 + 1 : maxBytes / (32 * 1024));
+        ui->sldP232MaxRate->setValue(
+                    (maxRate == -1) ? 32 * 100 + 1 : maxRate * 8 / (32 * 1024));
+
+        ui->cmbP23Type->setCurrentIndex(1);
+    }
 }
 
 void MainWindow::txtP22NameChanged(const QString &newUsername)
@@ -307,6 +347,104 @@ void MainWindow::txtP22NameChanged(const QString &newUsername)
 void MainWindow::cmbP23TaskTypeChanged(int index)
 {
     ui->tasks->setCurrentIndex(index);
+}
+
+void MainWindow::sldP231MaxBytesChanged(int value)
+{
+    int maxBytes = value * 32; // KB
+    if( maxBytes < 1024 )
+    {
+        ui->txtP231MaxBytes->setText(QString("%1 KB").arg(maxBytes));
+    }
+    else if( maxBytes < 1024 * 1024 )
+    {
+        ui->txtP231MaxBytes->setText(QString("%1 MB").arg(maxBytes / 1024));
+    }
+    else if( maxBytes == 1024 * 1024 )
+    {
+        ui->txtP231MaxBytes->setText("1 GB");
+    }
+    else
+    {
+        ui->txtP231MaxBytes->setText("INFINITE");
+    }
+
+    BulkDownloadTask *task = (BulkDownloadTask *)m_scenario.task(m_p2user, m_p2index);
+    task->setMaxBytes(maxBytes * 1024);
+}
+
+void MainWindow::sldP231MaxRateChanged(int value)
+{
+    int maxRate = value * 32; // Kbps
+    if( maxRate < 1024 )
+    {
+        ui->txtP231MaxRate->setText(QString("%1 Kbps").arg(maxRate));
+    }
+    else if( maxRate < 100 * 1024)
+    {
+        ui->txtP231MaxRate->setText(QString("%1 Mbps")
+                                    .arg(maxRate / 1024.0, 0, 'f', 2));
+    }
+    else if( maxRate == 100 * 1024 )
+    {
+        ui->txtP231MaxRate->setText("100 Mbps");
+    }
+    else
+    {
+        ui->txtP231MaxRate->setText("INFINITE");
+    }
+
+    BulkDownloadTask *task = (BulkDownloadTask *)m_scenario.task(m_p2user, m_p2index);
+    task->setMaxRate(maxRate * 1024 / 8);
+}
+
+void MainWindow::sldP232MaxBytesChanged(int value)
+{
+    int maxBytes = value * 32; // KB
+    if( maxBytes < 1024 )
+    {
+        ui->txtP232MaxBytes->setText(QString("%1 KB").arg(maxBytes));
+    }
+    else if( maxBytes < 1024 * 1024 )
+    {
+        ui->txtP232MaxBytes->setText(QString("%1 MB").arg(maxBytes / 1024));
+    }
+    else if( maxBytes == 1024 * 1024 )
+    {
+        ui->txtP232MaxBytes->setText("1 GB");
+    }
+    else
+    {
+        ui->txtP232MaxBytes->setText("INFINITE");
+    }
+
+    BulkUploadTask *task = (BulkUploadTask *)m_scenario.task(m_p2user, m_p2index);
+    task->setMaxBytes(maxBytes * 1024);
+}
+
+void MainWindow::sldP232MaxRateChanged(int value)
+{
+    int maxRate = value * 32; // Kbps
+    if( maxRate < 1024 )
+    {
+        ui->txtP232MaxRate->setText(QString("%1 Kbps").arg(maxRate));
+    }
+    else if( maxRate < 100 * 1024)
+    {
+        ui->txtP232MaxRate->setText(QString("%1 Mbps")
+                                    .arg(maxRate / 1024.0, 0, 'f', 2));
+    }
+    else if( maxRate == 100 * 1024 )
+    {
+        ui->txtP232MaxRate->setText("100 Mbps");
+    }
+    else
+    {
+        ui->txtP232MaxRate->setText("INFINITE");
+    }
+
+    BulkUploadTask *task = (BulkUploadTask *)m_scenario.task(m_p2user, m_p2index);
+    task->setMaxRate(maxRate * 1024 / 8);
 }
 
 // Page 3: Script /////////////////////////////////////////////////////////////

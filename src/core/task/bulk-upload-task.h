@@ -54,6 +54,18 @@ public: //interface for client
      */
     qint32 getMaxRate();
 
+public: // interface for gui client
+    /**
+     * \brief Set max bytes to upload
+     * \param maxBytes Max bytes to upload
+     */
+    void setMaxBytes(qint32 maxBytes);
+    /**
+     * \brief Set max upload rate
+     * \param maxRate Max upload rate (byte/s)
+     */
+    void setMaxRate(qint32 maxRate);
+
 public:
     friend QDataStream &operator<<(QDataStream &out, const BulkUploadTask &task);
     friend QDataStream &operator>>(QDataStream &in, BulkUploadTask &task);

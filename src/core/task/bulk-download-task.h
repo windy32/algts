@@ -41,7 +41,7 @@ public:
 public: // interface for script
     virtual void setAttribute(const QString &attribute, const QString &value);
 
-public: //interface for client
+public: // interface for client
     /**
      * \brief Return max bytes to download
      * \return Max bytes to download
@@ -53,6 +53,18 @@ public: //interface for client
      * \return Max download rate (byte/s)
      */
     qint32 getMaxRate();
+    
+public: // interface for gui client
+    /**
+     * \brief Set max bytes to download
+     * \param maxBytes Max bytes to download
+     */
+    void setMaxBytes(qint32 maxBytes);
+    /**
+     * \brief Set max download rate
+     * \param maxRate Max download rate (byte/s)
+     */
+    void setMaxRate(qint32 maxRate);
 
 public:
     friend QDataStream &operator<<(QDataStream &out, const BulkDownloadTask &task);

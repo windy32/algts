@@ -814,6 +814,12 @@
                     </item>
                     <item>
                      <widget class="QSlider" name="sldP231MaxBytes">
+                      <property name="minimum">
+                       <number>1</number>
+                      </property>
+                      <property name="maximum">
+                       <number>32769</number>
+                      </property>
                       <property name="orientation">
                        <enum>Qt::Horizontal</enum>
                       </property>
@@ -823,13 +829,13 @@
                      <widget class="QLineEdit" name="txtP231MaxBytes">
                       <property name="minimumSize">
                        <size>
-                        <width>50</width>
+                        <width>90</width>
                         <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
-                        <width>50</width>
+                        <width>90</width>
                         <height>16777215</height>
                        </size>
                       </property>
@@ -860,6 +866,12 @@
                     </item>
                     <item>
                      <widget class="QSlider" name="sldP231MaxRate">
+                      <property name="minimum">
+                       <number>1</number>
+                      </property>
+                      <property name="maximum">
+                       <number>3201</number>
+                      </property>
                       <property name="orientation">
                        <enum>Qt::Horizontal</enum>
                       </property>
@@ -869,13 +881,13 @@
                      <widget class="QLineEdit" name="txtP231MaxRate">
                       <property name="minimumSize">
                        <size>
-                        <width>50</width>
+                        <width>90</width>
                         <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
-                        <width>50</width>
+                        <width>90</width>
                         <height>16777215</height>
                        </size>
                       </property>
@@ -929,6 +941,12 @@
                     </item>
                     <item>
                      <widget class="QSlider" name="sldP232MaxBytes">
+                      <property name="minimum">
+                       <number>1</number>
+                      </property>
+                      <property name="maximum">
+                       <number>32769</number>
+                      </property>
                       <property name="orientation">
                        <enum>Qt::Horizontal</enum>
                       </property>
@@ -938,13 +956,13 @@
                      <widget class="QLineEdit" name="txtP232MaxBytes">
                       <property name="minimumSize">
                        <size>
-                        <width>50</width>
+                        <width>90</width>
                         <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
-                        <width>50</width>
+                        <width>90</width>
                         <height>16777215</height>
                        </size>
                       </property>
@@ -975,6 +993,12 @@
                     </item>
                     <item>
                      <widget class="QSlider" name="sldP232MaxRate">
+                      <property name="minimum">
+                       <number>1</number>
+                      </property>
+                      <property name="maximum">
+                       <number>3201</number>
+                      </property>
                       <property name="orientation">
                        <enum>Qt::Horizontal</enum>
                       </property>
@@ -984,13 +1008,13 @@
                      <widget class="QLineEdit" name="txtP232MaxRate">
                       <property name="minimumSize">
                        <size>
-                        <width>50</width>
+                        <width>90</width>
                         <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
-                        <width>50</width>
+                        <width>90</width>
                         <height>16777215</height>
                        </size>
                       </property>

@@ -35,21 +35,24 @@ private slots:
     void updateStatistics();
 
     // Page 2: Scenario
-    //void p21UpdateLength();
-    //void p21UpdateSeed();
-
     void txtP21NameChanged();
     void sldP21LengthChange();
     void sldP21SeedChanged();
     void btnP21RandomSeed();
 
-    void p21ScenarioSelected();
-    void p21UserSelected(const QString &username);
-    void p21TaskSelected(const QString &username, int index);
+    void p2ScenarioSelected();
+    void p2UserSelected(const QString &username);
+    void p2TaskSelected(const QString &username, int index);
 
     void txtP22NameChanged(const QString &newUsername);
 
     void cmbP23TaskTypeChanged(int index);
+
+    void sldP231MaxBytesChanged(int value);
+    void sldP231MaxRateChanged(int value);
+
+    void sldP232MaxBytesChanged(int value);
+    void sldP232MaxRateChanged(int value);
 
     // Page 3: Script
     void btnP3New();
