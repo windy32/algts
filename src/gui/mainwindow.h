@@ -35,6 +35,7 @@ private slots:
     void updateStatistics();
 
     // Page 2: Scenario
+    void cmbP2ScenarioChanged(int index);
     void btnP2NewScenario();
     void btnP2SaveScenario();
     void p2RebuildScenarioList();

@@ -43,7 +43,7 @@
     <item>
      <widget class="QStackedWidget" name="pages">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="pageWelcome">
        <layout class="QVBoxLayout" name="welcomeLayout" stretch="0,0,1,0,0,0,0,0,0,0,0">
@@ -432,7 +432,11 @@
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="txtP21Name"/>
+               <widget class="QLineEdit" name="txtP21Name">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>

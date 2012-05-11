@@ -86,9 +86,26 @@ MainWindow::MainWindow(QWidget *parent) :
     m_scenario.addTask("Sally", new TcpEchoTask(80));
     m_scenario.addTask("Sally", new AsyncUdpEchoTask(80));
 */
-    ui->scenarioWidget->setScenario(NULL);
-    ui->scenarioWidget->update();
+    m_scenarioIndex = 0;
+    p2RebuildScenarioList();
 
+    if( m_scenarioIndex == -1 ) // No scenario available
+    {
+        ui->scenarioWidget->setScenario(NULL);
+        ui->scenarioWidget->update();
+        ui->P2TargetProperty->setEnabled(false);
+    }
+    else
+    {
+        GlobalDatabase::instance()->getScenario(0, m_scenario);
+        ui->cmbP2Scenarios->setCurrentIndex(0);
+        ui->scenarioWidget->setScenario(&m_scenario);
+        ui->scenarioWidget->update();
+        p2ScenarioSelected();
+    }
+
+    connect(ui->cmbP2Scenarios, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(cmbP2ScenarioChanged(int)));
     connect(ui->btnP2New, SIGNAL(clicked()), this, SLOT(btnP2NewScenario()));
     connect(ui->btnP2Save, SIGNAL(clicked()), this, SLOT(btnP2SaveScenario()));
 
@@ -106,8 +123,6 @@ MainWindow::MainWindow(QWidget *parent) :
             this, SLOT(p2UserSelected(QString)));
     connect(ui->scenarioWidget, SIGNAL(taskSelected(QString,int)),
             this, SLOT(p2TaskSelected(QString,int)));
-
-    ui->P2TargetProperty->setEnabled(false);
 
     connect(ui->scenarioWidget, SIGNAL(userDeleteClicked(QString)),
             this, SLOT(p2UserDeleted(QString)));
@@ -150,9 +165,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->btnP235InputSize, SIGNAL(clicked()), this, SLOT(btnP235InputSize()));
     connect(ui->btnP235EchoSize, SIGNAL(clicked()), this, SLOT(btnP235EchoSize()));
     connect(ui->btnP235Interval, SIGNAL(clicked()), this, SLOT(btnP235Interval()));
-
-    m_scenarioIndex = 0;
-    p2RebuildScenarioList();
 
     // Page 3: Script
     m_setupModel = new QStandardItemModel;
@@ -290,6 +302,15 @@ void MainWindow::updateStatistics()
 }
 
 // Page 2: Scenario ///////////////////////////////////////////////////////////
+void MainWindow::cmbP2ScenarioChanged(int index)
+{
+    m_scenarioIndex = index;
+    GlobalDatabase::instance()->getScenario(index, m_scenario);
+    ui->scenarioWidget->setScenario(&m_scenario);
+    ui->scenarioWidget->update();
+    ui->P2TargetProperty->setEnabled(true);
+    p2ScenarioSelected();
+}
 
 void MainWindow::btnP2NewScenario()
 {
@@ -315,7 +336,8 @@ void MainWindow::btnP2NewScenario()
 
             // Update ui
             p2RebuildScenarioList();
-
+            ui->scenarioWidget->setScenario(&m_scenario);
+            ui->cmbP2Scenarios->setCurrentIndex(ui->cmbP2Scenarios->count() - 1);
             ui->P2TargetProperty->setEnabled(true);
             p2ScenarioSelected();
         }
@@ -331,14 +353,76 @@ void MainWindow::btnP2NewScenario()
 
 void MainWindow::btnP2SaveScenario()
 {
+    bool ok = true;
 
+    QMessageBox msgBox;
+    msgBox.setIcon(QMessageBox::Warning);
+
+    for(int i = 0; i < m_scenario.userCount(); i++)
+    {
+        QString username = m_scenario.user(i);
+        for(int j = 0; j < m_scenario.taskCount(username); j++)
+        {
+            // Check tasks
+            Task *task = m_scenario.task(username, j);
+            if( task->getType() == Task::ONOFF_DOWNLOAD )
+            {
+                if( ((OnoffDownloadTask *)task)->getOnTime() == NullVariable::getInstance() ||
+                    ((OnoffDownloadTask *)task)->getOffTime() == NullVariable::getInstance())
+                {
+                    msgBox.setText(QString("User %1's task %2 isn't completed.").arg(username).arg(j));
+                    msgBox.exec();
+
+                    // Quit checking
+                    ok = false;
+                    break;
+                }
+            }
+            else if( task->getType() == Task::TCP_ECHO )
+            {
+                if( ((TcpEchoTask *)task)->getInputSize() == NullVariable::getInstance() ||
+                    ((TcpEchoTask *)task)->getEchoSize() == NullVariable::getInstance() ||
+                    ((TcpEchoTask *)task)->getInterval() == NullVariable::getInstance())
+                {
+                    msgBox.setText(QString("User %1's task %2 isn't completed.").arg(username).arg(j));
+                    msgBox.exec();
+
+                    // Quit checking
+                    ok = false;
+                    break;
+                }
+            }
+            else if( task->getType() == Task::ASYNC_UDP_ECHO )
+            {
+                if( ((AsyncUdpEchoTask *)task)->getInputSize() == NullVariable::getInstance() ||
+                    ((AsyncUdpEchoTask *)task)->getEchoSize() == NullVariable::getInstance() ||
+                    ((AsyncUdpEchoTask *)task)->getInterval() == NullVariable::getInstance())
+                {
+                    msgBox.setText(QString("User %1's task %2 isn't completed.").arg(username).arg(j));
+                    msgBox.exec();
+
+                    // Quit checking
+                    ok = false;
+                    break;
+                }
+            }
+        }
+    }
+
+    if( ok )
+    {
+        GlobalDatabase::instance()->setScenario(m_scenarioIndex, m_scenario);
+        msgBox.setIcon(QMessageBox::Information);
+        msgBox.setText(QString("\"%1\" is successfully saved.")
+                       .arg(m_scenario.name()));
+        msgBox.exec();
+    }
 }
 
 void MainWindow::p2RebuildScenarioList()
 {
     int count = GlobalDatabase::instance()->getScenarioCount();
     ScenarioEx scenario;
-
     // Clear the combo box
     ui->cmbP2Scenarios->clear();
 
@@ -539,7 +623,7 @@ void MainWindow::p2NewUser()
 {
     bool ok;
     QString name = QInputDialog::getText(
-                this, "algtsgui", "Enter the name of the scenario",
+                this, "algtsgui", "Enter the name of the user",
                 QLineEdit::Normal, "", &ok);
     if( ok && m_scenario.existUser(name))
     {
