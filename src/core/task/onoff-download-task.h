@@ -81,6 +81,22 @@ public: // interface for client
     
 public: // interface for gui client
     /**
+     * \brief Set max download rate
+     * \param maxRate Max download rate (byte/s)
+     */
+    void setMaxRate(qint32 maxRate);
+    /**
+     * \brief Set application layer packet size
+     * \param packetSize Application layer packet size in bytes
+     */
+    void setPacketSize(qint16 packetSize);
+    /**
+     * \brief Set request packet size
+     * \param requestSize Request size in bytes
+     */
+    void setRequestSize(qint16 requestSize);
+
+    /**
      * \brief Return the random variable OnTime
      * \return Pointer to the random variable
      */

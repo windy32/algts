@@ -31,6 +31,11 @@ void AsyncUdpEchoTask::setAttribute(const QString &attribute,
 
     if( attribute == "InputSize" )
     {
+        if( m_inputSize != NULL && m_inputSize != NullVariable::getInstance())
+        {
+            delete m_inputSize;
+        }
+        
         m_inputSize = RandomVariableFactory::create(value);
         if( m_inputSize->getMin() < 6 )
         {
@@ -43,6 +48,11 @@ void AsyncUdpEchoTask::setAttribute(const QString &attribute,
     }
     else if( attribute == "EchoSize" )
     {
+        if( m_echoSize != NULL && m_echoSize != NullVariable::getInstance())
+        {
+            delete m_echoSize;
+        }
+        
         m_echoSize = RandomVariableFactory::create(value);
         if( m_echoSize->getMin() < 4 )
         {
@@ -55,6 +65,11 @@ void AsyncUdpEchoTask::setAttribute(const QString &attribute,
     }
     else if( attribute == "Interval" )
     {
+        if( m_interval != NULL && m_interval != NullVariable::getInstance())
+        {
+            delete m_interval;
+        }
+        
         m_interval = RandomVariableFactory::create(value);
     }
     else

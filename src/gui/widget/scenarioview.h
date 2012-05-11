@@ -7,6 +7,91 @@
 
 class ScenarioView;
 
+class DeleteIcon : public QGraphicsItem
+{
+protected:
+    bool m_hover;
+
+protected:
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
+
+public:
+    DeleteIcon();
+    QRectF boundingRect() const;
+};
+
+class DeleteUserIcon : public DeleteIcon
+{
+protected:
+    ScenarioView *m_view;
+    QString m_name;
+
+protected:
+    void mousePressEvent(QGraphicsSceneMouseEvent *event);
+
+public:
+    DeleteUserIcon(ScenarioView *view, const QString &name);
+};
+
+class DeleteTaskIcon : public DeleteIcon
+{
+protected:
+    ScenarioView *m_view;
+    QString m_name;
+    int m_index;
+
+protected:
+    void mousePressEvent(QGraphicsSceneMouseEvent *event);
+
+public:
+    DeleteTaskIcon(ScenarioView *view, const QString &name, int index);
+};
+
+class NewIcon : public QGraphicsItem
+{
+protected:
+    bool m_hover;
+
+protected:
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
+
+public:
+    NewIcon();
+    QRectF boundingRect() const;
+};
+
+class NewUserIcon : public NewIcon
+{
+protected:
+    ScenarioView *m_view;
+
+protected:
+    void mousePressEvent(QGraphicsSceneMouseEvent *event);
+
+public:
+    NewUserIcon(ScenarioView *view);
+};
+
+class NewTaskIcon : public NewIcon
+{
+protected:
+    ScenarioView *m_view;
+    QString m_username;
+
+protected:
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    QRectF boundingRect() const;
+
+public:
+    NewTaskIcon(ScenarioView *view, const QString &username);
+};
+
+
 class UserItem : public QGraphicsItem
 {
 private:
@@ -118,10 +203,22 @@ signals:
     void userSelected(const QString &username);
     void taskSelected(const QString &username, int index);
 
+    void userDeleteClicked(const QString &username);
+    void taskDeleteClicked(const QString &username, int index);
+
+    void newUserClicked();
+    void newTaskClicked(const QString &username);
+
 public slots: // for graphics items
     void onScenarioSelected();
     void onUserSelected(const QString &username);
     void onTaskSelected(const QString &username, int index);
+
+    void onUserDeleteClicked(const QString &username);
+    void onTaskDeleteClicked(const QString &username, int index);
+
+    void onNewUserClicked();
+    void onNewTaskClicked(const QString &username);
 };
 
 #endif // SCENARIOVIEW_H

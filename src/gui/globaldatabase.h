@@ -3,6 +3,7 @@
 
 #include <QtSql>
 #include "script.h"
+#include "scenarioex.h"
 
 class GlobalDatabase
 {
@@ -19,8 +20,10 @@ public:
 
 public:
     int getScenarioCount();
-    void getScenario(int index, Scenario &scenario); // index starts with 0
-    void addScenario(Scenario &scenario);
+    bool existScenario(const QString &name);
+    void getScenario(int index, ScenarioEx &scenario); // index starts with 0
+    void setScenario(int index, ScenarioEx &scenario);
+    void addScenario(ScenarioEx &scenario);
 
     int getScriptCount();
     bool existScript(const QString &name);

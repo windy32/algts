@@ -288,7 +288,7 @@
        </layout>
       </widget>
       <widget class="QWidget" name="pageScenario">
-       <layout class="QVBoxLayout" name="scenarioLayout" stretch="1,0">
+       <layout class="QVBoxLayout" name="scenarioLayout" stretch="0,0,1,0">
         <property name="leftMargin">
          <number>6</number>
         </property>
@@ -301,6 +301,43 @@
         <property name="bottomMargin">
          <number>12</number>
         </property>
+        <item>
+         <layout class="QHBoxLayout" name="tmpLayout" stretch="1,0,0">
+          <item>
+           <widget class="QComboBox" name="cmbP2Scenarios"/>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnP2New">
+            <property name="text">
+             <string>New...</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnP2Save">
+            <property name="text">
+             <string>Save</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>10</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
         <item>
          <widget class="ScenarioView" name="scenarioWidget" native="true">
           <property name="sizePolicy">
@@ -332,7 +369,7 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>2</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="scenario">
            <layout class="QVBoxLayout" name="P21Layout">
@@ -781,7 +818,7 @@
               <item>
                <widget class="QStackedWidget" name="tasks">
                 <property name="currentIndex">
-                 <number>0</number>
+                 <number>2</number>
                 </property>
                 <widget class="QWidget" name="P23BdTask">
                  <layout class="QVBoxLayout" name="P231Layout">
@@ -839,6 +876,9 @@
                         <height>16777215</height>
                        </size>
                       </property>
+                      <property name="readOnly">
+                       <bool>true</bool>
+                      </property>
                      </widget>
                     </item>
                    </layout>
@@ -890,6 +930,9 @@
                         <width>90</width>
                         <height>16777215</height>
                        </size>
+                      </property>
+                      <property name="readOnly">
+                       <bool>true</bool>
                       </property>
                      </widget>
                     </item>
@@ -966,6 +1009,9 @@
                         <height>16777215</height>
                        </size>
                       </property>
+                      <property name="readOnly">
+                       <bool>true</bool>
+                      </property>
                      </widget>
                     </item>
                    </layout>
@@ -1018,6 +1064,9 @@
                         <height>16777215</height>
                        </size>
                       </property>
+                      <property name="readOnly">
+                       <bool>true</bool>
+                      </property>
                      </widget>
                     </item>
                    </layout>
@@ -1068,6 +1117,12 @@
                     </item>
                     <item>
                      <widget class="QSlider" name="sldP233MaxRate">
+                      <property name="minimum">
+                       <number>1</number>
+                      </property>
+                      <property name="maximum">
+                       <number>3201</number>
+                      </property>
                       <property name="orientation">
                        <enum>Qt::Horizontal</enum>
                       </property>
@@ -1077,15 +1132,18 @@
                      <widget class="QLineEdit" name="txtP233MaxRate">
                       <property name="minimumSize">
                        <size>
-                        <width>50</width>
+                        <width>90</width>
                         <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
-                        <width>50</width>
+                        <width>90</width>
                         <height>16777215</height>
                        </size>
+                      </property>
+                      <property name="readOnly">
+                       <bool>true</bool>
                       </property>
                      </widget>
                     </item>
@@ -1114,6 +1172,12 @@
                     </item>
                     <item>
                      <widget class="QSlider" name="sldP233PacketSize">
+                      <property name="minimum">
+                       <number>100</number>
+                      </property>
+                      <property name="maximum">
+                       <number>10000</number>
+                      </property>
                       <property name="orientation">
                        <enum>Qt::Horizontal</enum>
                       </property>
@@ -1123,15 +1187,18 @@
                      <widget class="QLineEdit" name="txtP233PacketSize">
                       <property name="minimumSize">
                        <size>
-                        <width>50</width>
+                        <width>90</width>
                         <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
-                        <width>50</width>
+                        <width>90</width>
                         <height>16777215</height>
                        </size>
+                      </property>
+                      <property name="readOnly">
+                       <bool>true</bool>
                       </property>
                      </widget>
                     </item>
@@ -1160,6 +1227,15 @@
                     </item>
                     <item>
                      <widget class="QSlider" name="sldP233RequestSize">
+                      <property name="minimum">
+                       <number>100</number>
+                      </property>
+                      <property name="maximum">
+                       <number>2000</number>
+                      </property>
+                      <property name="value">
+                       <number>100</number>
+                      </property>
                       <property name="orientation">
                        <enum>Qt::Horizontal</enum>
                       </property>
@@ -1169,15 +1245,18 @@
                      <widget class="QLineEdit" name="txtP233RequestSize">
                       <property name="minimumSize">
                        <size>
-                        <width>50</width>
+                        <width>90</width>
                         <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
-                        <width>50</width>
+                        <width>90</width>
                         <height>16777215</height>
                        </size>
+                      </property>
+                      <property name="readOnly">
+                       <bool>true</bool>
                       </property>
                      </widget>
                     </item>
@@ -1205,19 +1284,23 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLineEdit" name="txtP233OnTime"/>
+                     <widget class="QLineEdit" name="txtP233OnTime">
+                      <property name="readOnly">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
                     </item>
                     <item>
                      <widget class="QPushButton" name="btnP233OnTime">
                       <property name="minimumSize">
                        <size>
-                        <width>50</width>
+                        <width>90</width>
                         <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
-                        <width>50</width>
+                        <width>90</width>
                         <height>16777215</height>
                        </size>
                       </property>
@@ -1250,19 +1333,23 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLineEdit" name="txtP233OffTime"/>
+                     <widget class="QLineEdit" name="txtP233OffTime">
+                      <property name="readOnly">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
                     </item>
                     <item>
                      <widget class="QPushButton" name="btnP233OffTime">
                       <property name="minimumSize">
                        <size>
-                        <width>50</width>
+                        <width>90</width>
                         <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
-                        <width>50</width>
+                        <width>90</width>
                         <height>16777215</height>
                        </size>
                       </property>
@@ -1318,7 +1405,11 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLineEdit" name="txtP234InputSize"/>
+                     <widget class="QLineEdit" name="txtP234InputSize">
+                      <property name="readOnly">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
                     </item>
                     <item>
                      <widget class="QPushButton" name="btnP234InputSize">
@@ -1363,7 +1454,11 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLineEdit" name="txtP234EchoSize"/>
+                     <widget class="QLineEdit" name="txtP234EchoSize">
+                      <property name="readOnly">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
                     </item>
                     <item>
                      <widget class="QPushButton" name="btnP234EchoSize">
@@ -1408,7 +1503,11 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLineEdit" name="txtP234Interval"/>
+                     <widget class="QLineEdit" name="txtP234Interval">
+                      <property name="readOnly">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
                     </item>
                     <item>
                      <widget class="QPushButton" name="btnP234Interval">
@@ -1476,7 +1575,11 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLineEdit" name="txtP235InputSize"/>
+                     <widget class="QLineEdit" name="txtP235InputSize">
+                      <property name="readOnly">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
                     </item>
                     <item>
                      <widget class="QPushButton" name="btnP235InputSize">
@@ -1521,7 +1624,11 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLineEdit" name="txtP235EchoSize"/>
+                     <widget class="QLineEdit" name="txtP235EchoSize">
+                      <property name="readOnly">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
                     </item>
                     <item>
                      <widget class="QPushButton" name="btnP235EchoSize">
@@ -1566,7 +1673,11 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLineEdit" name="txtP235Interval"/>
+                     <widget class="QLineEdit" name="txtP235Interval">
+                      <property name="readOnly">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
                     </item>
                     <item>
                      <widget class="QPushButton" name="btnP235Interval">

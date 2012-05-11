@@ -29,6 +29,11 @@ void TcpEchoTask::setAttribute(const QString &attribute, const QString &value)
 
     if( attribute == "InputSize" )
     {
+        if( m_inputSize != NULL && m_inputSize != NullVariable::getInstance())
+        {
+            delete m_inputSize;
+        }
+
         m_inputSize = RandomVariableFactory::create(value);
         if( m_inputSize->getMin() < 4 )
         {
@@ -41,6 +46,11 @@ void TcpEchoTask::setAttribute(const QString &attribute, const QString &value)
     }
     else if( attribute == "EchoSize" )
     {
+        if( m_echoSize != NULL && m_echoSize != NullVariable::getInstance())
+        {
+            delete m_echoSize;
+        }
+        
         m_echoSize = RandomVariableFactory::create(value);
         if( m_echoSize->getMin() < 1 )
         {
@@ -53,6 +63,10 @@ void TcpEchoTask::setAttribute(const QString &attribute, const QString &value)
     }
     else if( attribute == "Interval" )
     {
+        if( m_interval != NULL && m_interval != NullVariable::getInstance())
+        {
+            delete m_interval;
+        }
         m_interval = RandomVariableFactory::create(value);
     }
     else
@@ -104,6 +118,10 @@ QString TcpEchoTask::getName()
 
 void TcpEchoTask::expand()
 {
+    m_inputSizes.clear();
+    m_echoSizes.clear();
+    m_intervals.clear();
+
     int length = m_stopTime;
     int curLength = 0;
     while( curLength < length )

@@ -39,6 +39,11 @@ bool ScenarioEx::deleteUser(const QString &name)
     return false;
 }
 
+bool ScenarioEx::existUser(const QString &name)
+{
+    return m_tasks.contains(name);
+}
+
 bool ScenarioEx::renameUser(const QString &name, const QString newName)
 {
     if( m_tasks.contains(name) && !m_tasks.contains(newName))
@@ -102,4 +107,16 @@ Task *ScenarioEx::task(const QString &username, int index)
         }
     }
     return NULL;
+}
+
+QDataStream &operator<<(QDataStream &out, const ScenarioEx &scenario)
+{
+    out << scenario.m_name << scenario.m_seed << scenario.m_length << scenario.m_tasks;
+    return out;
+}
+
+QDataStream &operator>>(QDataStream &in, ScenarioEx &scenario)
+{
+    in >> scenario.m_name >> scenario.m_seed >> scenario.m_length >> scenario.m_tasks;
+    return in;
 }

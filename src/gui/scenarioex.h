@@ -21,6 +21,7 @@ public: // interface for gui
 
     bool insertUser(const QString &name);
     bool deleteUser(const QString &name);
+    bool existUser(const QString &name);
     bool renameUser(const QString &name, const QString newName);
 
     bool insertTask(const QString &username, Task *task);
@@ -29,6 +30,13 @@ public: // interface for gui
 
     QString user(int index);
     Task *task(const QString &username, int index);
+
+public:
+    friend QDataStream &operator<<(QDataStream &out, const ScenarioEx &scenario);
+    friend QDataStream &operator>>(QDataStream &in, ScenarioEx &scenario);
 };
+
+QDataStream &operator<<(QDataStream &out, const ScenarioEx &scenario);
+QDataStream &operator>>(QDataStream &in, ScenarioEx &scenario);
 
 #endif // SCENARIOEX_H

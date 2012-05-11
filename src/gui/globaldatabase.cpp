@@ -68,7 +68,24 @@ int GlobalDatabase::getScenarioCount()
     return query.value(0).toInt();
 }
 
-void GlobalDatabase::getScenario(int index, Scenario &scenario)
+bool GlobalDatabase::existScenario(const QString &name)
+{
+    // Should be optimized later
+    ScenarioEx scenario;
+    int count = getScenarioCount();
+
+    for(int i = 0; i < count; i++)
+    {
+        getScenario(i, scenario);
+        if( name == scenario.name())
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+void GlobalDatabase::getScenario(int index, ScenarioEx &scenario)
 {
     QSqlQuery query(QString("Select Data From Scenario where UID = %1").arg(index + 1));
 
@@ -86,7 +103,19 @@ void GlobalDatabase::getScenario(int index, Scenario &scenario)
     }
 }
 
-void GlobalDatabase::addScenario(Scenario &scenario)
+void GlobalDatabase::setScenario(int index, ScenarioEx &scenario)
+{
+    QByteArray data;
+    QDataStream out(&data, QIODevice::WriteOnly);
+    out << scenario;
+
+    QSqlQuery query;
+    query.prepare(QString("Update Scenario set Data = :data Where UID = %1").arg(index + 1));
+    query.bindValue(":data", data);
+    query.exec();
+}
+
+void GlobalDatabase::addScenario(ScenarioEx &scenario)
 {
     QByteArray data;
     QDataStream out(&data, QIODevice::WriteOnly);

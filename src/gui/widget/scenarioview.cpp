@@ -1,21 +1,163 @@
 #include "scenarioview.h"
 
-// +----------------------------------------------------------+
-// | Scenario Name                                            |
-// +------------+---------------------------------------------+
-// |            | Task 1-1                                    |
-// |            +---------------------------------------------+
-// |   User 1   | Task 1-2                                    |
-// |            +---------------------------------------------+
-// |            |                                             |
-// +------------+---------------------------------------------+
-// |            | Task 2-1                                    |
-// |   User 2   +---------------------------------------------+
-// |            |                                             |
-// +------------+                                             |
-// +------------+---------------------------------------------+
-// |            | 00:00              00:10              00:20 |
-// +------------+---------------------------------------------+
+// +------------------------------------------------------------------+
+// | Scenario Name                                                    |
+// +--------------------+---------------------------------------------+
+// |               [Del]| Task 1-1                              [Del] |
+// |                    +---------------------------------------------+
+// |       User 1       | Task 1-2                              [Del] |
+// |                    +---------------------------------------------+
+// |                    |                                       [New] |
+// |                    |                                             |
+// +--------------------+---------------------------------------------+
+// |               [Del]| Task 2-1                              [Del] |
+// |       User 2       +---------------------------------------------+
+// |                    |                                       [New] |
+// +--------------------+                                             |
+// |     [New User]     |                                             |
+// |                    |                                             |
+// +--------------------+---------------------------------------------+
+// |                    | 00:00              00:10              00:20 |
+// +--------------------+---------------------------------------------+
+
+// Delete Icon Item ///////////////////////////////////////////////////////////
+DeleteIcon::DeleteIcon()
+{
+    m_hover = false;
+}
+
+void DeleteIcon::paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget */*widget*/)
+{
+    QPen pen(QBrush(m_hover ? Qt::darkGray : Qt::lightGray), 1.5);
+    painter->setPen(pen);/*
+    painter->setBrush(QBrush(m_hover ?
+                                 QColor::fromRgb(0xE0, 0xE0, 0xE0) :
+                                 QColor::fromRgb(0xF0, 0xF0, 0xF0)));*/
+    painter->setRenderHint(QPainter::Antialiasing);
+    //painter->drawEllipse(0, 0, 11, 11);
+    painter->drawLine(3, 3, 7, 7);
+    painter->drawLine(3, 7, 7, 3);
+}
+
+void DeleteIcon::hoverEnterEvent(QGraphicsSceneHoverEvent * /*event*/)
+{
+    m_hover = true;
+    update();
+}
+
+void DeleteIcon::hoverLeaveEvent(QGraphicsSceneHoverEvent * /*event*/)
+{
+    m_hover = false;
+    update();
+}
+
+QRectF DeleteIcon::boundingRect() const
+{
+    return QRectF(1, 2, 9, 9);
+}
+
+// Delete User Icon Item //////////////////////////////////////////////////////
+void DeleteUserIcon::mousePressEvent(QGraphicsSceneMouseEvent * /*event*/)
+{
+    m_view->onUserDeleteClicked(m_name);
+}
+
+DeleteUserIcon::DeleteUserIcon(ScenarioView *view, const QString &name = "")
+    : m_view(view), m_name(name)
+{
+}
+
+// Delete Task Icon Item //////////////////////////////////////////////////////
+DeleteTaskIcon::DeleteTaskIcon(ScenarioView *view, const QString &name, int index)
+    : m_view(view), m_name(name), m_index(index)
+{
+}
+
+void DeleteTaskIcon::mousePressEvent(QGraphicsSceneMouseEvent * /*event*/)
+{
+    m_view->onTaskDeleteClicked(m_name, m_index);
+}
+
+// New Icon Item //////////////////////////////////////////////////////////////
+NewIcon::NewIcon()
+{
+    m_hover = false;
+}
+
+void NewIcon::paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget */*widget*/)
+{
+    QLinearGradient gradient(0.5, 0, 0.5, 1);
+    gradient.setCoordinateMode(QGradient::ObjectBoundingMode);
+    gradient.setColorAt(0.0, QColor(0xF8, 0xF8, 0xF8));
+    gradient.setColorAt(1.0, m_hover ?
+                            QColor(0xC0, 0xC0, 0xC0) :
+                            QColor(0xDD, 0xDD, 0xDD));
+
+    QBrush bgBrush(gradient);
+    QPen pen(Qt::black);
+    painter->setPen(pen);
+    painter->setBrush(bgBrush);
+    painter->drawRoundedRect(0, 0, 15, 15, 3, 3);
+
+    QPen thickPen(QBrush(Qt::darkGray), 2.0);
+    painter->setPen(thickPen);
+    painter->drawLine(8, 5, 8, 11);
+    painter->drawLine(5, 8, 11, 8);
+}
+
+void NewIcon::hoverEnterEvent(QGraphicsSceneHoverEvent * /*event*/)
+{
+    m_hover = true;
+    update();
+}
+
+void NewIcon::hoverLeaveEvent(QGraphicsSceneHoverEvent * /*event*/)
+{
+    m_hover = false;
+    update();
+}
+
+QRectF NewIcon::boundingRect() const
+{
+    return QRectF(0, 0, 15, 15);
+}
+
+// New User Item //////////////////////////////////////////////////////////////
+NewUserIcon::NewUserIcon(ScenarioView *view)
+    : m_view(view)
+{
+}
+
+void NewUserIcon::mousePressEvent(QGraphicsSceneMouseEvent * /*event*/)
+{
+    m_view->onNewUserClicked();
+}
+
+// New Task Item //////////////////////////////////////////////////////////////
+NewTaskIcon::NewTaskIcon(ScenarioView *view, const QString &username)
+    : m_view(view), m_username(username)
+{
+}
+
+void NewTaskIcon::paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
+{
+    QPen pen(QBrush(m_hover ? Qt::darkGray : Qt::lightGray), 1.5);
+    painter->setPen(pen);
+    painter->setRenderHint(QPainter::Antialiasing);
+
+    painter->drawLine(QPointF(5, 2.5), QPointF(5, 7.5));
+    painter->drawLine(QPointF(2.5, 5), QPointF(7.5, 5));
+}
+
+void NewTaskIcon::mousePressEvent(QGraphicsSceneMouseEvent * /*event*/)
+{
+    m_view->onNewTaskClicked(m_username);
+}
+
+QRectF NewTaskIcon::boundingRect() const
+{
+    return QRectF(1, 2, 9, 9);
+}
 
 // User Item //////////////////////////////////////////////////////////////////
 UserItem::UserItem(ScenarioView *view, const QString &name)
@@ -125,7 +267,7 @@ void TaskItem::setSelectionState(bool selected)
 
 int TaskItem::getItemHeight()
 {
-    return 14;
+    return 16;
 }
 
 // Timeline Item //////////////////////////////////////////////////////////////
@@ -235,6 +377,11 @@ void ScenarioView::resizeEvent(QResizeEvent * /*event*/)
 
 void ScenarioView::mousePressEvent(QMouseEvent *event)
 {
+    if( m_scenario == NULL )
+    {
+        return;
+    }
+
     m_itemClicked = false;
     QGraphicsView::mousePressEvent(event);
 
@@ -251,6 +398,11 @@ void ScenarioView::setScenario(ScenarioEx *scenario)
 
 void ScenarioView::update()
 {
+    if( m_scenario == NULL )
+    {
+        return;
+    }
+
     m_scene->clear();
     m_userItems.clear();
     m_taskItems.clear();
@@ -295,6 +447,18 @@ void ScenarioView::update()
         m_userItems[i]->setSize(maxWidth + 40, userItemHeights[i]);
         m_userItems[i]->setPos(10, 16 + userItemOffsets[i]);
         m_scene->addItem(m_userItems[i]);
+
+        // plus a delete user icon
+        DeleteUserIcon *icon = new DeleteUserIcon(this, m_scenario->user(i));
+        icon->setPos(10 + maxWidth + 40 - 14, 16 + userItemOffsets[i] + 4);
+        icon->setAcceptHoverEvents(true);
+        m_scene->addItem(icon);
+
+        // and a new task icon
+        NewTaskIcon *newTaskIcon = new NewTaskIcon(this, m_scenario->user(i));
+        newTaskIcon->setPos(10 + maxWidth + 40 - 24, 16 + userItemOffsets[i] + 4);
+        newTaskIcon->setAcceptHoverEvents(true);
+        m_scene->addItem(newTaskIcon);
     }
 
     // Add task items
@@ -309,6 +473,12 @@ void ScenarioView::update()
             item->setPos(10 + maxWidth + 40, 16 + userItemOffsets[i] + j * TaskItem::getItemHeight());
             m_taskItems[i].append(item);
             m_scene->addItem(item);
+
+            // plus a delete task icon
+            DeleteTaskIcon *icon = new DeleteTaskIcon(this, m_scenario->user(i), j);
+            icon->setPos(this->rect().width() - 16, 16 + userItemOffsets[i] + j * TaskItem::getItemHeight() + 3);
+            icon->setAcceptHoverEvents(true);
+            m_scene->addItem(icon);
         }
     }
 
@@ -317,6 +487,12 @@ void ScenarioView::update()
     titleItem->setSize(this->rect().width() - 3, 16);
     titleItem->setPos(0, 0);
     m_scene->addItem(titleItem);
+
+    // Add a new user icon
+    NewUserIcon *newUserItem = new NewUserIcon(this);
+    newUserItem->setPos(10 + (maxWidth + 40) / 2 - 7, offset + 20);
+    newUserItem->setAcceptsHoverEvents(true);
+    m_scene->addItem(newUserItem);
 
     // Add timeline item
     TimelineItem *timelineItem = new TimelineItem(m_scenario->length(), 10 + maxWidth + 40);
@@ -394,4 +570,24 @@ void ScenarioView::onTaskSelected(const QString &username, int index)
             }
         }
     }
+}
+
+void ScenarioView::onUserDeleteClicked(const QString &username)
+{
+    emit userDeleteClicked(username);
+}
+
+void ScenarioView::onTaskDeleteClicked(const QString &username, int index)
+{
+    emit taskDeleteClicked(username, index);
+}
+
+void ScenarioView::onNewUserClicked()
+{
+    emit newUserClicked();
+}
+
+void ScenarioView::onNewTaskClicked(const QString &username)
+{
+    emit newTaskClicked(username);
 }

@@ -6,6 +6,7 @@
 
 #include "dialog/ipaddrdialog.h"
 #include "dialog/emulatordialog.h"
+#include "dialog/distributiondialog.h"
 
 #include "globaldatabase.h"
 
@@ -71,15 +72,25 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Page 2: Scenario
     //ScenarioEx *s = new ScenarioEx(); // Test only
-    m_scenario.name() = "My Scenario 1";
+/*    m_scenario.name() = "My Scenario 1";
     m_scenario.addUser("Harry");
     m_scenario.addUser("Sally");
     m_scenario.addTask("Harry", new BulkDownloadTask(80));
     m_scenario.task("Harry", 0)->setAttribute("MaxBytes", "64MB");
     m_scenario.addTask("Harry", new BulkUploadTask(80));
-    m_scenario.addTask("Sally", new BulkDownloadTask(80));
-    ui->scenarioWidget->setScenario(&m_scenario);
+
+    m_scenario.addTask("Sally", new OnoffDownloadTask(80));
+    m_scenario.task("Sally", 0)->setAttribute("OnTime", "Uniform 100, 500");
+    m_scenario.task("Sally", 0)->setAttribute("OffTime", "Uniform 500, 800");
+
+    m_scenario.addTask("Sally", new TcpEchoTask(80));
+    m_scenario.addTask("Sally", new AsyncUdpEchoTask(80));
+*/
+    ui->scenarioWidget->setScenario(NULL);
     ui->scenarioWidget->update();
+
+    connect(ui->btnP2New, SIGNAL(clicked()), this, SLOT(btnP2NewScenario()));
+    connect(ui->btnP2Save, SIGNAL(clicked()), this, SLOT(btnP2SaveScenario()));
 
     connect(ui->txtP21Name, SIGNAL(textChanged(QString)),
             this, SLOT(txtP21NameChanged()));
@@ -95,7 +106,18 @@ MainWindow::MainWindow(QWidget *parent) :
             this, SLOT(p2UserSelected(QString)));
     connect(ui->scenarioWidget, SIGNAL(taskSelected(QString,int)),
             this, SLOT(p2TaskSelected(QString,int)));
-    p2ScenarioSelected();
+
+    ui->P2TargetProperty->setEnabled(false);
+
+    connect(ui->scenarioWidget, SIGNAL(userDeleteClicked(QString)),
+            this, SLOT(p2UserDeleted(QString)));
+    connect(ui->scenarioWidget, SIGNAL(taskDeleteClicked(QString,int)),
+            this, SLOT(p2TaskDeleted(QString,int)));
+
+    connect(ui->scenarioWidget, SIGNAL(newUserClicked()),
+            this, SLOT(p2NewUser()));
+    connect(ui->scenarioWidget, SIGNAL(newTaskClicked(QString)),
+            this, SLOT(p2NewTask(QString)));
 
     connect(ui->txtP22Name, SIGNAL(textChanged(QString)),
             this, SLOT(txtP22NameChanged(QString)));
@@ -111,6 +133,26 @@ MainWindow::MainWindow(QWidget *parent) :
             this, SLOT(sldP232MaxBytesChanged(int)));
     connect(ui->sldP232MaxRate, SIGNAL(valueChanged(int)),
             this, SLOT(sldP232MaxRateChanged(int)));
+
+    connect(ui->sldP233MaxRate, SIGNAL(valueChanged(int)),
+            this, SLOT(sldP233MaxRateChanged(int)));
+    connect(ui->sldP233PacketSize, SIGNAL(valueChanged(int)),
+            this, SLOT(sldP233PacketSizeChanged(int)));
+    connect(ui->sldP233RequestSize, SIGNAL(valueChanged(int)),
+            this, SLOT(sldP233RequestSizeChanged(int)));
+    connect(ui->btnP233OnTime, SIGNAL(clicked()), this, SLOT(btnP233OnTime()));
+    connect(ui->btnP233OffTime, SIGNAL(clicked()), this, SLOT(btnP233OffTime()));
+
+    connect(ui->btnP234InputSize, SIGNAL(clicked()), this, SLOT(btnP234InputSize()));
+    connect(ui->btnP234EchoSize, SIGNAL(clicked()), this, SLOT(btnP234EchoSize()));
+    connect(ui->btnP234Interval, SIGNAL(clicked()), this, SLOT(btnP234Interval()));
+
+    connect(ui->btnP235InputSize, SIGNAL(clicked()), this, SLOT(btnP235InputSize()));
+    connect(ui->btnP235EchoSize, SIGNAL(clicked()), this, SLOT(btnP235EchoSize()));
+    connect(ui->btnP235Interval, SIGNAL(clicked()), this, SLOT(btnP235Interval()));
+
+    m_scenarioIndex = 0;
+    p2RebuildScenarioList();
 
     // Page 3: Script
     m_setupModel = new QStandardItemModel;
@@ -249,6 +291,70 @@ void MainWindow::updateStatistics()
 
 // Page 2: Scenario ///////////////////////////////////////////////////////////
 
+void MainWindow::btnP2NewScenario()
+{
+    bool ok;
+    QString name = QInputDialog::getText(
+                this, "algtsgui", "Enter the name of the scenario",
+                QLineEdit::Normal, "", &ok);
+    if( ok && !name.isEmpty())
+    {
+        if( GlobalDatabase::instance()->existScenario(name))
+        {
+            QMessageBox msgBox;
+            msgBox.setText("The name exists.");
+            msgBox.setIcon(QMessageBox::Warning);
+            msgBox.exec();
+        }
+        else // Add new scenario
+        {
+            m_scenario = ScenarioEx();
+            m_scenario.name() = name; // Other fields are left empty
+            GlobalDatabase::instance()->addScenario(m_scenario);
+            m_scenarioIndex = GlobalDatabase::instance()->getScenarioCount() - 1;
+
+            // Update ui
+            p2RebuildScenarioList();
+
+            ui->P2TargetProperty->setEnabled(true);
+            p2ScenarioSelected();
+        }
+    }
+    else if( ok && name.isEmpty())
+    {
+        QMessageBox msgBox;
+        msgBox.setText("The name cannot be empty.");
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.exec();
+    }
+}
+
+void MainWindow::btnP2SaveScenario()
+{
+
+}
+
+void MainWindow::p2RebuildScenarioList()
+{
+    int count = GlobalDatabase::instance()->getScenarioCount();
+    ScenarioEx scenario;
+
+    // Clear the combo box
+    ui->cmbP2Scenarios->clear();
+
+    if( count == 0 )
+    {
+        m_scenarioIndex = -1; // nothing selected
+    }
+
+    // Insert items
+    for(int i = 0; i < count; i++)
+    {
+        GlobalDatabase::instance()->getScenario(i, scenario);
+        ui->cmbP2Scenarios->addItem(scenario.name());
+    }
+}
+
 void MainWindow::txtP21NameChanged()
 {
     m_scenario.name() = ui->txtP21Name->text();
@@ -304,6 +410,9 @@ void MainWindow::p2UserSelected(const QString &username)
 
 void MainWindow::p2TaskSelected(const QString &username, int index)
 {
+    disconnect(ui->cmbP23Type, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(cmbP23TaskTypeChanged(int)));
+
     ui->P2TargetProperty->setCurrentIndex(2);
 
     m_p2user = username;
@@ -321,6 +430,7 @@ void MainWindow::p2TaskSelected(const QString &username, int index)
                     (maxRate == -1) ? 32 * 100 + 1 : maxRate * 8 / (32 * 1024));
 
         ui->cmbP23Type->setCurrentIndex(0);
+        ui->tasks->setCurrentIndex(0);
     }
     else if( task->getType() == Task::BULK_UPLOAD )
     {
@@ -333,8 +443,124 @@ void MainWindow::p2TaskSelected(const QString &username, int index)
                     (maxRate == -1) ? 32 * 100 + 1 : maxRate * 8 / (32 * 1024));
 
         ui->cmbP23Type->setCurrentIndex(1);
+        ui->tasks->setCurrentIndex(1);
+    }
+    else if( task->getType() == Task::ONOFF_DOWNLOAD )
+    {
+        int maxRate = ((OnoffDownloadTask *)task)->getMaxRate();
+        int packetSize = ((OnoffDownloadTask *)task)->getPacketSize();
+        int requestSize = ((OnoffDownloadTask *)task)->getRequestSize();
+        RandomVariable *onTime = ((OnoffDownloadTask *)task)->getOnTime();
+        RandomVariable *offTime = ((OnoffDownloadTask *)task)->getOffTime();
+
+        ui->sldP233MaxRate->setValue(
+                    (maxRate == -1) ? 32 * 100 + 1 : maxRate * 8 / (32 * 1024));
+        ui->sldP233PacketSize->setValue(packetSize);
+        ui->sldP233RequestSize->setValue(requestSize);
+        ui->txtP233OnTime->setText(
+                    onTime == NullVariable::getInstance() ? "" : onTime->toString());
+        ui->txtP233OffTime->setText(
+                    offTime == NullVariable::getInstance() ? "" : offTime->toString());
+
+        sldP233PacketSizeChanged(packetSize);
+        sldP233RequestSizeChanged(requestSize);
+
+        ui->cmbP23Type->setCurrentIndex(2);
+        ui->tasks->setCurrentIndex(2);
+    }
+    else if( task->getType() == Task::TCP_ECHO )
+    {
+        RandomVariable *inputSize = ((TcpEchoTask *)task)->getInputSize();
+        RandomVariable *echoSize = ((TcpEchoTask *)task)->getEchoSize();
+        RandomVariable *interval = ((TcpEchoTask *)task)->getInterval();
+
+        ui->txtP234InputSize->setText(
+                    inputSize == NullVariable::getInstance() ? "" : inputSize->toString());
+        ui->txtP234EchoSize->setText(
+                    echoSize == NullVariable::getInstance() ? "" : echoSize->toString());
+        ui->txtP234Interval->setText(
+                    interval == NullVariable::getInstance() ? "" : interval->toString());
+
+        ui->cmbP23Type->setCurrentIndex(3);
+        ui->tasks->setCurrentIndex(3);
+    }
+    else if( task->getType() == Task::ASYNC_UDP_ECHO )
+    {
+        RandomVariable *inputSize = ((AsyncUdpEchoTask *)task)->getInputSize();
+        RandomVariable *echoSize = ((AsyncUdpEchoTask *)task)->getEchoSize();
+        RandomVariable *interval = ((AsyncUdpEchoTask *)task)->getInterval();
+
+        ui->txtP235InputSize->setText(
+                    inputSize == NullVariable::getInstance() ? "" : inputSize->toString());
+        ui->txtP235EchoSize->setText(
+                    echoSize == NullVariable::getInstance() ? "" : echoSize->toString());
+        ui->txtP235Interval->setText(
+                    interval == NullVariable::getInstance() ? "" : interval->toString());
+
+        ui->cmbP23Type->setCurrentIndex(4);
+        ui->tasks->setCurrentIndex(4);
+    }
+
+    connect(ui->cmbP23Type, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(cmbP23TaskTypeChanged(int)));
+}
+
+void MainWindow::p2UserDeleted(const QString &username)
+{
+    QMessageBox msgBox;
+    msgBox.setText(QString("Do you want to delete user %1?").arg(username));
+    msgBox.setIcon(QMessageBox::Question);
+    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    int ret = msgBox.exec();
+
+    if( ret == QMessageBox::Yes )
+    {
+        m_scenario.deleteUser(username);
+        ui->scenarioWidget->update();
     }
 }
+
+void MainWindow::p2TaskDeleted(const QString &username, int index)
+{
+    QMessageBox msgBox;
+    msgBox.setText(QString("Do you want to delete task %1 of %2?").arg(index).arg(username));
+    msgBox.setIcon(QMessageBox::Question);
+    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    int ret = msgBox.exec();
+
+    if( ret == QMessageBox::Yes )
+    {
+        m_scenario.deleteTask(username, index);
+        ui->scenarioWidget->update();
+    }
+}
+
+void MainWindow::p2NewUser()
+{
+    bool ok;
+    QString name = QInputDialog::getText(
+                this, "algtsgui", "Enter the name of the scenario",
+                QLineEdit::Normal, "", &ok);
+    if( ok && m_scenario.existUser(name))
+    {
+        QMessageBox msgBox;
+        msgBox.setText(QString("User %1 exists.").arg(name));
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.exec();
+    }
+    else if( ok )
+    {
+        m_scenario.insertUser(name);
+        ui->scenarioWidget->update();
+    }
+}
+
+void MainWindow::p2NewTask(const QString &username)
+{
+    m_scenario.addTask(username, new BulkDownloadTask(80));
+    ui->scenarioWidget->update();
+}
+
 
 void MainWindow::txtP22NameChanged(const QString &newUsername)
 {
@@ -346,7 +572,16 @@ void MainWindow::txtP22NameChanged(const QString &newUsername)
 
 void MainWindow::cmbP23TaskTypeChanged(int index)
 {
-    ui->tasks->setCurrentIndex(index);
+    Task *task =
+            (index == 0) ? (Task *)new BulkDownloadTask(80) :
+            (index == 1) ? (Task *)new BulkUploadTask(80) :
+            (index == 2) ? (Task *)new OnoffDownloadTask(80) :
+            (index == 3) ? (Task *)new TcpEchoTask(80) :
+            /*(index == 4) ?*/ (Task *)new AsyncUdpEchoTask(80);
+
+    m_scenario.replaceTask(m_p2user, m_p2index, task);
+
+    p2TaskSelected(m_p2user, m_p2index);
 }
 
 void MainWindow::sldP231MaxBytesChanged(int value)
@@ -445,6 +680,159 @@ void MainWindow::sldP232MaxRateChanged(int value)
 
     BulkUploadTask *task = (BulkUploadTask *)m_scenario.task(m_p2user, m_p2index);
     task->setMaxRate(maxRate * 1024 / 8);
+}
+
+void MainWindow::sldP233MaxRateChanged(int value)
+{
+    int maxRate = value * 32; // Kbps
+    if( maxRate < 1024 )
+    {
+        ui->txtP233MaxRate->setText(QString("%1 Kbps").arg(maxRate));
+    }
+    else if( maxRate < 100 * 1024)
+    {
+        ui->txtP233MaxRate->setText(QString("%1 Mbps")
+                                    .arg(maxRate / 1024.0, 0, 'f', 2));
+    }
+    else if( maxRate == 100 * 1024 )
+    {
+        ui->txtP233MaxRate->setText("100 Mbps");
+    }
+    else
+    {
+        ui->txtP233MaxRate->setText("INFINITE");
+    }
+
+    OnoffDownloadTask *task = (OnoffDownloadTask *)m_scenario.task(m_p2user, m_p2index);
+    task->setMaxRate(maxRate * 1024 / 8);
+}
+
+void MainWindow::sldP233PacketSizeChanged(int value)
+{
+    ui->txtP233PacketSize->setText(QString("%1 Bytes").arg(value));
+
+    OnoffDownloadTask *task = (OnoffDownloadTask *)m_scenario.task(m_p2user, m_p2index);
+    task->setPacketSize(value);
+}
+
+void MainWindow::sldP233RequestSizeChanged(int value)
+{
+    ui->txtP233RequestSize->setText(QString("%1 Bytes").arg(value));
+
+    OnoffDownloadTask *task = (OnoffDownloadTask *)m_scenario.task(m_p2user, m_p2index);
+    task->setRequestSize(value);
+}
+
+void MainWindow::btnP233OnTime()
+{
+    QString onTime;
+    DistributionDialog dialog(onTime);
+    dialog.exec();
+
+    if( onTime != "" ) // User didn't click Cancel
+    {
+        OnoffDownloadTask *task = (OnoffDownloadTask *)m_scenario.task(m_p2user, m_p2index);
+        task->setAttribute("OnTime", onTime);
+        ui->txtP233OnTime->setText(onTime);
+    }
+}
+
+void MainWindow::btnP233OffTime()
+{
+    QString offTime;
+    DistributionDialog dialog(offTime);
+    dialog.exec();
+
+    if( offTime != "" ) // User didn't click Cancel
+    {
+        OnoffDownloadTask *task = (OnoffDownloadTask *)m_scenario.task(m_p2user, m_p2index);
+        task->setAttribute("OffTime", offTime);
+        ui->txtP233OffTime->setText(offTime);
+    }
+}
+
+void MainWindow::btnP234InputSize()
+{
+    QString inputSize;
+    DistributionDialog dialog(inputSize);
+    dialog.exec();
+
+    if( inputSize != "" ) // User didn't click Cancel
+    {
+        TcpEchoTask *task = (TcpEchoTask *)m_scenario.task(m_p2user, m_p2index);
+        task->setAttribute("InputSize", inputSize);
+        ui->txtP234InputSize->setText(inputSize);
+    }
+}
+
+void MainWindow::btnP234EchoSize()
+{
+    QString echoSize;
+    DistributionDialog dialog(echoSize);
+    dialog.exec();
+
+    if( echoSize != "" ) // User didn't click Cancel
+    {
+        TcpEchoTask *task = (TcpEchoTask *)m_scenario.task(m_p2user, m_p2index);
+        task->setAttribute("EchoSize", echoSize);
+        ui->txtP234EchoSize->setText(echoSize);
+    }
+}
+
+void MainWindow::btnP234Interval()
+{
+    QString interval;
+    DistributionDialog dialog(interval);
+    dialog.exec();
+
+    if( interval != "" ) // User didn't click Cancel
+    {
+        TcpEchoTask *task = (TcpEchoTask *)m_scenario.task(m_p2user, m_p2index);
+        task->setAttribute("Interval", interval);
+        ui->txtP234Interval->setText(interval);
+    }
+}
+
+void MainWindow::btnP235InputSize()
+{
+    QString inputSize;
+    DistributionDialog dialog(inputSize);
+    dialog.exec();
+
+    if( inputSize != "" ) // User didn't click Cancel
+    {
+        TcpEchoTask *task = (TcpEchoTask *)m_scenario.task(m_p2user, m_p2index);
+        task->setAttribute("InputSize", inputSize);
+        ui->txtP235InputSize->setText(inputSize);
+    }
+}
+
+void MainWindow::btnP235EchoSize()
+{
+    QString echoSize;
+    DistributionDialog dialog(echoSize);
+    dialog.exec();
+
+    if( echoSize != "" ) // User didn't click Cancel
+    {
+        TcpEchoTask *task = (TcpEchoTask *)m_scenario.task(m_p2user, m_p2index);
+        task->setAttribute("EchoSize", echoSize);
+        ui->txtP235EchoSize->setText(echoSize);
+    }
+}
+
+void MainWindow::btnP235Interval()
+{
+    QString interval;
+    DistributionDialog dialog(interval);
+    dialog.exec();
+
+    if( interval != "" ) // User didn't click Cancel
+    {
+        TcpEchoTask *task = (TcpEchoTask *)m_scenario.task(m_p2user, m_p2index);
+        task->setAttribute("Interval", interval);
+        ui->txtP235Interval->setText(interval);
+    }
 }
 
 // Page 3: Script /////////////////////////////////////////////////////////////
@@ -846,6 +1234,6 @@ void MainWindow::p3UpdateScript()
 
 void MainWindow::p3UpdateParamList()
 {
-        ui->lstP3Params->setModel(ui->rdoP3SetupScript->isChecked() ?
-                                      m_setupModel : m_resetModel);
+    ui->lstP3Params->setModel(ui->rdoP3SetupScript->isChecked() ?
+                                  m_setupModel : m_resetModel);
 }

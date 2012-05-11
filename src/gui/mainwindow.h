@@ -35,6 +35,10 @@ private slots:
     void updateStatistics();
 
     // Page 2: Scenario
+    void btnP2NewScenario();
+    void btnP2SaveScenario();
+    void p2RebuildScenarioList();
+
     void txtP21NameChanged();
     void sldP21LengthChange();
     void sldP21SeedChanged();
@@ -43,6 +47,12 @@ private slots:
     void p2ScenarioSelected();
     void p2UserSelected(const QString &username);
     void p2TaskSelected(const QString &username, int index);
+
+    void p2UserDeleted(const QString &username);
+    void p2TaskDeleted(const QString &username, int index);
+
+    void p2NewUser();
+    void p2NewTask(const QString &username);
 
     void txtP22NameChanged(const QString &newUsername);
 
@@ -53,6 +63,20 @@ private slots:
 
     void sldP232MaxBytesChanged(int value);
     void sldP232MaxRateChanged(int value);
+
+    void sldP233MaxRateChanged(int value);
+    void sldP233PacketSizeChanged(int value);
+    void sldP233RequestSizeChanged(int value);
+    void btnP233OnTime();
+    void btnP233OffTime();
+
+    void btnP234InputSize();
+    void btnP234EchoSize();
+    void btnP234Interval();
+
+    void btnP235InputSize();
+    void btnP235EchoSize();
+    void btnP235Interval();
 
     // Page 3: Script
     void btnP3New();
@@ -85,6 +109,7 @@ private:
 
     // Page 2: Scenario
     ScenarioEx m_scenario;
+    int m_scenarioIndex;
     QString m_p2user;
     int m_p2index;
 

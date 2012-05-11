@@ -28,8 +28,8 @@ OnoffDownloadTask::OnoffDownloadTask(quint16 serverPort, qint32 startTime,
     m_requestSize = 100;
     LOG_DEBUG("RequestSize set to default value 100");
     
-    m_onTime = NULL;
-    m_offTime = NULL;
+    m_onTime = NullVariable::getInstance();
+    m_offTime = NullVariable::getInstance();
 }
 
 void OnoffDownloadTask::setAttribute(const QString &attribute, 
@@ -137,10 +137,18 @@ void OnoffDownloadTask::setAttribute(const QString &attribute,
     }
     else if( attribute == "OnTime" )
     {
+        if( m_onTime != NULL && m_onTime != NullVariable::getInstance())
+        {
+            delete m_onTime;
+        }
         m_onTime = RandomVariableFactory::create(value);
     }
     else if( attribute == "OffTime" )
     {
+        if( m_offTime != NULL && m_offTime != NullVariable::getInstance())
+        {
+            delete m_offTime;
+        }
         m_offTime = RandomVariableFactory::create(value);
     }
     else
@@ -175,6 +183,21 @@ const QVector<qint32> &OnoffDownloadTask::getOffTimes()
     return m_offTimes;
 }
 
+void OnoffDownloadTask::setMaxRate(qint32 maxRate)
+{
+    m_maxRate = maxRate;
+}
+
+void OnoffDownloadTask::setPacketSize(qint16 packetSize)
+{
+    m_packetSize = packetSize;
+}
+
+void OnoffDownloadTask::setRequestSize(qint16 requestSize)
+{
+    m_requestSize = requestSize;
+}
+
 RandomVariable *OnoffDownloadTask::getOnTime()
 {
     return m_onTime;
@@ -197,6 +220,9 @@ QString OnoffDownloadTask::getName()
 
 void OnoffDownloadTask::expand()
 {
+    m_offTimes.clear();
+    m_onTimes.clear();
+
     int length = m_stopTime;
     int curLength = 0;
     while( curLength < length )
