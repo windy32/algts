@@ -10,6 +10,8 @@
 #include "dialog/selectscriptdialog.h"
 #include "dialog/selectscenariodialog.h"
 #include "globaldatabase.h"
+#include "testthread.h"
+#include "progressthread.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -1345,4 +1347,57 @@ void MainWindow::btnP4SelectScript()
 
 void MainWindow::btnP4Run()
 {
+    QString serverAddr = ui->txtP4ServerAddress->text();
+    QString serverPort = ui->txtP4ServerPort->text();
+    QHostAddress addr;
+    quint16 port;
+
+    QMessageBox msgBox;
+    msgBox.setIcon(QMessageBox::Warning);
+
+    // Check ip address
+    QRegExp rx("^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\."
+                "(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$");
+    if( rx.indexIn(serverAddr) == -1 )
+    {
+        msgBox.setText("Invalid server address");
+        msgBox.exec();
+        return;
+    }
+    if( rx.cap(1).toUInt() > 255 ||
+        rx.cap(2).toUInt() > 255 ||
+        rx.cap(3).toUInt() > 255 ||
+        rx.cap(4).toUInt() > 255 )
+    {
+        msgBox.setText("Invalid server address");
+        msgBox.exec();
+        return;
+    }
+    addr = QHostAddress(serverAddr);
+
+    // Check port
+    bool ok;
+    port = serverPort.toUShort(&ok);
+    if( !ok )
+    {
+        msgBox.setText("Invalid server port");
+        msgBox.exec();
+        return;
+    }
+    else if( port < 1024 )
+    {
+        msgBox.setText("Invalid server port");
+        msgBox.exec();
+        return;
+    }
+
+    TestThread *testThread = new TestThread(
+                m_addrs, addr, port, &m_p4test.scenario, this);
+    testThread->start();
+
+    // Should be fixed later
+    ProgressThread progressThread(ui->pgsP4, m_p4test.scenario.length(), this);
+    progressThread.start();
+
+    // TODO: redirect the log messages to the log textbox
 }

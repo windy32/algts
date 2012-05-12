@@ -1925,13 +1925,13 @@
            <widget class="QLabel" name="lblP4Scenario">
             <property name="minimumSize">
              <size>
-              <width>70</width>
+              <width>105</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>70</width>
+              <width>105</width>
               <height>16777215</height>
              </size>
             </property>
@@ -1974,13 +1974,13 @@
            <widget class="QLabel" name="lblP4Script">
             <property name="minimumSize">
              <size>
-              <width>70</width>
+              <width>105</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>70</width>
+              <width>105</width>
               <height>16777215</height>
              </size>
             </property>
@@ -2020,16 +2020,100 @@
         <item>
          <layout class="QHBoxLayout" name="P4Layout3">
           <item>
-           <widget class="QLabel" name="lblP4Progress">
+           <widget class="QLabel" name="lblP4ServerAddress">
             <property name="minimumSize">
              <size>
-              <width>70</width>
+              <width>105</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>70</width>
+              <width>105</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Server Address</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="txtP4ServerAddress"/>
+          </item>
+          <item>
+           <spacer name="P4Spacer1">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Fixed</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>86</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="P4Layout4">
+          <item>
+           <widget class="QLabel" name="lblP4ServerPort">
+            <property name="minimumSize">
+             <size>
+              <width>105</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>105</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Server Port</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="txtP4ServerPort"/>
+          </item>
+          <item>
+           <spacer name="P4Spacer2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Fixed</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>86</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="P4Layout5">
+          <item>
+           <widget class="QLabel" name="lblP4Progress">
+            <property name="minimumSize">
+             <size>
+              <width>103</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>105</width>
               <height>16777215</height>
              </size>
             </property>
@@ -2052,7 +2136,7 @@
             </property>
             <property name="minimumSize">
              <size>
-              <width>80</width>
+              <width>78</width>
               <height>0</height>
              </size>
             </property>
@@ -2074,13 +2158,27 @@
           <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
-            <height>40</height>
+            <height>10</height>
            </size>
           </property>
          </spacer>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="P4Layout6">
+          <item>
+           <widget class="QTextEdit" name="txtP4Log">
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </widget>
