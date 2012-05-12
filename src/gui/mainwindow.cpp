@@ -8,6 +8,7 @@
 #include "dialog/emulatordialog.h"
 #include "dialog/distributiondialog.h"
 #include "dialog/selectscriptdialog.h"
+#include "dialog/selectscenariodialog.h"
 #include "globaldatabase.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -1316,17 +1317,30 @@ void MainWindow::p3UpdateParamList()
 
 void MainWindow::btnP4SelectScenario()
 {
+    SelectScenarioDialog dialog(m_p4test.scenario);
+    if( dialog.exec() == QDialog::Accepted )
+    {
+        ui->txtP4Scenario->setText(m_p4test.scenario.name());
+    }
+
+    if( ui->txtP4Scenario->text() != "" && ui->txtP4Script->text() != "")
+    {
+        ui->btnP4Run->setEnabled(true);
+    }
 }
 
 void MainWindow::btnP4SelectScript()
 {
     SelectScriptDialog dialog(m_p4test.script);
-    dialog.exec();
+    if( dialog.exec() == QDialog::Accepted )
+    {
+        ui->txtP4Script->setText(m_p4test.script.name + m_p4test.script.description);
+    }
 
-    qDebug() << m_p4test.script.name;
-    qDebug() << m_p4test.script.description;
-    qDebug() << m_p4test.script.setupText;
-    qDebug() << m_p4test.script.resetText;
+    if( ui->txtP4Scenario->text() != "" && ui->txtP4Script->text() != "")
+    {
+        ui->btnP4Run->setEnabled(true);
+    }
 }
 
 void MainWindow::btnP4Run()
