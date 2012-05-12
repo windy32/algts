@@ -14,7 +14,8 @@ CONFIG(release, debug|release): TARGET = ../../bin/algtsgui
 
 SOURCES += mainwindow.cpp main.cpp \
     scenarioex.cpp \
-    widget/scenarioview.cpp
+    widget/scenarioview.cpp \
+    test.cpp
 SOURCES += linegraph.cpp globaldatabase.cpp script.cpp
 
 SOURCES +=
@@ -35,7 +36,8 @@ SOURCES += dialog/ratingmethoddialog.cpp
 
 HEADERS += mainwindow.h \
     scenarioex.h \
-    widget/scenarioview.h
+    widget/scenarioview.h \
+    test.h
 HEADERS += linegraph.h globaldatabase.h script.h
 
 HEADERS +=

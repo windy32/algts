@@ -1941,19 +1941,23 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="txtP4Scenario"/>
+           <widget class="QLineEdit" name="txtP4Scenario">
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
           </item>
           <item>
            <widget class="QPushButton" name="btnP4Scenario">
             <property name="minimumSize">
              <size>
-              <width>50</width>
+              <width>80</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>50</width>
+              <width>80</width>
               <height>16777215</height>
              </size>
             </property>
@@ -1986,19 +1990,23 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="txtP4Script"/>
+           <widget class="QLineEdit" name="txtP4Script">
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
           </item>
           <item>
            <widget class="QPushButton" name="btnP4Script">
             <property name="minimumSize">
              <size>
-              <width>50</width>
+              <width>80</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>50</width>
+              <width>80</width>
               <height>16777215</height>
              </size>
             </property>
@@ -2033,21 +2041,24 @@
           <item>
            <widget class="QProgressBar" name="pgsP4">
             <property name="value">
-             <number>24</number>
+             <number>0</number>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QPushButton" name="btnP4Run">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="minimumSize">
              <size>
-              <width>50</width>
+              <width>80</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>50</width>
+              <width>80</width>
               <height>16777215</height>
              </size>
             </property>

@@ -16,7 +16,7 @@ struct ScriptParam
 QDataStream &operator<<(QDataStream &out, const ScriptParam &param);
 QDataStream &operator>>(QDataStream &in, ScriptParam &param);
 
-struct Script
+struct Script // Template
 {
     QString name;
 
@@ -29,6 +29,17 @@ struct Script
 
 QDataStream &operator<<(QDataStream &out, const Script &script);
 QDataStream &operator>>(QDataStream &in, Script &script);
+
+struct ScriptData
+{
+    QString name;
+    QString description;
+    QString setupText;
+    QString resetText;
+};
+
+QDataStream &operator<<(QDataStream &out, const ScriptData &script);
+QDataStream &operator>>(QDataStream &in, ScriptData &script);
 
 #endif // SCRIPT_H
 

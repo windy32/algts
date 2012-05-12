@@ -7,6 +7,7 @@
 
 #include "script.h"
 #include "scenarioex.h"
+#include "test.h"
 
 namespace Ui {
 class MainWindow;
@@ -98,6 +99,11 @@ private slots:
     void p3UpdateScript();
     void p3UpdateParamList();
 
+    // Page 4: New Test
+    void btnP4SelectScenario();
+    void btnP4SelectScript();
+    void btnP4Run();
+
 private:
     Ui::MainWindow *ui;
 
@@ -126,6 +132,9 @@ private:
         PlainText = 0,
         HtmlText  = 1
     } m_textState;
+
+    // Page 4: Test
+    Test m_p4test;
 };
 
 #endif // MAINWINDOW_H

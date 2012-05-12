@@ -7,7 +7,7 @@
 #include "dialog/ipaddrdialog.h"
 #include "dialog/emulatordialog.h"
 #include "dialog/distributiondialog.h"
-
+#include "dialog/selectscriptdialog.h"
 #include "globaldatabase.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -71,21 +71,6 @@ MainWindow::MainWindow(QWidget *parent) :
     updateStatistics();
 
     // Page 2: Scenario
-    //ScenarioEx *s = new ScenarioEx(); // Test only
-/*    m_scenario.name() = "My Scenario 1";
-    m_scenario.addUser("Harry");
-    m_scenario.addUser("Sally");
-    m_scenario.addTask("Harry", new BulkDownloadTask(80));
-    m_scenario.task("Harry", 0)->setAttribute("MaxBytes", "64MB");
-    m_scenario.addTask("Harry", new BulkUploadTask(80));
-
-    m_scenario.addTask("Sally", new OnoffDownloadTask(80));
-    m_scenario.task("Sally", 0)->setAttribute("OnTime", "Uniform 100, 500");
-    m_scenario.task("Sally", 0)->setAttribute("OffTime", "Uniform 500, 800");
-
-    m_scenario.addTask("Sally", new TcpEchoTask(80));
-    m_scenario.addTask("Sally", new AsyncUdpEchoTask(80));
-*/
     m_scenarioIndex = 0;
     p2RebuildScenarioList();
 
@@ -192,7 +177,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->btnP3DeleteSelected, SIGNAL(clicked()),
             this, SLOT(btnP3DelSelected()));
     connect(ui->rdoP3SetupScript, SIGNAL(clicked()),
-            this, SLOT(rdoP3ResetScript()));
+            this, SLOT(rdoP3SetupScript()));
     connect(ui->rdoP3ResetScript, SIGNAL(clicked()),
             this, SLOT(rdoP3ResetScript()));
     connect(ui->cmbP3Scripts, SIGNAL(currentIndexChanged(int)),
@@ -207,6 +192,11 @@ MainWindow::MainWindow(QWidget *parent) :
     m_curIndex = 0;
     m_modified = false;
     p3RebuildScriptList();
+
+    // Page 4: New Test
+    connect(ui->btnP4Scenario, SIGNAL(clicked()), this, SLOT(btnP4SelectScenario()));
+    connect(ui->btnP4Script, SIGNAL(clicked()), this, SLOT(btnP4SelectScript()));
+    connect(ui->btnP4Run, SIGNAL(clicked()), this, SLOT(btnP4Run()));
 }
 
 MainWindow::~MainWindow()
@@ -1004,7 +994,7 @@ void MainWindow::btnP3Auto()
                 m_setupModel : m_resetModel;
     model->removeRows(0, model->rowCount());
 
-    QRegExp rx("^([A-Z][A-Z0-9]*)( |)=( |)(.+)$");
+    QRegExp rx("^([A-Z][A-Za-z0-9]*)( |)=( |)(.+)$");
 
     int count = 0;
     for(int i = 0; i < lines.size(); i++)
@@ -1320,4 +1310,25 @@ void MainWindow::p3UpdateParamList()
 {
     ui->lstP3Params->setModel(ui->rdoP3SetupScript->isChecked() ?
                                   m_setupModel : m_resetModel);
+}
+
+// Page 4: New Test ///////////////////////////////////////////////////////////
+
+void MainWindow::btnP4SelectScenario()
+{
+}
+
+void MainWindow::btnP4SelectScript()
+{
+    SelectScriptDialog dialog(m_p4test.script);
+    dialog.exec();
+
+    qDebug() << m_p4test.script.name;
+    qDebug() << m_p4test.script.description;
+    qDebug() << m_p4test.script.setupText;
+    qDebug() << m_p4test.script.resetText;
+}
+
+void MainWindow::btnP4Run()
+{
 }
