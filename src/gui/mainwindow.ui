@@ -822,7 +822,7 @@
               <item>
                <widget class="QStackedWidget" name="tasks">
                 <property name="currentIndex">
-                 <number>2</number>
+                 <number>0</number>
                 </property>
                 <widget class="QWidget" name="P23BdTask">
                  <layout class="QVBoxLayout" name="P231Layout">
@@ -2042,20 +2042,23 @@
            <widget class="QLineEdit" name="txtP4ServerAddress"/>
           </item>
           <item>
-           <spacer name="P4Spacer1">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Fixed</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
+           <widget class="QPushButton" name="btnP4DefaultServerAddr">
+            <property name="minimumSize">
              <size>
-              <width>86</width>
-              <height>20</height>
+              <width>80</width>
+              <height>0</height>
              </size>
             </property>
-           </spacer>
+            <property name="maximumSize">
+             <size>
+              <width>80</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Default</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
@@ -2084,20 +2087,23 @@
            <widget class="QLineEdit" name="txtP4ServerPort"/>
           </item>
           <item>
-           <spacer name="P4Spacer2">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Fixed</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
+           <widget class="QPushButton" name="btnP4DefaultServerPort">
+            <property name="minimumSize">
              <size>
-              <width>86</width>
-              <height>20</height>
+              <width>80</width>
+              <height>0</height>
              </size>
             </property>
-           </spacer>
+            <property name="maximumSize">
+             <size>
+              <width>80</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Default</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>

@@ -18,6 +18,7 @@
 Log::LogLevel Log::m_level = Log::LOG_LEVEL_WARN;
 qint32 Log::m_errorCount = 0;
 QMutex Log::m_mutex;
+LogRedirectCallback Log::m_callback = NULL;
 
 void Log::enable(enum LogLevel level)
 {
@@ -35,6 +36,23 @@ void Log::enable(enum LogLevel level)
     }
 }
 
+void Log::enableRedirect(LogRedirectCallback callback)
+{
+    m_callback = callback;
+}
+
+void Log::print(const char *content)
+{
+    if( m_callback == NULL )
+    {
+        printf("%s", content);
+    }
+    else
+    {
+        m_callback(content);
+    }
+}
+
 void Log::addLine(enum LogLevel level, const QString &str)
 {
     Log::addLine(level, str.toLocal8Bit().data());
@@ -42,13 +60,15 @@ void Log::addLine(enum LogLevel level, const QString &str)
 
 void Log::addLine(enum LogLevel level, const char *format, ...)
 {
+    char buffer[1024];
+    
     if( static_cast<int>(m_level) & static_cast<int>(level))
     {
         // Print log level
         switch( level )
         {
         case LOG_ERROR:
-            printf("Error: ");
+            print("Error: ");
 
             m_mutex.lock();
             m_errorCount += 1;
@@ -56,13 +76,13 @@ void Log::addLine(enum LogLevel level, const char *format, ...)
             
             break;
         case LOG_WARN:
-            printf("Warning: ");
+            print("Warning: ");
             break;
         case LOG_INFO:
-            printf("Info: ");
+            print("Info: ");
             break;
         case LOG_DEBUG:
-            printf("Debug: ");
+            print("Debug: ");
             break;
         default:
             break;
@@ -72,8 +92,9 @@ void Log::addLine(enum LogLevel level, const char *format, ...)
         va_list argList;
         va_start(argList, format);
         
-        vprintf(format, argList);
-        printf("\n");
+        vsprintf(buffer, format, argList);
+        strcat(buffer, "\n");
+        print(buffer);
         
         va_end(argList);
     }
@@ -84,3 +105,4 @@ qint32 Log::getErrorCount()
 {
     return m_errorCount;
 }
+

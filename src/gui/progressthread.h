@@ -17,6 +17,9 @@ protected:
 
 public:
     explicit ProgressThread(QProgressBar *bar, int seconds, QObject *parent = 0);
+
+signals:
+    void updateValue(int value);
 };
 
 #endif // PROGRESSTHREAD_H

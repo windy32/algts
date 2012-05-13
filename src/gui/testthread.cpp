@@ -1,8 +1,12 @@
 #include "testthread.h"
 #include "../core/core.h"
 
-TestThread::TestThread(QList<QHostAddress> &localAddrs,
-                       QHostAddress &serverAddr,
+#include <QDebug>
+
+TestThread *TestThread::m_instance = 0;
+
+TestThread::TestThread(QList<QHostAddress> localAddrs,
+                       QHostAddress serverAddr,
                        quint16 serverPort,
                        Scenario *scenario,
                        QObject *parent)
@@ -12,12 +16,19 @@ TestThread::TestThread(QList<QHostAddress> &localAddrs,
       m_serverPort(serverPort),
       m_scenario(scenario)
 {
+    m_instance = this;
 }
 
 void TestThread::run()
 {
     CoreApplication app(m_localAddrs, m_serverAddr, m_serverPort);
     app.exec(m_scenario);
+}
 
-
+void TestThread::logCallback(const char *content)
+{
+    if( m_instance != NULL ) // This is odd, should be optimized later
+    {
+        m_instance->emit newLog(QString::fromAscii(content));
+    }
 }

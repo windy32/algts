@@ -18,6 +18,8 @@
 
 #include "common.h"
 
+typedef void (* LogRedirectCallback)(const char *content);
+
 /**
  * \file log.h
  * \brief Global logging support
@@ -72,13 +74,23 @@ private:
     static enum LogLevel m_level;
     static qint32 m_errorCount;
     static QMutex m_mutex;
-    
+    static LogRedirectCallback m_callback;
+
+private:
+    static void print(const char *content);
+
 public:
     /**
      * \brief Enable logging at specific level
      * \param level The log level
      */
     static void enable(enum LogLevel level);
+    
+    /**
+     * \brief Register the logging callback function
+     * \param callback The callback function pointer
+     */
+    static void enableRedirect(LogRedirectCallback callback);
     
     /**
      * \brief Add a line in the log

@@ -13,11 +13,14 @@
 #include "testthread.h"
 #include "progressthread.h"
 
+Ui::MainWindow *MainWindow::uis;
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    uis = ui; // added for the callback in page 4
 
     // Layouts
     ui->centralWidget->setLayout(ui->mainLayout);
@@ -200,6 +203,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->btnP4Scenario, SIGNAL(clicked()), this, SLOT(btnP4SelectScenario()));
     connect(ui->btnP4Script, SIGNAL(clicked()), this, SLOT(btnP4SelectScript()));
     connect(ui->btnP4Run, SIGNAL(clicked()), this, SLOT(btnP4Run()));
+    connect(ui->btnP4DefaultServerAddr, SIGNAL(clicked()),
+            this, SLOT(btnP4DefaultServerAddr()));
+    connect(ui->btnP4DefaultServerPort, SIGNAL(clicked()),
+            this, SLOT(btnP4DefaultServerPort()));
 }
 
 MainWindow::~MainWindow()
@@ -682,7 +689,7 @@ void MainWindow::sldP231MaxBytesChanged(int value)
     }
 
     BulkDownloadTask *task = (BulkDownloadTask *)m_scenario.task(m_p2user, m_p2index);
-    task->setMaxBytes(maxBytes * 1024);
+    task->setMaxBytes(maxBytes > 1024 * 1024 ? -1 : maxBytes * 1024);
 }
 
 void MainWindow::sldP231MaxRateChanged(int value)
@@ -731,7 +738,7 @@ void MainWindow::sldP232MaxBytesChanged(int value)
     }
 
     BulkUploadTask *task = (BulkUploadTask *)m_scenario.task(m_p2user, m_p2index);
-    task->setMaxBytes(maxBytes * 1024);
+    task->setMaxBytes(maxBytes > 1024 * 1024 ? -1 : maxBytes * 1024);
 }
 
 void MainWindow::sldP232MaxRateChanged(int value)
@@ -1325,7 +1332,10 @@ void MainWindow::btnP4SelectScenario()
         ui->txtP4Scenario->setText(m_p4test.scenario.name());
     }
 
-    if( ui->txtP4Scenario->text() != "" && ui->txtP4Script->text() != "")
+    if( ui->txtP4Scenario->text() != "" &&
+        ui->txtP4Script->text() != "" &&
+        ui->txtP4ServerAddress->text() != "" &&
+        ui->txtP4ServerPort->text() != "" )
     {
         ui->btnP4Run->setEnabled(true);
     }
@@ -1339,7 +1349,10 @@ void MainWindow::btnP4SelectScript()
         ui->txtP4Script->setText(m_p4test.script.name + m_p4test.script.description);
     }
 
-    if( ui->txtP4Scenario->text() != "" && ui->txtP4Script->text() != "")
+    if( ui->txtP4Scenario->text() != "" &&
+        ui->txtP4Script->text() != "" &&
+        ui->txtP4ServerAddress->text() != "" &&
+        ui->txtP4ServerPort->text() != "" )
     {
         ui->btnP4Run->setEnabled(true);
     }
@@ -1391,13 +1404,61 @@ void MainWindow::btnP4Run()
         return;
     }
 
+    // Redirect the log messages to the textbox
+    ui->txtP4Log->clear();
+    Log::enable(Log::LOG_LEVEL_DEBUG);
+    Log::enableRedirect(TestThread::logCallback);
+
     TestThread *testThread = new TestThread(
                 m_addrs, addr, port, &m_p4test.scenario, this);
     testThread->start();
 
-    // Should be fixed later
-    ProgressThread progressThread(ui->pgsP4, m_p4test.scenario.length(), this);
-    progressThread.start();
+    connect(testThread, SIGNAL(newLog(QString)),
+            this, SLOT(p4NewLog(QString)), Qt::QueuedConnection);
 
-    // TODO: redirect the log messages to the log textbox
+    // Should be fixed later
+    ProgressThread *progressThread = new ProgressThread(
+                ui->pgsP4, m_p4test.scenario.length(), this);
+    progressThread->start();
+
+    connect(progressThread, SIGNAL(updateValue(int)),
+            this, SLOT(p4UpdateProgress(int)), Qt::QueuedConnection);
+}
+
+void MainWindow::btnP4DefaultServerAddr()
+{
+    ui->txtP4ServerAddress->setText("10.0.0.1");
+
+    if( ui->txtP4Scenario->text() != "" &&
+        ui->txtP4Script->text() != "" &&
+        ui->txtP4ServerAddress->text() != "" &&
+        ui->txtP4ServerPort->text() != "" )
+    {
+        ui->btnP4Run->setEnabled(true);
+    }
+}
+
+void MainWindow::btnP4DefaultServerPort()
+{
+    ui->txtP4ServerPort->setText("3200");
+
+    if( ui->txtP4Scenario->text() != "" &&
+        ui->txtP4Script->text() != "" &&
+        ui->txtP4ServerAddress->text() != "" &&
+        ui->txtP4ServerPort->text() != "" )
+    {
+        ui->btnP4Run->setEnabled(true);
+    }
+}
+
+void MainWindow::p4NewLog(const QString &newLog)
+{
+    QString originalText = uis->txtP4Log->toPlainText();
+    uis->txtP4Log->setPlainText(originalText + newLog);
+}
+
+void MainWindow::p4UpdateProgress(int value)
+{
+    qDebug() << "Progress " << value;
+    ui->pgsP4->setValue(value);
 }

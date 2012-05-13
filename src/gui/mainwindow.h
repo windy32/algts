@@ -103,9 +103,15 @@ private slots:
     void btnP4SelectScenario();
     void btnP4SelectScript();
     void btnP4Run();
+    void btnP4DefaultServerAddr();
+    void btnP4DefaultServerPort();
+
+    void p4NewLog(const QString &newLog);
+    void p4UpdateProgress(int value);
 
 private:
     Ui::MainWindow *ui;
+    static Ui::MainWindow *uis;
 
     // Page 1: Welcome
     QString m_interface;
