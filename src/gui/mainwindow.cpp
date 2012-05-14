@@ -207,6 +207,27 @@ MainWindow::MainWindow(QWidget *parent) :
             this, SLOT(btnP4DefaultServerAddr()));
     connect(ui->btnP4DefaultServerPort, SIGNAL(clicked()),
             this, SLOT(btnP4DefaultServerPort()));
+    connect(ui->btnP4DefaultRouterAddr, SIGNAL(clicked()),
+            this, SLOT(btnP4DefaultRouterAddr()));
+    connect(ui->btnP4DefaultUsername, SIGNAL(clicked()),
+            this, SLOT(btnP4DefaultUsername()));
+    connect(ui->btnP4DefaultPassword, SIGNAL(clicked()),
+            this, SLOT(btnP4DefaultPassword()));
+
+    connect(ui->txtP4Scenario, SIGNAL(textChanged(QString)),
+            this, SLOT(p4UpdateRunButtonState()));
+    connect(ui->txtP4Script, SIGNAL(textChanged(QString)),
+            this, SLOT(p4UpdateRunButtonState()));
+    connect(ui->txtP4ServerAddress, SIGNAL(textChanged(QString)),
+            this, SLOT(p4UpdateRunButtonState()));
+    connect(ui->txtP4ServerPort, SIGNAL(textChanged(QString)),
+            this, SLOT(p4UpdateRunButtonState()));
+    connect(ui->txtP4RouterAddr, SIGNAL(textChanged(QString)),
+            this, SLOT(p4UpdateRunButtonState()));
+    connect(ui->txtP4Username, SIGNAL(textChanged(QString)),
+            this, SLOT(p4UpdateRunButtonState()));
+    connect(ui->txtP4Password, SIGNAL(textChanged(QString)),
+            this, SLOT(p4UpdateRunButtonState()));
 }
 
 MainWindow::~MainWindow()
@@ -1404,9 +1425,40 @@ void MainWindow::btnP4Run()
         return;
     }
 
-    // Redirect the log messages to the textbox
+    // Enable logging
     ui->txtP4Log->clear();
     Log::enable(Log::LOG_LEVEL_DEBUG);
+
+    // Execute setup script
+    Log::enableRedirect(MainWindow::logCallback);
+
+    if( m_p4test.script.setupText.trimmed() == "" )
+    {
+        LOG_INFO("Skipping Setup Script\n");
+    }
+    else
+    {
+        LOG_INFO("Executing Setup Script\n");
+
+        Terminal *terminal = ui->rdoP4Telnet->isChecked() ?
+                    (Terminal *)new TelnetTerminal(ui->txtP4RouterAddr->text()) :
+                    (Terminal *)new SshTerminal(ui->txtP4RouterAddr->text());
+        terminal->start();
+        terminal->enter(ui->txtP4Username->text() + "\n");
+        terminal->enter(ui->txtP4Password->text() + "\n");
+
+        QList<QString> list = m_p4test.script.setupText.split("\n");
+        for(int i = 0; i < list.size(); i++)
+        {
+            list[i].append("\n");
+            terminal->enter(list[i]);
+        }
+        terminal->close();
+
+        delete terminal;
+    }
+
+    // Start the test thread
     Log::enableRedirect(TestThread::logCallback);
 
     TestThread *testThread = new TestThread(
@@ -1415,40 +1467,66 @@ void MainWindow::btnP4Run()
 
     connect(testThread, SIGNAL(newLog(QString)),
             this, SLOT(p4NewLog(QString)), Qt::QueuedConnection);
+    connect(testThread, SIGNAL(finished()), testThread, SLOT(deleteLater()));
 
-    // Should be fixed later
+    // Start the progress thread
     ProgressThread *progressThread = new ProgressThread(
-                ui->pgsP4, m_p4test.scenario.length(), this);
+                m_p4test.scenario.length(), this);
     progressThread->start();
 
     connect(progressThread, SIGNAL(updateValue(int)),
             this, SLOT(p4UpdateProgress(int)), Qt::QueuedConnection);
+    connect(progressThread, SIGNAL(finished()), progressThread, SLOT(deleteLater()));
+
+    // Disable current page
+    ui->btnP4Scenario->setEnabled(false);
+    ui->btnP4Script->setEnabled(false);
+    ui->btnP4DefaultServerAddr->setEnabled(false);
+    ui->btnP4DefaultServerPort->setEnabled(false);
+    ui->btnP4Run->setEnabled(false);
+
+    ui->txtP4Scenario->setEnabled(false);
+    ui->txtP4Script->setEnabled(false);
+    ui->txtP4ServerAddress->setEnabled(false);
+    ui->txtP4ServerPort->setEnabled(false);
+
+    ui->rdoP4Telnet->setEnabled(false);
+    ui->rdoP4Ssh->setEnabled(false);
+    ui->txtP4Username->setEnabled(false);
+    ui->txtP4Password->setEnabled(false);
+    ui->txtP4RouterAddr->setEnabled(false);
+    ui->btnP4DefaultTerminal->setEnabled(false);
+    ui->btnP4DefaultRouterAddr->setEnabled(false);
+    ui->btnP4DefaultUsername->setEnabled(false);
+    ui->btnP4DefaultPassword->setEnabled(false);
+
+    connect(testThread, SIGNAL(finished()), progressThread, SLOT(testFinished()));
+    connect(testThread, SIGNAL(finished()), this, SLOT(p4TestFinished()));
 }
 
 void MainWindow::btnP4DefaultServerAddr()
 {
     ui->txtP4ServerAddress->setText("10.0.0.1");
-
-    if( ui->txtP4Scenario->text() != "" &&
-        ui->txtP4Script->text() != "" &&
-        ui->txtP4ServerAddress->text() != "" &&
-        ui->txtP4ServerPort->text() != "" )
-    {
-        ui->btnP4Run->setEnabled(true);
-    }
 }
 
 void MainWindow::btnP4DefaultServerPort()
 {
     ui->txtP4ServerPort->setText("3200");
+}
 
-    if( ui->txtP4Scenario->text() != "" &&
-        ui->txtP4Script->text() != "" &&
-        ui->txtP4ServerAddress->text() != "" &&
-        ui->txtP4ServerPort->text() != "" )
-    {
-        ui->btnP4Run->setEnabled(true);
-    }
+void MainWindow::btnP4DefaultRouterAddr()
+{
+    ui->txtP4RouterAddr->setText("172.16.0.1");
+}
+
+void MainWindow::btnP4DefaultUsername()
+{
+    ui->txtP4Username->setText("root");
+}
+
+void MainWindow::btnP4DefaultPassword()
+{
+    ui->txtP4Password->setText("admin");
 }
 
 void MainWindow::p4NewLog(const QString &newLog)
@@ -1459,6 +1537,82 @@ void MainWindow::p4NewLog(const QString &newLog)
 
 void MainWindow::p4UpdateProgress(int value)
 {
-    qDebug() << "Progress " << value;
     ui->pgsP4->setValue(value);
+}
+
+void MainWindow::p4TestFinished()
+{
+    // Execute setup script
+    if( m_p4test.script.resetText.trimmed() == "" )
+    {
+        LOG_INFO("Skipping Reset Script\n");
+    }
+    else
+    {
+        LOG_INFO("Executing Reset Script\n");
+
+        Terminal *terminal = ui->rdoP4Telnet->isChecked() ?
+                    (Terminal *)new TelnetTerminal(ui->txtP4RouterAddr->text()) :
+                    (Terminal *)new SshTerminal(ui->txtP4RouterAddr->text());
+        if( ui->rdoP4Telnet->isChecked())
+        {
+            terminal->start();
+            terminal->enter(ui->txtP4Username->text() + "\n");
+            terminal->enter(ui->txtP4Password->text() + "\n");
+
+            QList<QString> list = m_p4test.script.resetText.split("\n");
+            for(int i = 0; i < list.size(); i++)
+            {
+                list[i].append("\n");
+                terminal->enter(list[i]);
+            }
+            terminal->close();
+        }
+        delete terminal;
+    }
+
+    ui->btnP4Scenario->setEnabled(true);
+    ui->btnP4Script->setEnabled(true);
+    ui->btnP4DefaultServerAddr->setEnabled(true);
+    ui->btnP4DefaultServerPort->setEnabled(true);
+    ui->btnP4Run->setEnabled(true);
+
+    ui->txtP4Scenario->setEnabled(true);
+    ui->txtP4Script->setEnabled(true);
+    ui->txtP4ServerAddress->setEnabled(true);
+    ui->txtP4ServerPort->setEnabled(true);
+
+    ui->rdoP4Telnet->setEnabled(true);
+    ui->rdoP4Ssh->setEnabled(true);
+    ui->txtP4Username->setEnabled(true);
+    ui->txtP4Password->setEnabled(true);
+    ui->txtP4RouterAddr->setEnabled(true);
+    ui->btnP4DefaultTerminal->setEnabled(true);
+    ui->btnP4DefaultRouterAddr->setEnabled(true);
+    ui->btnP4DefaultUsername->setEnabled(true);
+    ui->btnP4DefaultPassword->setEnabled(true);
+}
+
+void MainWindow::p4UpdateRunButtonState()
+{
+    if( ui->txtP4Scenario->text() != "" &&
+        ui->txtP4Script->text() != "" &&
+        ui->txtP4ServerAddress->text() != "" &&
+        ui->txtP4ServerPort->text() != "" &&
+        ui->txtP4RouterAddr->text() != "" &&
+        ui->txtP4Username->text() != "" &&
+        ui->txtP4Password->text() != "" )
+    {
+        ui->btnP4Run->setEnabled(true);
+    }
+    else
+    {
+        ui->btnP4Run->setEnabled(false);
+    }
+}
+
+void MainWindow::logCallback(const char *content)
+{
+    QString originalText = uis->txtP4Log->toPlainText();
+    uis->txtP4Log->setPlainText(originalText + QString::fromAscii(content));
 }

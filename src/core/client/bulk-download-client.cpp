@@ -33,7 +33,7 @@ void BulkDownloadClient::run()
     
     qint32 maxBytes = m_task->getMaxBytes();
     qint32 maxRate = m_task->getMaxRate();
-    
+
     // Start timer
     QTime t;
     t.start();

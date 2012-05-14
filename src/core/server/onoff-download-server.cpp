@@ -69,7 +69,7 @@ void OnoffDownloadServerSession::run()
     }
     
     // Send data
-    qint32 totalBytes = 0;
+    qint64 totalBytes = 0;
     QByteArray block(packetSize, 0);
     QTime t;
     t.start();
@@ -89,9 +89,9 @@ void OnoffDownloadServerSession::run()
             (int)bytesSent, (int)totalBytes);
         
         // Rate limit
-        if( maxRate != -1 && totalBytes * 1000 / maxRate > t.elapsed())
+        if( maxRate != -1 && totalBytes * 1000 / maxRate > (qint64)t.elapsed())
         {
-            msleep(qMax(totalBytes * 1000 / maxRate - t.elapsed(), 0));
+            msleep(qMax((int)(totalBytes * 1000 / maxRate - t.elapsed()), 0));
         }
     }
 

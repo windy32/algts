@@ -34,7 +34,7 @@ void BulkUploadClient::run()
     
     qint32 maxBytes = m_task->getMaxBytes();
     qint32 maxRate = m_task->getMaxRate();
-
+    
     // Start timer
     QTime t;
     t.start();
@@ -58,7 +58,7 @@ void BulkUploadClient::run()
 
     // Send data
     const int packetSize = 1000;
-    qint32 bytesSent = 0;
+    qint64 bytesSent = 0;
     QByteArray block(packetSize, 0);
     qint32 index = 0;
 
@@ -79,9 +79,9 @@ void BulkUploadClient::run()
         m_trace.totalBytes.append(bytesSent);
         
         // Rate limit
-        if( maxRate != -1 && bytesSent * 1000 / maxRate > t.elapsed())
+        if( maxRate != -1 && bytesSent * 1000 / maxRate > (qint64)t.elapsed())
         {
-            msleep(qMax(bytesSent * 1000 / maxRate - t.elapsed(), 0));
+            msleep(qMax((int)(bytesSent * 1000 / maxRate - t.elapsed()), 0));
         }
     }
     

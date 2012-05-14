@@ -47,11 +47,6 @@ void Scenario::addTask(const QString &userName, Task *task)
     {
         m_tasks[userName].push_back(task);
         m_lastTask = task;
-        
-        if( task->getStopTime() == -1 )
-        {
-            task->setStopTime(m_length * 1000);
-        }
     }
     else
     {
@@ -70,6 +65,11 @@ Task *Scenario::task()
         LOG_WARN("No task available");
         return NullTask::getInstance();
     }
+}
+
+qint32 Scenario::getLength()
+{
+    return m_length;
 }
 
 QMap<QString, QVector<Task *> > &Scenario::tasks()

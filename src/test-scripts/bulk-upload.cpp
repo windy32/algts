@@ -45,8 +45,8 @@ int main(int argc, char *argv[])
     s.addUser("Harry");
 
     s.addTask("Harry", new BulkUploadTask(80));
-    s.task()->setAttribute("MaxBytes", "500KB");
-    s.task()->setAttribute("MaxRate", "256Kbps");
+    s.task()->setAttribute("MaxBytes", "INFINITE");
+    s.task()->setAttribute("MaxRate", "1Mbps");
     
     // Execute
     app.exec(&s);

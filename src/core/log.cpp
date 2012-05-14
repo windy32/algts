@@ -55,12 +55,13 @@ void Log::print(const char *content)
 
 void Log::addLine(enum LogLevel level, const QString &str)
 {
-    Log::addLine(level, str.toLocal8Bit().data());
+    Log::addLine(level, "%s", str.toLocal8Bit().data());
 }
 
 void Log::addLine(enum LogLevel level, const char *format, ...)
 {
     char buffer[1024];
+    m_mutex.lock();
     
     if( static_cast<int>(m_level) & static_cast<int>(level))
     {
@@ -69,11 +70,7 @@ void Log::addLine(enum LogLevel level, const char *format, ...)
         {
         case LOG_ERROR:
             print("Error: ");
-
-            m_mutex.lock();
             m_errorCount += 1;
-            m_mutex.unlock();
-            
             break;
         case LOG_WARN:
             print("Warning: ");
@@ -99,6 +96,7 @@ void Log::addLine(enum LogLevel level, const char *format, ...)
         va_end(argList);
     }
     // otherwise output with specific level is disabled
+    m_mutex.unlock();
 }
 
 qint32 Log::getErrorCount()

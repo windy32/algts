@@ -14,6 +14,10 @@ IpAddrDialog::IpAddrDialog(QString &interface, QList<QHostAddress> &addrs,
     QList<QNetworkInterface> interfaces = QNetworkInterface::allInterfaces();
     for(int i = 0; i < interfaces.size(); i++)
     {
+        if( interfaces[i].addressEntries().size() == 0 )
+        {
+            continue;
+        }
         ui->cmbInterface->addItem(interfaces[i].name());
     }
 

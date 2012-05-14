@@ -9,17 +9,20 @@ class ProgressThread : public QThread
     Q_OBJECT
 
 private:
-    QProgressBar *m_bar;
     int m_seconds;
+    bool m_running;
 
 protected:
     void run();
 
 public:
-    explicit ProgressThread(QProgressBar *bar, int seconds, QObject *parent = 0);
+    explicit ProgressThread(int seconds, QObject *parent = 0);
 
 signals:
     void updateValue(int value);
+
+public slots:
+    void testFinished();
 };
 
 #endif // PROGRESSTHREAD_H

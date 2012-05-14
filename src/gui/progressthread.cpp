@@ -3,8 +3,8 @@
 
 #include <QDebug>
 
-ProgressThread::ProgressThread(QProgressBar *bar, int seconds, QObject *parent) :
-    QThread(parent), m_bar(bar), m_seconds(seconds)
+ProgressThread::ProgressThread(int seconds, QObject *parent) :
+    QThread(parent), m_seconds(seconds), m_running(true)
 {
 }
 
@@ -13,13 +13,19 @@ void ProgressThread::run()
     QTime t;
     t.start();
 
-    qDebug() << m_seconds;
-
-    while( t.elapsed() < 1000 * m_seconds )
+    while( m_running && t.elapsed() < 1000 * m_seconds )
     {
-        sleep(300);
-        //emit updateValue(t.elapsed() / (10 * m_seconds));
-        m_bar->setValue(t.elapsed() / (10 * m_seconds));
+        msleep(100);
+        emit updateValue(5 * t.elapsed() / (10 * m_seconds));
     }
-    qDebug() << "Exiting Progress Thread";
+
+    if( !m_running ) // Test thread finished earlier than expected
+    {
+        emit updateValue(500);
+    }
+}
+
+void ProgressThread::testFinished()
+{
+    m_running = false;
 }

@@ -28,12 +28,17 @@ void IpAddressWidget::paintEvent(QPaintEvent */*event*/)
     painter.drawRect(this->rect());
 
     QList<QNetworkInterface> interfaces = QNetworkInterface::allInterfaces();
-    for(int i = 0; i < interfaces.size(); i++)
+    for(int i = 0, n = 0; i < interfaces.size(); i++)
     {
+        if( interfaces[i].addressEntries().size() == 0 )
+        {
+            continue;
+        }
+
         // Draw interface
         painter.setPen(QColor::fromRgb(18, 98, 184));
         painter.setFont(ifFont);
-        painter.drawText(leftMargin + columnWidth * i, topMargin,
+        painter.drawText(leftMargin + columnWidth * n, topMargin,
                          interfaces[i].name());
 
         QList<QNetworkAddressEntry> addrs = interfaces[i].addressEntries();
@@ -41,7 +46,7 @@ void IpAddressWidget::paintEvent(QPaintEvent */*event*/)
         {
             if( addrs[j].ip().protocol() == QAbstractSocket::IPv4Protocol )
             {
-                int baseX = leftMargin + columnWidth * i;
+                int baseX = leftMargin + columnWidth * n;
                 int baseY = topMargin + rowHeight * (j + 1);
 
                 // Draw circle (select state)
@@ -64,6 +69,7 @@ void IpAddressWidget::paintEvent(QPaintEvent */*event*/)
                                  addrs[j].ip().toString());
             }
         }
+        n++;
     }
 }
 

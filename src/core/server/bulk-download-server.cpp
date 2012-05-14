@@ -60,7 +60,7 @@ void BulkDownloadServerSession::run()
     
     // Send data
     const int packetSize = 1000;
-    qint32 bytesSent = 0;
+    qint64 bytesSent = 0;
     QByteArray block(packetSize, 0);
     QTime t;
     t.start();
@@ -77,13 +77,13 @@ void BulkDownloadServerSession::run()
             break;
         }
         
-        LOG_DEBUG("BulkDownloadServerSession %d / %d", 
-            (int)bytesSent, (int)maxBytes);
+        //LOG_DEBUG("BulkDownloadServerSession %d / %d", 
+        //    (int)bytesSent, (int)maxBytes);
         
         // Rate limit
-        if( maxRate != -1 && bytesSent * 1000 / maxRate  > t.elapsed())
+        if( maxRate != -1 && bytesSent * 1000 / maxRate  > (qint64)t.elapsed())
         {
-            msleep(qMax(bytesSent * 1000 / maxRate  - t.elapsed(), 0));
+            msleep(qMax((int)(bytesSent * 1000 / maxRate  - t.elapsed()), 0));
         }
     }
     

@@ -108,6 +108,13 @@ public: // Task management interfaces for scripting
      */
     Task *task();
 
+public: // One extra for resetting stop time -1 to scenario length
+    /**
+     * \brief Get the length of the scenario
+     * \return The length of the scenario in seconds
+     */
+    qint32 getLength();
+
 public:
     friend QDataStream &operator<<(QDataStream &out, const Scenario &scenario);
     friend QDataStream &operator>>(QDataStream &in, Scenario &scenario);

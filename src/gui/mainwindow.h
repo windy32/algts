@@ -106,8 +106,17 @@ private slots:
     void btnP4DefaultServerAddr();
     void btnP4DefaultServerPort();
 
+    void btnP4DefaultRouterAddr();
+    void btnP4DefaultUsername();
+    void btnP4DefaultPassword();
+
     void p4NewLog(const QString &newLog);
     void p4UpdateProgress(int value);
+
+    void p4TestFinished();
+    void p4UpdateRunButtonState();
+
+    static void logCallback(const char *content);
 
 private:
     Ui::MainWindow *ui;

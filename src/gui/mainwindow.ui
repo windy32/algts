@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>945</width>
+    <width>860</width>
     <height>460</height>
    </rect>
   </property>
@@ -1907,18 +1907,6 @@
       </widget>
       <widget class="QWidget" name="pageNewTest">
        <layout class="QVBoxLayout" name="newTestLayout">
-        <property name="leftMargin">
-         <number>6</number>
-        </property>
-        <property name="topMargin">
-         <number>10</number>
-        </property>
-        <property name="rightMargin">
-         <number>8</number>
-        </property>
-        <property name="bottomMargin">
-         <number>12</number>
-        </property>
         <item>
          <layout class="QHBoxLayout" name="P4Layout1">
           <item>
@@ -2108,12 +2096,231 @@
          </layout>
         </item>
         <item>
+         <layout class="QHBoxLayout" name="P4Layout6">
+          <item>
+           <widget class="QLabel" name="lblP4Terminal">
+            <property name="minimumSize">
+             <size>
+              <width>105</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>105</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Terminal</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="rdoP4Telnet">
+            <property name="minimumSize">
+             <size>
+              <width>90</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Telnet</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="rdoP4Ssh">
+            <property name="minimumSize">
+             <size>
+              <width>90</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>SSH</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="SpacerP4_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnP4DefaultTerminal">
+            <property name="minimumSize">
+             <size>
+              <width>80</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>80</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Default</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="P4Layout10">
+          <item>
+           <widget class="QLabel" name="lblP4RouterAddr">
+            <property name="minimumSize">
+             <size>
+              <width>105</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>105</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Router Address</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="txtP4RouterAddr"/>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnP4DefaultRouterAddr">
+            <property name="minimumSize">
+             <size>
+              <width>80</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>80</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Default</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="P4Layout7">
+          <item>
+           <widget class="QLabel" name="lblP4Username">
+            <property name="minimumSize">
+             <size>
+              <width>105</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>105</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Username</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="txtP4Username"/>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnP4DefaultUsername">
+            <property name="minimumSize">
+             <size>
+              <width>80</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>80</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Default</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="P4Layout8">
+          <item>
+           <widget class="QLabel" name="lblP4Password">
+            <property name="minimumSize">
+             <size>
+              <width>105</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>105</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Password</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="txtP4Password"/>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnP4DefaultPassword">
+            <property name="minimumSize">
+             <size>
+              <width>80</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>80</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Default</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
          <layout class="QHBoxLayout" name="P4Layout5">
           <item>
            <widget class="QLabel" name="lblP4Progress">
             <property name="minimumSize">
              <size>
-              <width>103</width>
+              <width>105</width>
               <height>0</height>
              </size>
             </property>
@@ -2130,8 +2337,14 @@
           </item>
           <item>
            <widget class="QProgressBar" name="pgsP4">
+            <property name="maximum">
+             <number>500</number>
+            </property>
             <property name="value">
              <number>0</number>
+            </property>
+            <property name="textVisible">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -2142,7 +2355,7 @@
             </property>
             <property name="minimumSize">
              <size>
-              <width>78</width>
+              <width>80</width>
               <height>0</height>
              </size>
             </property>
@@ -2176,15 +2389,19 @@
          </spacer>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="P4Layout6">
-          <item>
-           <widget class="QTextEdit" name="txtP4Log">
-            <property name="readOnly">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         <widget class="QTextEdit" name="txtP4Log">
+          <property name="font">
+           <font>
+            <family>Monospace</family>
+           </font>
+          </property>
+          <property name="verticalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOn</enum>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -3017,7 +3234,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>945</width>
+     <width>860</width>
      <height>25</height>
     </rect>
    </property>
@@ -3094,6 +3311,12 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>ScenarioView</class>
+   <extends>QWidget</extends>
+   <header>widget/scenarioview.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>StackList</class>
    <extends>QWidget</extends>
    <header>widget/stacklist.h</header>
@@ -3103,12 +3326,6 @@
    <class>IpAddressWidget</class>
    <extends>QWidget</extends>
    <header>widget/ipaddresswidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>ScenarioView</class>
-   <extends>QWidget</extends>
-   <header>widget/scenarioview.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
