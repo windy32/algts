@@ -25,7 +25,7 @@
   <property name="windowTitle">
    <string>Save Test</string>
   </property>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -69,7 +69,11 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="txtScenario"/>
+       <widget class="QLineEdit" name="txtScenario">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
@@ -95,7 +99,11 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="txtScript"/>
+       <widget class="QLineEdit" name="txtScript">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
@@ -121,7 +129,11 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="txtTime"/>
+       <widget class="QLineEdit" name="txtTime">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
@@ -190,7 +202,11 @@
        </layout>
       </item>
       <item>
-       <widget class="QTextEdit" name="txtDetail"/>
+       <widget class="QTextEdit" name="txtDetail">
+        <property name="verticalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOn</enum>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>

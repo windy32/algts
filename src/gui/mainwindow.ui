@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>860</width>
+    <width>870</width>
     <height>460</height>
    </rect>
   </property>
@@ -2159,7 +2159,7 @@
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="btnP4DefaultTerminal">
+           <widget class="QPushButton" name="btnP4TerminalSettings">
             <property name="minimumSize">
              <size>
               <width>80</width>
@@ -2173,142 +2173,7 @@
              </size>
             </property>
             <property name="text">
-             <string>Default</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="P4Layout10">
-          <item>
-           <widget class="QLabel" name="lblP4RouterAddr">
-            <property name="minimumSize">
-             <size>
-              <width>105</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>105</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Router Address</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="txtP4RouterAddr"/>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btnP4DefaultRouterAddr">
-            <property name="minimumSize">
-             <size>
-              <width>80</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>80</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Default</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="P4Layout7">
-          <item>
-           <widget class="QLabel" name="lblP4Username">
-            <property name="minimumSize">
-             <size>
-              <width>105</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>105</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Username</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="txtP4Username"/>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btnP4DefaultUsername">
-            <property name="minimumSize">
-             <size>
-              <width>80</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>80</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Default</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="P4Layout8">
-          <item>
-           <widget class="QLabel" name="lblP4Password">
-            <property name="minimumSize">
-             <size>
-              <width>105</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>105</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Password</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="txtP4Password"/>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btnP4DefaultPassword">
-            <property name="minimumSize">
-             <size>
-              <width>80</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>80</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Default</string>
+             <string>...</string>
             </property>
            </widget>
           </item>
@@ -2420,44 +2285,10 @@
          <number>12</number>
         </property>
         <item>
-         <layout class="QHBoxLayout" name="P5Layout1">
-          <item>
-           <widget class="QLabel" name="lblP5Brief">
-            <property name="minimumSize">
-             <size>
-              <width>36</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>36</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <family>Sans Serif</family>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>Brief</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="Line" name="hlP5">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         <widget class="QComboBox" name="cmbP5Results"/>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="P5Layout2">
+         <layout class="QHBoxLayout" name="P5Layout2" stretch="0,0,1">
           <property name="spacing">
            <number>10</number>
           </property>
@@ -2467,6 +2298,9 @@
           <item>
            <layout class="QVBoxLayout" name="P5Layout21">
             <property name="spacing">
+             <number>4</number>
+            </property>
+            <property name="leftMargin">
              <number>4</number>
             </property>
             <item>
@@ -2497,18 +2331,21 @@
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="txtP5Platform_2">
+               <widget class="QLineEdit" name="txtP5Scenario">
                 <property name="minimumSize">
                  <size>
-                  <width>120</width>
+                  <width>240</width>
                   <height>0</height>
                  </size>
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>160</width>
+                  <width>240</width>
                   <height>16777215</height>
                  </size>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
@@ -2545,15 +2382,18 @@
                <widget class="QLineEdit" name="txtP5Script">
                 <property name="minimumSize">
                  <size>
-                  <width>160</width>
+                  <width>240</width>
                   <height>0</height>
                  </size>
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>160</width>
+                  <width>240</width>
                   <height>16777215</height>
                  </size>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
@@ -2590,15 +2430,18 @@
                <widget class="QLineEdit" name="txtP5Time">
                 <property name="minimumSize">
                  <size>
-                  <width>160</width>
+                  <width>240</width>
                   <height>0</height>
                  </size>
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>160</width>
+                  <width>240</width>
                   <height>16777215</height>
                  </size>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
@@ -2635,15 +2478,18 @@
                <widget class="QLineEdit" name="txtP5Platform">
                 <property name="minimumSize">
                  <size>
-                  <width>160</width>
+                  <width>240</width>
                   <height>0</height>
                  </size>
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>160</width>
+                  <width>240</width>
                   <height>16777215</height>
                  </size>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
@@ -2714,6 +2560,9 @@
             <property name="verticalScrollBarPolicy">
              <enum>Qt::ScrollBarAlwaysOn</enum>
             </property>
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
          </layout>
@@ -2737,12 +2586,17 @@
         <item>
          <widget class="QTabWidget" name="tabP5">
           <property name="currentIndex">
-           <number>3</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="tabP5Scenario">
            <attribute name="title">
             <string>Scenario</string>
            </attribute>
+            <layout class="QVBoxLayout" name="P51Layout">
+             <item>
+              <widget class="ScenarioView" name="P5ScenarioWidget" native="true"/>
+             </item>
+            </layout>
           </widget>
           <widget class="QWidget" name="tabP5Script">
            <attribute name="title">
@@ -2779,6 +2633,9 @@
                 </property>
                 <property name="text">
                  <string>Setup Script</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
@@ -3216,11 +3073,6 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="tabP5Traffic">
-           <attribute name="title">
-            <string>Traffic</string>
-           </attribute>
-          </widget>
          </widget>
         </item>
        </layout>
@@ -3234,7 +3086,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>860</width>
+     <width>870</width>
      <height>25</height>
     </rect>
    </property>

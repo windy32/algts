@@ -38,6 +38,14 @@ GlobalDatabase::GlobalDatabase()
             "    "
             "    Primary Key (UID)"
             ");");
+
+        query.exec(
+            "Create Table If Not Exists TestResult("
+            "    UID         Integer,"
+            "    Data        Blob,"
+            "    "
+            "    Primary Key (UID)"
+            ");");
     }
 }
 
@@ -129,8 +137,6 @@ void GlobalDatabase::addScenario(ScenarioEx &scenario)
 
 int GlobalDatabase::getScriptCount()
 {
-    // qDebug() << "Entering GlobalDatabase::getScriptCount";
-
     QSqlQuery query;
     query.exec("Select Count(*) From Script");
     query.next();
@@ -158,8 +164,6 @@ bool GlobalDatabase::existScript(const QString &name)
 
 void GlobalDatabase::getScript(int index, Script &script)
 {
-    // qDebug() << "Entering GlobalDatabase::getScript";
-
     QSqlQuery query(QString("Select Data From Script where UID = %1").arg(index + 1));
     if( query.next())
     {
@@ -189,14 +193,49 @@ void GlobalDatabase::setScript(int index, Script &script)
 
 void GlobalDatabase::addScript(Script &script)
 {
-    // qDebug() << "Entering GlobalDatabase::addScript";
-
     QByteArray data;
     QDataStream out(&data, QIODevice::WriteOnly);
     out << script;
 
     QSqlQuery query;
     query.prepare("Insert Into Script(Data) values (:data)");
+    query.bindValue(":data", data);
+    query.exec();
+}
+
+int GlobalDatabase::getTestResultCount()
+{
+    QSqlQuery query;
+    query.exec("Select Count(*) From TestResult");
+    query.next();
+    return query.value(0).toInt();
+}
+
+void GlobalDatabase::getTestResult(int index, TestResult &result)
+{
+    QSqlQuery query(QString("Select Data From TestResult where UID = %1").arg(index + 1));
+    if( query.next())
+    {
+        QByteArray data;
+        QDataStream in(&data, QIODevice::ReadOnly);
+
+        data = query.value(0).toByteArray();
+        in >> result;
+    }
+    else
+    {
+        qDebug() << QString("No test result with index %1 found").arg(index);
+    }
+}
+
+void GlobalDatabase::addTestResult(TestResult &result)
+{
+    QByteArray data;
+    QDataStream out(&data, QIODevice::WriteOnly);
+    out << result;
+
+    QSqlQuery query;
+    query.prepare("Insert Into TestResult(Data) values (:data)");
     query.bindValue(":data", data);
     query.exec();
 }

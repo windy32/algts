@@ -105,10 +105,7 @@ private slots:
     void btnP4Run();
     void btnP4DefaultServerAddr();
     void btnP4DefaultServerPort();
-
-    void btnP4DefaultRouterAddr();
-    void btnP4DefaultUsername();
-    void btnP4DefaultPassword();
+    void btnP4TerminalSettings();
 
     void p4NewLog(const QString &newLog);
     void p4UpdateProgress(int value);
@@ -117,6 +114,13 @@ private slots:
     void p4UpdateRunButtonState();
 
     static void logCallback(const char *content);
+
+    // Page 5: View Tests
+    void cmbP5ResultChanged(int index);
+    void p5RebuildResultList();
+
+    void rdoP52SetupScript();
+    void rdoP52ResetScript();
 
 private:
     Ui::MainWindow *ui;
@@ -150,6 +154,15 @@ private:
 
     // Page 4: Test
     Test m_p4test;
+    TestResult m_p4testResult;
+
+    QString m_p4routerAddr;
+    QString m_p4username;
+    QString m_p4password;
+
+    // Page 5: View tests
+    TestResult m_p5testResult;
+    int m_p5index;
 };
 
 #endif // MAINWINDOW_H

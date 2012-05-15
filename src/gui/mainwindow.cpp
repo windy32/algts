@@ -9,6 +9,9 @@
 #include "dialog/distributiondialog.h"
 #include "dialog/selectscriptdialog.h"
 #include "dialog/selectscenariodialog.h"
+#include "dialog/savetestdialog.h"
+#include "dialog/terminalsettingdialog.h"
+
 #include "globaldatabase.h"
 #include "testthread.h"
 #include "progressthread.h"
@@ -41,6 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->pageNewTest->setLayout(ui->newTestLayout);
     ui->pageViewTests->setLayout(ui->viewTestsLayout);
 
+    ui->tabP5Scenario->setLayout(ui->P51Layout);
     ui->tabP5Script->setLayout(ui->P52Layout);
     ui->tabP5Rating->setLayout(ui->P53Layout);
     ui->P53CustomUnary->setLayout(ui->P533Layout);
@@ -207,12 +211,8 @@ MainWindow::MainWindow(QWidget *parent) :
             this, SLOT(btnP4DefaultServerAddr()));
     connect(ui->btnP4DefaultServerPort, SIGNAL(clicked()),
             this, SLOT(btnP4DefaultServerPort()));
-    connect(ui->btnP4DefaultRouterAddr, SIGNAL(clicked()),
-            this, SLOT(btnP4DefaultRouterAddr()));
-    connect(ui->btnP4DefaultUsername, SIGNAL(clicked()),
-            this, SLOT(btnP4DefaultUsername()));
-    connect(ui->btnP4DefaultPassword, SIGNAL(clicked()),
-            this, SLOT(btnP4DefaultPassword()));
+    connect(ui->btnP4TerminalSettings, SIGNAL(clicked()),
+            this, SLOT(btnP4TerminalSettings()));
 
     connect(ui->txtP4Scenario, SIGNAL(textChanged(QString)),
             this, SLOT(p4UpdateRunButtonState()));
@@ -222,12 +222,22 @@ MainWindow::MainWindow(QWidget *parent) :
             this, SLOT(p4UpdateRunButtonState()));
     connect(ui->txtP4ServerPort, SIGNAL(textChanged(QString)),
             this, SLOT(p4UpdateRunButtonState()));
-    connect(ui->txtP4RouterAddr, SIGNAL(textChanged(QString)),
-            this, SLOT(p4UpdateRunButtonState()));
-    connect(ui->txtP4Username, SIGNAL(textChanged(QString)),
-            this, SLOT(p4UpdateRunButtonState()));
-    connect(ui->txtP4Password, SIGNAL(textChanged(QString)),
-            this, SLOT(p4UpdateRunButtonState()));
+
+    // Page 5: View Tests
+    m_p5index = 0;
+    p5RebuildResultList();
+
+    if( m_p5index != -1 )
+    {
+        cmbP5ResultChanged(m_p5index);
+    }
+
+    connect(ui->cmbP5Results, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(cmbP5ResultChanged(int)));
+    connect(ui->rdoP52SetupScript, SIGNAL(clicked()),
+            this, SLOT(rdoP52SetupScript()));
+    connect(ui->rdoP52ResetScript, SIGNAL(clicked()),
+            this, SLOT(rdoP52ResetScript()));
 }
 
 MainWindow::~MainWindow()
@@ -320,6 +330,8 @@ void MainWindow::updateStatistics()
         QString("Scenarios: %1").arg(GlobalDatabase::instance()->getScenarioCount()));
     ui->lblScripts->setText(
         QString("Scripts: %1").arg(GlobalDatabase::instance()->getScriptCount()));
+    ui->lblTests->setText(
+        QString("Tests: %1").arg(GlobalDatabase::instance()->getTestResultCount()));
 }
 
 // Page 2: Scenario ///////////////////////////////////////////////////////////
@@ -1441,11 +1453,11 @@ void MainWindow::btnP4Run()
         LOG_INFO("Executing Setup Script\n");
 
         Terminal *terminal = ui->rdoP4Telnet->isChecked() ?
-                    (Terminal *)new TelnetTerminal(ui->txtP4RouterAddr->text()) :
-                    (Terminal *)new SshTerminal(ui->txtP4RouterAddr->text());
+                    (Terminal *)new TelnetTerminal(m_p4routerAddr) :
+                    (Terminal *)new SshTerminal(m_p4routerAddr);
         terminal->start();
-        terminal->enter(ui->txtP4Username->text() + "\n");
-        terminal->enter(ui->txtP4Password->text() + "\n");
+        terminal->enter(m_p4username + "\n");
+        terminal->enter(m_p4password + "\n");
 
         QList<QString> list = m_p4test.script.setupText.split("\n");
         for(int i = 0; i < list.size(); i++)
@@ -1484,6 +1496,7 @@ void MainWindow::btnP4Run()
     ui->btnP4DefaultServerAddr->setEnabled(false);
     ui->btnP4DefaultServerPort->setEnabled(false);
     ui->btnP4Run->setEnabled(false);
+    ui->btnP4TerminalSettings->setEnabled(false);
 
     ui->txtP4Scenario->setEnabled(false);
     ui->txtP4Script->setEnabled(false);
@@ -1492,13 +1505,6 @@ void MainWindow::btnP4Run()
 
     ui->rdoP4Telnet->setEnabled(false);
     ui->rdoP4Ssh->setEnabled(false);
-    ui->txtP4Username->setEnabled(false);
-    ui->txtP4Password->setEnabled(false);
-    ui->txtP4RouterAddr->setEnabled(false);
-    ui->btnP4DefaultTerminal->setEnabled(false);
-    ui->btnP4DefaultRouterAddr->setEnabled(false);
-    ui->btnP4DefaultUsername->setEnabled(false);
-    ui->btnP4DefaultPassword->setEnabled(false);
 
     connect(testThread, SIGNAL(finished()), progressThread, SLOT(testFinished()));
     connect(testThread, SIGNAL(finished()), this, SLOT(p4TestFinished()));
@@ -1514,19 +1520,12 @@ void MainWindow::btnP4DefaultServerPort()
     ui->txtP4ServerPort->setText("3200");
 }
 
-void MainWindow::btnP4DefaultRouterAddr()
+void MainWindow::btnP4TerminalSettings()
 {
-    ui->txtP4RouterAddr->setText("172.16.0.1");
-}
+    TerminalSettingDialog dialog(m_p4routerAddr, m_p4username, m_p4password);
+    dialog.exec();
 
-void MainWindow::btnP4DefaultUsername()
-{
-    ui->txtP4Username->setText("root");
-}
-
-void MainWindow::btnP4DefaultPassword()
-{
-    ui->txtP4Password->setText("admin");
+    p4UpdateRunButtonState();
 }
 
 void MainWindow::p4NewLog(const QString &newLog)
@@ -1552,13 +1551,13 @@ void MainWindow::p4TestFinished()
         LOG_INFO("Executing Reset Script\n");
 
         Terminal *terminal = ui->rdoP4Telnet->isChecked() ?
-                    (Terminal *)new TelnetTerminal(ui->txtP4RouterAddr->text()) :
-                    (Terminal *)new SshTerminal(ui->txtP4RouterAddr->text());
+                    (Terminal *)new TelnetTerminal(m_p4routerAddr) :
+                    (Terminal *)new SshTerminal(m_p4routerAddr);
         if( ui->rdoP4Telnet->isChecked())
         {
             terminal->start();
-            terminal->enter(ui->txtP4Username->text() + "\n");
-            terminal->enter(ui->txtP4Password->text() + "\n");
+            terminal->enter(m_p4username + "\n");
+            terminal->enter(m_p4password + "\n");
 
             QList<QString> list = m_p4test.script.resetText.split("\n");
             for(int i = 0; i < list.size(); i++)
@@ -1571,11 +1570,33 @@ void MainWindow::p4TestFinished()
         delete terminal;
     }
 
+    // Save result
+    m_p4testResult.scenario = m_p4test.scenario;
+    m_p4testResult.script = m_p4test.script;
+    m_p4testResult.time = "";
+    m_p4testResult.platform = "";
+    m_p4testResult.detail = "";
+
+    SaveTestDialog dialog(m_p4testResult);
+    if( dialog.exec() == QDialog::Accepted )
+    {
+        GlobalDatabase::instance()->addTestResult(m_p4testResult);
+
+        QMessageBox msgBox;
+        msgBox.setIcon(QMessageBox::Information);
+        msgBox.setText(QString("Test result is successfully saved."));
+        msgBox.exec();
+
+        m_p5index = 0;
+        p5RebuildResultList();
+    }
+
     ui->btnP4Scenario->setEnabled(true);
     ui->btnP4Script->setEnabled(true);
     ui->btnP4DefaultServerAddr->setEnabled(true);
     ui->btnP4DefaultServerPort->setEnabled(true);
     ui->btnP4Run->setEnabled(true);
+    ui->btnP4TerminalSettings->setEnabled(true);
 
     ui->txtP4Scenario->setEnabled(true);
     ui->txtP4Script->setEnabled(true);
@@ -1584,13 +1605,6 @@ void MainWindow::p4TestFinished()
 
     ui->rdoP4Telnet->setEnabled(true);
     ui->rdoP4Ssh->setEnabled(true);
-    ui->txtP4Username->setEnabled(true);
-    ui->txtP4Password->setEnabled(true);
-    ui->txtP4RouterAddr->setEnabled(true);
-    ui->btnP4DefaultTerminal->setEnabled(true);
-    ui->btnP4DefaultRouterAddr->setEnabled(true);
-    ui->btnP4DefaultUsername->setEnabled(true);
-    ui->btnP4DefaultPassword->setEnabled(true);
 }
 
 void MainWindow::p4UpdateRunButtonState()
@@ -1599,9 +1613,9 @@ void MainWindow::p4UpdateRunButtonState()
         ui->txtP4Script->text() != "" &&
         ui->txtP4ServerAddress->text() != "" &&
         ui->txtP4ServerPort->text() != "" &&
-        ui->txtP4RouterAddr->text() != "" &&
-        ui->txtP4Username->text() != "" &&
-        ui->txtP4Password->text() != "" )
+        m_p4routerAddr != "" &&
+        m_p4username != "" &&
+        m_p4password != "" )
     {
         ui->btnP4Run->setEnabled(true);
     }
@@ -1615,4 +1629,60 @@ void MainWindow::logCallback(const char *content)
 {
     QString originalText = uis->txtP4Log->toPlainText();
     uis->txtP4Log->setPlainText(originalText + QString::fromAscii(content));
+}
+
+void MainWindow::cmbP5ResultChanged(int index)
+{
+    // Load result from database
+    m_p5index = index;
+    GlobalDatabase::instance()->getTestResult(index, m_p5testResult);
+
+    ui->txtP5Scenario->setText(m_p5testResult.scenario.name());
+    ui->txtP5Script->setText(m_p5testResult.script.name);
+    ui->txtP5Time->setText(m_p5testResult.time);
+    ui->txtP5Platform->setText(m_p5testResult.platform);
+    ui->txtP5Detail->setPlainText(m_p5testResult.detail);
+
+    // Update page 5.1: scenario
+    ui->P5ScenarioWidget->setScenario(&m_p5testResult.scenario);
+    ui->P5ScenarioWidget->update();
+
+    // Update page 5.2: script
+    ui->txtP52Script->setPlainText(ui->rdoP52SetupScript->isChecked() ?
+                                       m_p5testResult.script.setupText :
+                                       m_p5testResult.script.resetText);
+}
+
+void MainWindow::p5RebuildResultList()
+{
+    int count = GlobalDatabase::instance()->getTestResultCount();
+    TestResult result;
+
+    // Clear the combo box
+    ui->cmbP5Results->clear();
+
+    if( count == 0 )
+    {
+        m_p5index = -1; // nothing selected
+    }
+
+    // Insert items
+    for(int i = 0; i < count; i++)
+    {
+        GlobalDatabase::instance()->getTestResult(i, result);
+        ui->cmbP5Results->addItem(QString("%1").arg(i) + " - " +
+                    result.scenario.name() + " / " +
+                    result.script.name + " / " +
+                    result.time);
+    }
+}
+
+void MainWindow::rdoP52SetupScript()
+{
+    ui->txtP52Script->setPlainText(m_p5testResult.script.setupText);
+}
+
+void MainWindow::rdoP52ResetScript()
+{
+    ui->txtP52Script->setPlainText(m_p5testResult.script.resetText);
 }

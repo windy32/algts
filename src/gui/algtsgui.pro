@@ -17,7 +17,8 @@ SOURCES += mainwindow.cpp main.cpp \
     widget/scenarioview.cpp \
     test.cpp \
     testthread.cpp \
-    progressthread.cpp
+    progressthread.cpp \
+    dialog/terminalsettingdialog.cpp
 SOURCES += linegraph.cpp globaldatabase.cpp script.cpp
 
 SOURCES +=
@@ -41,7 +42,8 @@ HEADERS += mainwindow.h \
     widget/scenarioview.h \
     test.h \
     testthread.h \
-    progressthread.h
+    progressthread.h \
+    dialog/terminalsettingdialog.h
 HEADERS += linegraph.h globaldatabase.h script.h
 
 HEADERS +=
@@ -60,7 +62,8 @@ HEADERS += dialog/selectscriptdialog.h
 HEADERS += dialog/savetestdialog.h
 HEADERS += dialog/ratingmethoddialog.h
 
-FORMS += mainwindow.ui
+FORMS += mainwindow.ui \
+    dialog/terminalsettingdialog.ui
 
 FORMS += dialog/ipaddrdialog.ui
 FORMS += dialog/emulatordialog.ui

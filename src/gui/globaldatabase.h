@@ -4,6 +4,7 @@
 #include <QtSql>
 #include "script.h"
 #include "scenarioex.h"
+#include "test.h"
 
 class GlobalDatabase
 {
@@ -30,6 +31,10 @@ public:
     void getScript(int index, Script &script); // index starts with 0
     void setScript(int index, Script &script);
     void addScript(Script &script);
+
+    int getTestResultCount();
+    void getTestResult(int index, TestResult &result);
+    void addTestResult(TestResult &result);
 };
 
 #endif // GLOBALDATABASE_H
