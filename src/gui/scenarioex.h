@@ -2,11 +2,13 @@
 #define SCENARIOEX_H
 
 #include "../core/scenario.h"
+#include "../core/trace.h"
 
 class ScenarioEx : public Scenario
 {
-protected:  // One more member for gui application
+protected:
     QString m_name; // name of the scenario
+    QMap<QString, QVector<RegularTraceItem> > m_traces;
 
 public:
     ScenarioEx(qint32 seed = 12345, qint32 length = 60);
@@ -30,6 +32,8 @@ public: // interface for gui
 
     QString user(int index);
     Task *task(const QString &username, int index);
+
+    QMap<QString, QVector<RegularTraceItem> >& getTraces() { return m_traces; }
 
 public:
     friend QDataStream &operator<<(QDataStream &out, const ScenarioEx &scenario);

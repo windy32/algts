@@ -1570,6 +1570,8 @@ void MainWindow::p4TestFinished()
         delete terminal;
     }
 
+    Log::enableRedirect(NULL);
+
     // Save result
     m_p4testResult.scenario = m_p4test.scenario;
     m_p4testResult.script = m_p4test.script;
@@ -1589,6 +1591,7 @@ void MainWindow::p4TestFinished()
 
         m_p5index = 0;
         p5RebuildResultList();
+        cmbP5ResultChanged(m_p5index);
     }
 
     ui->btnP4Scenario->setEnabled(true);
@@ -1637,6 +1640,32 @@ void MainWindow::cmbP5ResultChanged(int index)
     m_p5index = index;
     GlobalDatabase::instance()->getTestResult(index, m_p5testResult);
 
+    // Debug
+#if 0
+    QMap<QString, QVector<RegularTraceItem> > &traces =
+            m_p5testResult.scenario.getTraces();
+    QMap<QString, QVector<RegularTraceItem> >::iterator it;
+
+    for(it = traces.begin(); it != traces.end(); ++it) // user
+    {
+        QString username = it.key();
+        for(int i = 0; i < traces[username].size(); i++) // task
+        {
+            qDebug() << "User " << username << " Task " << i;
+            RegularTraceItem &item = traces[username][i];
+
+            for(RegularTraceItem::iterator it = item.begin(); it != item.end(); ++it) // property
+            {
+                QString property = it.key();
+                qDebug() << "Property " << property;
+                for(int j = 0; j < item[property].size(); j++)
+                {
+                    qDebug() << item[property][j];
+                }
+            }
+        }
+    }
+#endif
     ui->txtP5Scenario->setText(m_p5testResult.scenario.name());
     ui->txtP5Script->setText(m_p5testResult.script.name);
     ui->txtP5Time->setText(m_p5testResult.time);
@@ -1655,6 +1684,9 @@ void MainWindow::cmbP5ResultChanged(int index)
 
 void MainWindow::p5RebuildResultList()
 {
+    disconnect(ui->cmbP5Results, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(cmbP5ResultChanged(int)));
+
     int count = GlobalDatabase::instance()->getTestResultCount();
     TestResult result;
 
@@ -1675,6 +1707,8 @@ void MainWindow::p5RebuildResultList()
                     result.script.name + " / " +
                     result.time);
     }
+    connect(ui->cmbP5Results, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(cmbP5ResultChanged(int)));
 }
 
 void MainWindow::rdoP52SetupScript()

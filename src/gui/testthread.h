@@ -14,7 +14,7 @@ private:
     QList<QHostAddress> m_localAddrs;
     QHostAddress m_serverAddr;
     quint16 m_serverPort;
-    Scenario *m_scenario;
+    ScenarioEx *m_scenario;
 
     static TestThread *m_instance;
 
@@ -25,7 +25,7 @@ public:
     explicit TestThread(QList<QHostAddress> localAddrs,
                         QHostAddress serverAddr,
                         quint16 serverPort,
-                        Scenario *scenario,
+                        ScenarioEx *scenario,
                         QObject *parent = 0);
 
     static void logCallback(const char *content);

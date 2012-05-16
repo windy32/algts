@@ -1,5 +1,6 @@
 #include "testthread.h"
 #include "../core/core.h"
+#include "gui-application.h"
 
 #include <QDebug>
 
@@ -8,7 +9,7 @@ TestThread *TestThread::m_instance = 0;
 TestThread::TestThread(QList<QHostAddress> localAddrs,
                        QHostAddress serverAddr,
                        quint16 serverPort,
-                       Scenario *scenario,
+                       ScenarioEx *scenario,
                        QObject *parent)
     : QThread(parent),
       m_localAddrs(localAddrs),
@@ -21,7 +22,7 @@ TestThread::TestThread(QList<QHostAddress> localAddrs,
 
 void TestThread::run()
 {
-    CoreApplication app(m_localAddrs, m_serverAddr, m_serverPort);
+    GuiApplication app(m_localAddrs, m_serverAddr, m_serverPort);
     app.exec(m_scenario);
 }
 

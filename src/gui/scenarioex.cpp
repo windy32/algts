@@ -112,11 +112,13 @@ Task *ScenarioEx::task(const QString &username, int index)
 QDataStream &operator<<(QDataStream &out, const ScenarioEx &scenario)
 {
     out << scenario.m_name << scenario.m_seed << scenario.m_length << scenario.m_tasks;
+    out << scenario.m_traces;
     return out;
 }
 
 QDataStream &operator>>(QDataStream &in, ScenarioEx &scenario)
 {
     in >> scenario.m_name >> scenario.m_seed >> scenario.m_length >> scenario.m_tasks;
+    in >> scenario.m_traces;
     return in;
 }

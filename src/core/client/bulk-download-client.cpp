@@ -15,6 +15,8 @@
 
 #include "bulk-download-client.h"
 
+#include <QDebug>
+
 BulkDownloadClient::BulkDownloadClient(const QString &localAddr, 
                                        const QString &serverAddr, 
                                        BulkDownloadTask *task)
@@ -124,7 +126,7 @@ void BulkDownloadClient::generateRegularTrace(RegularTraceItem &trace,
     int startTime = m_trace.time.first(); // ms
     int stopTime = m_trace.time.last(); // ms
     QVector<double> busyRatios(seconds, 0.0);
-    
+
     for(int i = startTime / 1000; i <= stopTime / 1000; i++)
     {
         if( startTime / 1000 == stopTime / 1000 )
