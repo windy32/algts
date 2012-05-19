@@ -1,0 +1,49 @@
+#ifndef RATING_H
+#define RATING_H
+
+#include "../core/core.h"
+
+struct TaskScore
+{
+    double overall;
+    QVector<bool> valid;
+    QVector<double> score;
+};
+
+struct Score
+{
+    double overall;
+    QMap<QString, double> user;
+    QMap<QString, QVector<TaskScore> > task;
+};
+
+class Rating
+{
+protected:
+    QMap<QString, QVector<RegularTraceItem> > &m_trace;
+
+public:
+    Rating(QMap<QString, QVector<RegularTraceItem> > &trace);
+
+    void calc(Score &score);
+};
+
+class UnaryFunctionModel
+{
+private:
+    int m_minX;
+    int m_maxX;
+
+    QVector<int> m_xValues;
+    QVector<double> m_scores;
+
+public:
+    UnaryFunctionModel(int minX, int maxX);
+
+    void clearPoints();
+    void addPoint(int xValue, int score);
+
+    double calc(int x);
+};
+
+#endif // RATING_H

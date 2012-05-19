@@ -13,7 +13,9 @@ CONFIG(debug,   debug|release): TARGET = ../../bin/algtsgui-debug
 CONFIG(release, debug|release): TARGET = ../../bin/algtsgui
 
 SOURCES += mainwindow.cpp main.cpp \
-    gui-application.cpp
+    gui-application.cpp \
+    rating.cpp \
+    widget/ratingwidget.cpp
 SOURCES += scenarioex.cpp test.cpp testthread.cpp progressthread.cpp
 SOURCES += linegraph.cpp globaldatabase.cpp script.cpp
 
@@ -35,7 +37,9 @@ SOURCES += dialog/ratingmethoddialog.cpp
 SOURCES += dialog/terminalsettingdialog.cpp
 
 HEADERS += mainwindow.h \
-    gui-application.h
+    gui-application.h \
+    rating.h \
+    widget/ratingwidget.h
 HEADERS += scenarioex.h test.h testthread.h progressthread.h
 HEADERS += linegraph.h globaldatabase.h script.h
 

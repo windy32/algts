@@ -47,8 +47,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tabP5Scenario->setLayout(ui->P51Layout);
     ui->tabP5Script->setLayout(ui->P52Layout);
     ui->tabP5Rating->setLayout(ui->P53Layout);
-    ui->P53CustomUnary->setLayout(ui->P533Layout);
-    ui->P53CustomBinary->setLayout(ui->P534Layout);
 
     // Menus
     connect(ui->stakcList, SIGNAL(OnPageChanged(int)),
@@ -238,6 +236,46 @@ MainWindow::MainWindow(QWidget *parent) :
             this, SLOT(rdoP52SetupScript()));
     connect(ui->rdoP52ResetScript, SIGNAL(clicked()),
             this, SLOT(rdoP52ResetScript()));
+
+    // Debugging code
+    RegularTraceItem trace;
+    //trace.insert("RxRate", QList<qint32>());
+    //trace.insert("MaxRxRate", QList<qint32>());
+    trace.insert("Delay", QList<qint32>());
+    trace.insert("Active", QList<qint32>());
+    trace.insert("Lost", QList<qint32>());
+#if 0
+    trace["RxRate"].append(320000); // byte/s
+    trace["RxRate"].append(330000);
+    trace["RxRate"].append(210000);
+    trace["RxRate"].append(340000);
+    trace["RxRate"].append(385000);
+
+    trace["MaxRxRate"].append(470000);
+    trace["MaxRxRate"].append(512000);
+    trace["MaxRxRate"].append(512000);
+    trace["MaxRxRate"].append(512000);
+    trace["MaxRxRate"].append(512000);
+#endif
+    trace["Delay"].append(67);
+    trace["Delay"].append(83);
+    trace["Delay"].append(173);
+    trace["Delay"].append(100);
+    trace["Delay"].append(83);
+
+    trace["Lost"].append(7);
+    trace["Lost"].append(4);
+    trace["Lost"].append(9);
+    trace["Lost"].append(7);
+    trace["Lost"].append(5);
+
+    trace["Active"].append(1);
+    trace["Active"].append(1);
+    trace["Active"].append(1);
+    trace["Active"].append(1);
+    trace["Active"].append(1);
+
+    ui->ratingWidget->setTrace(trace);
 }
 
 MainWindow::~MainWindow()

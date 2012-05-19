@@ -36,10 +36,23 @@ private:
 public:
     LineGraph(QPainter *painter, int width, int height,
               int minX, int maxX, double minY, double maxY);
+    LineGraph(QPainter *painter, int width, int height,
+              int leftMargin, int rightMargin,
+              int minX, int maxX, double minY, double maxY);
 
     void addBorder();
+
     void addXScale(int flags, int xValue);
+    void addXScaleAsTime(int flags, int seconds);
+
     void addYScale(int flags, double yValue, int precision = 2);
+    void addYScale(int flags, double yValue, const QString &unit, int precision = 2);
+    void addYScaleText(int flags, double position, int xOffset, int yOffset,
+                       const QString &text, QColor color = Qt::black);
+
     void addLine(double x1, double x2, double y1, double y2);
+    void addLine(double x1, double x2, double y1, double y2, QColor color);
+
+    void addLegend(const QList<QString> &names, const QList<QColor> &colors);
 };
 

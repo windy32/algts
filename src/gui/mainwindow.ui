@@ -43,7 +43,7 @@
     <item>
      <widget class="QStackedWidget" name="pages">
       <property name="currentIndex">
-       <number>0</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="pageWelcome">
        <layout class="QVBoxLayout" name="welcomeLayout" stretch="0,0,1,0,0,0,0,0,0,0,0">
@@ -2586,17 +2586,17 @@
         <item>
          <widget class="QTabWidget" name="tabP5">
           <property name="currentIndex">
-           <number>0</number>
+           <number>2</number>
           </property>
           <widget class="QWidget" name="tabP5Scenario">
            <attribute name="title">
             <string>Scenario</string>
            </attribute>
-            <layout class="QVBoxLayout" name="P51Layout">
-             <item>
-              <widget class="ScenarioView" name="P5ScenarioWidget" native="true"/>
-             </item>
-            </layout>
+           <layout class="QVBoxLayout" name="P51Layout">
+            <item>
+             <widget class="ScenarioView" name="P5ScenarioWidget" native="true"/>
+            </item>
+           </layout>
           </widget>
           <widget class="QWidget" name="tabP5Script">
            <attribute name="title">
@@ -2772,49 +2772,12 @@
                <number>0</number>
               </property>
               <item>
-               <layout class="QHBoxLayout" name="P53Layout21">
-                <item>
-                 <widget class="QLabel" name="lblP53Detail">
-                  <property name="minimumSize">
-                   <size>
-                    <width>48</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>48</width>
-                    <height>16777215</height>
-                   </size>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <family>Sans Serif</family>
-                    <weight>75</weight>
-                    <bold>true</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>Detail</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="Line" name="hlP53">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="P53Layout22" stretch="1,0">
+               <layout class="QHBoxLayout" name="P53Layout22" stretch="0">
                 <property name="spacing">
                  <number>8</number>
                 </property>
                 <item>
-                 <widget class="QWidget" name="ratingWidget" native="true">
+                 <widget class="RatingWidget" name="ratingWidget" native="true">
                   <property name="minimumSize">
                    <size>
                     <width>100</width>
@@ -2822,250 +2785,6 @@
                    </size>
                   </property>
                  </widget>
-                </item>
-                <item>
-                 <layout class="QVBoxLayout" name="P53Layout221">
-                  <item>
-                   <layout class="QHBoxLayout" name="P53Layout2211">
-                    <item>
-                     <widget class="QLabel" name="lblP53RatingMethod">
-                      <property name="minimumSize">
-                       <size>
-                        <width>100</width>
-                        <height>0</height>
-                       </size>
-                      </property>
-                      <property name="maximumSize">
-                       <size>
-                        <width>100</width>
-                        <height>16777215</height>
-                       </size>
-                      </property>
-                      <property name="text">
-                       <string>Rating Method</string>
-                      </property>
-                      <property name="alignment">
-                       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QComboBox" name="cmbP53RatingMethod">
-                      <property name="minimumSize">
-                       <size>
-                        <width>90</width>
-                        <height>0</height>
-                       </size>
-                      </property>
-                      <property name="maximumSize">
-                       <size>
-                        <width>90</width>
-                        <height>16777215</height>
-                       </size>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QPushButton" name="btnP53RatingMethod">
-                      <property name="minimumSize">
-                       <size>
-                        <width>50</width>
-                        <height>0</height>
-                       </size>
-                      </property>
-                      <property name="maximumSize">
-                       <size>
-                        <width>50</width>
-                        <height>16777215</height>
-                       </size>
-                      </property>
-                      <property name="text">
-                       <string>...</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <widget class="QStackedWidget" name="ratingProperties">
-                    <property name="currentIndex">
-                     <number>2</number>
-                    </property>
-                    <widget class="QWidget" name="P53GlobalTx"/>
-                    <widget class="QWidget" name="P53GlobalRx"/>
-                    <widget class="QWidget" name="P53CustomUnary">
-                     <layout class="QVBoxLayout" name="P533Layout">
-                      <item>
-                       <layout class="QHBoxLayout" name="P533Layout1">
-                        <item>
-                         <widget class="QLabel" name="lblP533XAxis">
-                          <property name="minimumSize">
-                           <size>
-                            <width>100</width>
-                            <height>0</height>
-                           </size>
-                          </property>
-                          <property name="maximumSize">
-                           <size>
-                            <width>100</width>
-                            <height>16777215</height>
-                           </size>
-                          </property>
-                          <property name="text">
-                           <string>X Axis</string>
-                          </property>
-                          <property name="alignment">
-                           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QComboBox" name="cmbP533XAxis">
-                          <property name="minimumSize">
-                           <size>
-                            <width>146</width>
-                            <height>0</height>
-                           </size>
-                          </property>
-                          <property name="maximumSize">
-                           <size>
-                            <width>146</width>
-                            <height>16777215</height>
-                           </size>
-                          </property>
-                         </widget>
-                        </item>
-                       </layout>
-                      </item>
-                      <item>
-                       <spacer name="P533Spacer">
-                        <property name="orientation">
-                         <enum>Qt::Vertical</enum>
-                        </property>
-                        <property name="sizeHint" stdset="0">
-                         <size>
-                          <width>20</width>
-                          <height>40</height>
-                         </size>
-                        </property>
-                       </spacer>
-                      </item>
-                     </layout>
-                    </widget>
-                    <widget class="QWidget" name="P53CustomBinary">
-                     <widget class="QWidget" name="layoutWidget">
-                      <property name="geometry">
-                       <rect>
-                        <x>0</x>
-                        <y>0</y>
-                        <width>256</width>
-                        <height>91</height>
-                       </rect>
-                      </property>
-                      <layout class="QVBoxLayout" name="P534Layout">
-                       <item>
-                        <layout class="QHBoxLayout" name="P534Layout1">
-                         <item>
-                          <widget class="QLabel" name="lblP534XAxis">
-                           <property name="minimumSize">
-                            <size>
-                             <width>100</width>
-                             <height>0</height>
-                            </size>
-                           </property>
-                           <property name="maximumSize">
-                            <size>
-                             <width>100</width>
-                             <height>16777215</height>
-                            </size>
-                           </property>
-                           <property name="text">
-                            <string>X Axis</string>
-                           </property>
-                           <property name="alignment">
-                            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QComboBox" name="cboP534XAxis">
-                           <property name="minimumSize">
-                            <size>
-                             <width>146</width>
-                             <height>0</height>
-                            </size>
-                           </property>
-                           <property name="maximumSize">
-                            <size>
-                             <width>146</width>
-                             <height>16777215</height>
-                            </size>
-                           </property>
-                          </widget>
-                         </item>
-                        </layout>
-                       </item>
-                       <item>
-                        <layout class="QHBoxLayout" name="P534Layout2">
-                         <item>
-                          <widget class="QLabel" name="lblP534YAxis">
-                           <property name="minimumSize">
-                            <size>
-                             <width>100</width>
-                             <height>0</height>
-                            </size>
-                           </property>
-                           <property name="maximumSize">
-                            <size>
-                             <width>100</width>
-                             <height>16777215</height>
-                            </size>
-                           </property>
-                           <property name="text">
-                            <string>Y Axis</string>
-                           </property>
-                           <property name="alignment">
-                            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QComboBox" name="cboP534YAxis">
-                           <property name="minimumSize">
-                            <size>
-                             <width>146</width>
-                             <height>0</height>
-                            </size>
-                           </property>
-                           <property name="maximumSize">
-                            <size>
-                             <width>146</width>
-                             <height>16777215</height>
-                            </size>
-                           </property>
-                          </widget>
-                         </item>
-                        </layout>
-                       </item>
-                       <item>
-                        <spacer name="P534Spacer">
-                         <property name="orientation">
-                          <enum>Qt::Vertical</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>20</width>
-                           <height>28</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                      </layout>
-                     </widget>
-                    </widget>
-                   </widget>
-                  </item>
-                 </layout>
                 </item>
                </layout>
               </item>
@@ -3178,6 +2897,12 @@
    <class>IpAddressWidget</class>
    <extends>QWidget</extends>
    <header>widget/ipaddresswidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>RatingWidget</class>
+   <extends>QWidget</extends>
+   <header>widget/ratingwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
