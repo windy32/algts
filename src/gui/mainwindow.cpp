@@ -222,6 +222,18 @@ MainWindow::MainWindow(QWidget *parent) :
             this, SLOT(p4UpdateRunButtonState()));
 
     // Page 5: View Tests
+    m_p5scoreModel = new QStandardItemModel;
+
+    m_p5scoreModel->setColumnCount(3);
+    m_p5scoreModel->setHeaderData(0, Qt::Horizontal, QString("Index"));
+    m_p5scoreModel->setHeaderData(1, Qt::Horizontal, QString("Type"));
+    m_p5scoreModel->setHeaderData(2, Qt::Horizontal, QString("Score"));
+
+    ui->lstP53Tasks->setModel(m_p5scoreModel);
+    ui->lstP53Tasks->setColumnWidth(0, 54);
+    ui->lstP53Tasks->setColumnWidth(1, 144);
+    ui->lstP53Tasks->setColumnWidth(2, 56);
+
     m_p5index = 0;
     p5RebuildResultList();
 
@@ -236,14 +248,20 @@ MainWindow::MainWindow(QWidget *parent) :
             this, SLOT(rdoP52SetupScript()));
     connect(ui->rdoP52ResetScript, SIGNAL(clicked()),
             this, SLOT(rdoP52ResetScript()));
+    connect(ui->cmbP53User, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(cmbP53UserChanged(int)));
+    connect(ui->lstP53Tasks, SIGNAL(activated(QModelIndex)),
+            this, SLOT(lstP53TaskSelected(QModelIndex)));
 
     // Debugging code
+#if 0
     RegularTraceItem trace;
     //trace.insert("RxRate", QList<qint32>());
     //trace.insert("MaxRxRate", QList<qint32>());
     trace.insert("Delay", QList<qint32>());
     trace.insert("Active", QList<qint32>());
     trace.insert("Lost", QList<qint32>());
+#endif
 #if 0
     trace["RxRate"].append(320000); // byte/s
     trace["RxRate"].append(330000);
@@ -257,6 +275,7 @@ MainWindow::MainWindow(QWidget *parent) :
     trace["MaxRxRate"].append(512000);
     trace["MaxRxRate"].append(512000);
 #endif
+#if 0
     trace["Delay"].append(67);
     trace["Delay"].append(83);
     trace["Delay"].append(173);
@@ -276,6 +295,7 @@ MainWindow::MainWindow(QWidget *parent) :
     trace["Active"].append(1);
 
     ui->ratingWidget->setTrace(trace);
+#endif
 }
 
 MainWindow::~MainWindow()
@@ -1710,6 +1730,8 @@ void MainWindow::cmbP5ResultChanged(int index)
     ui->txtP5Platform->setText(m_p5testResult.platform);
     ui->txtP5Detail->setPlainText(m_p5testResult.detail);
 
+    p53RebuildUserList();
+
     // Update page 5.1: scenario
     ui->P5ScenarioWidget->setScenario(&m_p5testResult.scenario);
     ui->P5ScenarioWidget->update();
@@ -1747,6 +1769,69 @@ void MainWindow::p5RebuildResultList()
     }
     connect(ui->cmbP5Results, SIGNAL(currentIndexChanged(int)),
             this, SLOT(cmbP5ResultChanged(int)));
+}
+
+void MainWindow::p53RebuildUserList()
+{
+    //disconnect(ui->cmbP53User, SIGNAL(currentIndexChanged(int)),
+    //          this, SLOT(cmbP53UserChanged(int)));
+
+    ui->cmbP53User->clear();
+
+    int count = m_p5testResult.scenario.userCount();
+    for(int i = 0; i < count; i++)
+    {
+        ui->cmbP53User->addItem(m_p5testResult.scenario.user(i));
+    }
+
+    cmbP53UserChanged(0);
+    //connect(ui->cmbP53User, SIGNAL(currentIndexChanged(int)),
+    //        this, SLOT(cmbP53UserChanged(int)));
+}
+
+void MainWindow::cmbP53UserChanged(int index)
+{
+    QString username = m_p5testResult.scenario.user(index);
+    int count = m_p5testResult.scenario.taskCount(username);
+
+    // Update models
+    if( m_p5scoreModel->rowCount() > 0 )
+    {
+        m_p5scoreModel->removeRows(0, m_p5scoreModel->rowCount());
+    }
+
+    for(int i = 0; i < count; i++)
+    {
+        Task *task = m_p5testResult.scenario.task(username, i);
+
+        QStandardItem *indexItem = new QStandardItem(QString("%1").arg(i + 1));
+        QStandardItem *typeItem = new QStandardItem(task->getName());
+        QStandardItem *scoreItem = new QStandardItem("0.00");
+
+        indexItem->setTextAlignment(Qt::AlignCenter);
+        typeItem->setTextAlignment(Qt::AlignCenter);
+        scoreItem->setTextAlignment(Qt::AlignCenter);
+
+        m_p5scoreModel->setItem(i, 0, indexItem);
+        m_p5scoreModel->setItem(i, 1, typeItem);
+        m_p5scoreModel->setItem(i, 2, scoreItem);
+    }
+
+    //ui->lstP3Params->setModel(ui->rdoP3SetupScript->isChecked() ?
+    //                              m_setupModel : m_resetModel);
+}
+
+void MainWindow::lstP53TaskSelected(QModelIndex index)
+{
+    QString username = ui->cmbP53User->currentText();
+    int row = index.row();
+    RegularTraceItem item = m_p5testResult.scenario.getTraces()[username][row];
+
+    qDebug() << username << row;
+    qDebug() << item;
+
+    ui->ratingWidget->setTrace(item);
+    ui->ratingWidget->update();
 }
 
 void MainWindow::rdoP52SetupScript()

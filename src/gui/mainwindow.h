@@ -118,6 +118,10 @@ private slots:
     // Page 5: View Tests
     void cmbP5ResultChanged(int index);
     void p5RebuildResultList();
+    void p53RebuildUserList();
+
+    void cmbP53UserChanged(int index);
+    void lstP53TaskSelected(QModelIndex index);
 
     void rdoP52SetupScript();
     void rdoP52ResetScript();
@@ -163,6 +167,8 @@ private:
     // Page 5: View tests
     TestResult m_p5testResult;
     int m_p5index;
+
+    QStandardItemModel *m_p5scoreModel;
 };
 
 #endif // MAINWINDOW_H

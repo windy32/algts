@@ -2701,32 +2701,44 @@
                <widget class="QComboBox" name="cmbP53User">
                 <property name="minimumSize">
                  <size>
-                  <width>200</width>
+                  <width>256</width>
                   <height>0</height>
                  </size>
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>200</width>
+                  <width>256</width>
                   <height>16777215</height>
                  </size>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QListView" name="lstP53Tasks">
+               <widget class="QTableView" name="lstP53Tasks">
                 <property name="minimumSize">
                  <size>
-                  <width>200</width>
+                  <width>256</width>
                   <height>0</height>
                  </size>
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>200</width>
+                  <width>256</width>
                   <height>16777215</height>
                  </size>
                 </property>
+                <property name="editTriggers">
+                 <set>QAbstractItemView::NoEditTriggers</set>
+                </property>
+                <property name="selectionMode">
+                 <enum>QAbstractItemView::SingleSelection</enum>
+                </property>
+                <property name="selectionBehavior">
+                 <enum>QAbstractItemView::SelectRows</enum>
+                </property>
+                <attribute name="verticalHeaderVisible">
+                 <bool>false</bool>
+                </attribute>
                </widget>
               </item>
               <item>
