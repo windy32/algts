@@ -18,17 +18,32 @@
 
 void QTcpServerEx::incomingConnection(int socketDescriptor)
 {
+    // Insert the socket descriptor
+    m_mutex.lock();
     m_pendingDescriptors.enqueue(socketDescriptor);
-    emit newConnection();
+    m_mutex.unlock();
 }
 
 int QTcpServerEx::nextPendingDescriptor()
 {
+    int result = 0;
+    
+    m_mutex.lock();
     if( m_pendingDescriptors.isEmpty())
     {
         LOG_ERROR("QTcpServerEx: No pending socket descriptor available");
-        return 0;
     }
-    return m_pendingDescriptors.dequeue();
+    else
+    {
+        result = m_pendingDescriptors.dequeue();
+    }
+    m_mutex.unlock();
+    
+    return result;
+}
+
+bool QTcpServerEx::hasPendingDescriptor()
+{
+    return !m_pendingDescriptors.isEmpty();
 }
 

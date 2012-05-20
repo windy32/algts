@@ -18,6 +18,7 @@
 
 #include <QTcpServer>
 #include <QQueue>
+#include <QMutex>
 
 /**
  * \ingroup Constructs
@@ -30,6 +31,9 @@
 
 class QTcpServerEx : public QTcpServer
 {
+private:
+    QMutex m_mutex;
+
 protected:
     /**
      * \brief The list of pending connections as socket descriptors
@@ -47,6 +51,12 @@ public:
      * \brief Returns the next pending connection as a socket descriptor
      */
     int nextPendingDescriptor();
+
+    /**
+     * \brief Returns true if there is a pending socket descriptor, and false
+     *        otherwise
+     */
+    bool hasPendingDescriptor();
 };
 
 #endif /* Q_TCP_SERVER_EX_H */

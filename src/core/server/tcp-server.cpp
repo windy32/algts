@@ -48,7 +48,10 @@ void TcpServer::run()
     while( true )
     {
         // Wait for a new connection
-        server.waitForNewConnection(-1);
+        if( !server.hasPendingDescriptor())
+        {
+            server.waitForNewConnection(-1);
+        }
         int socketDescriptor = server.nextPendingDescriptor();
         
         // Start a new thread for the session
