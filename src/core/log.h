@@ -68,6 +68,14 @@ public:
         // LOG_PREFIX_FUNC    = 0x80000000, 
         // prefix all trace prints with simulation time
         // LOG_PREFIX_TIME    = 0x40000000, 
+        /** Hide log level */
+        LOG_PREFIX_NOLEVEL   = 0x80000000,
+        
+        /** Drop the newline character */
+        LOG_PREFIX_NONEWLINE = 0x40000000, 
+        
+        /** Hide log level and drop the newline character */
+        LOG_PREFIX_TERMINAL  = 0xC0000000
     };
 
 private:
@@ -137,6 +145,12 @@ public:
  *  Add a line in the log at DEBUG level
  */
 #define LOG_DEBUG(args...) Log::addLine(Log::LOG_DEBUG, ##args)
+
+/**
+ * \def LOG_TERMINAL(args..)
+ *  Add a line in the log at INFO level with the TERMINAL prefix
+ */
+#define LOG_TERMINAL(args...) Log::addLine((Log::LogLevel)(Log::LOG_INFO | Log::LOG_PREFIX_TERMINAL), ##args)
 
 #endif /* LOG_H */
 

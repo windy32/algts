@@ -29,7 +29,6 @@ void Terminal::waitForResponse()
 
 bool Terminal::start()
 {
-    LOG_DEBUG("Beginning of Terminal::start");
     QByteArray data;
     
     // Start process
@@ -41,13 +40,12 @@ bool Terminal::start()
         return false;
     }
 
-    LOG_DEBUG("End of Terminal::start");
     return true;
 }
 
 void Terminal::enter(const QString &input)
 {
-    LOG_DEBUG("Beginning of Terminal::enter");
+    // LOG_DEBUG("Beginning of Terminal::enter");
     QString buffer;
     QStringList lines;
     
@@ -56,26 +54,16 @@ void Terminal::enter(const QString &input)
     {
         buffer += m_process.readAll();
     }
-    lines = buffer.split("\n");
-    for(int i = 0; i < lines.size(); i++)
-    {
-        LOG_INFO(QString("> %1").arg(lines[i]));
-    }
+    LOG_TERMINAL(buffer);
     
     // Write
     m_process.write(input.toLocal8Bit().data());
-    if( m_process.waitForBytesWritten(100))
+    if( !input.endsWith("\n"))
     {
-        if( input.endsWith("\n")) // Remove the new line before logging
-        {
-            LOG_INFO(QString("< %1").arg(input.left(input.size() - 1)));
-        }
-        else
-        {
-            LOG_INFO(QString("< %1").arg(input));
-        }
+        m_process.write(QString("\n").toLocal8Bit().data());
     }
-    else
+    
+    if( !m_process.waitForBytesWritten(100))
     {
         LOG_ERROR("Cannot write terminal process");
         return;
@@ -87,13 +75,7 @@ void Terminal::enter(const QString &input)
     {
         buffer += m_process.readAll();
     }
-    lines = buffer.split("\n");
-    for(int i = 0; i < lines.size(); i++)
-    {
-        LOG_INFO(QString("> %1").arg(lines[i]));
-    }
-    
-    LOG_DEBUG("End of Terminal::enter");
+    LOG_TERMINAL(buffer);//lines[i]);
 }
 
 void Terminal::close()

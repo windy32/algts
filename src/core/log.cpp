@@ -66,23 +66,26 @@ void Log::addLine(enum LogLevel level, const char *format, ...)
     if( static_cast<int>(m_level) & static_cast<int>(level))
     {
         // Print log level
-        switch( level )
+        if( level & ~LOG_PREFIX_NOLEVEL )
         {
-        case LOG_ERROR:
-            print("Error: ");
-            m_errorCount += 1;
-            break;
-        case LOG_WARN:
-            print("Warning: ");
-            break;
-        case LOG_INFO:
-            print("Info: ");
-            break;
-        case LOG_DEBUG:
-            print("Debug: ");
-            break;
-        default:
-            break;
+            switch( level )
+            {
+            case LOG_ERROR:
+                print("Error: ");
+                m_errorCount += 1;
+                break;
+            case LOG_WARN:
+                print("Warning: ");
+                break;
+            case LOG_INFO:
+                print("Info: ");
+                break;
+            case LOG_DEBUG:
+                print("Debug: ");
+                break;
+            default:
+                break;
+            }
         }
         
         // Print remaining message
@@ -90,7 +93,11 @@ void Log::addLine(enum LogLevel level, const char *format, ...)
         va_start(argList, format);
         
         vsprintf(buffer, format, argList);
-        strcat(buffer, "\n");
+        
+        if( level & ~LOG_PREFIX_NONEWLINE )
+        {
+            strcat(buffer, "\n");
+        }
         print(buffer);
         
         va_end(argList);

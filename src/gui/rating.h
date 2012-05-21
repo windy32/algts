@@ -25,7 +25,7 @@ protected:
 public:
     Rating(QMap<QString, QVector<RegularTraceItem> > &trace);
 
-    void calc(Score &score);
+    void calc(Score &score, int dsRate, int usRate);
 };
 
 class UnaryFunctionModel
@@ -41,7 +41,7 @@ public:
     UnaryFunctionModel(int minX, int maxX);
 
     void clearPoints();
-    void addPoint(int xValue, int score);
+    void addPoint(int xValue, double score);
 
     double calc(int x);
 };

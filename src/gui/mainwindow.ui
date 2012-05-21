@@ -43,7 +43,7 @@
     <item>
      <widget class="QStackedWidget" name="pages">
       <property name="currentIndex">
-       <number>4</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="pageWelcome">
        <layout class="QVBoxLayout" name="welcomeLayout" stretch="0,0,1,0,0,0,0,0,0,0,0">
@@ -2586,7 +2586,7 @@
         <item>
          <widget class="QTabWidget" name="tabP5">
           <property name="currentIndex">
-           <number>2</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="tabP5Scenario">
            <attribute name="title">
@@ -2701,13 +2701,13 @@
                <widget class="QComboBox" name="cmbP53User">
                 <property name="minimumSize">
                  <size>
-                  <width>256</width>
+                  <width>266</width>
                   <height>0</height>
                  </size>
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>256</width>
+                  <width>266</width>
                   <height>16777215</height>
                  </size>
                 </property>
@@ -2717,13 +2717,13 @@
                <widget class="QTableView" name="lstP53Tasks">
                 <property name="minimumSize">
                  <size>
-                  <width>256</width>
+                  <width>266</width>
                   <height>0</height>
                  </size>
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>256</width>
+                  <width>266</width>
                   <height>16777215</height>
                  </size>
                 </property>

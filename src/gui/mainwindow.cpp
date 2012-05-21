@@ -1827,9 +1827,6 @@ void MainWindow::lstP53TaskSelected(QModelIndex index)
     int row = index.row();
     RegularTraceItem item = m_p5testResult.scenario.getTraces()[username][row];
 
-    qDebug() << username << row;
-    qDebug() << item;
-
     ui->ratingWidget->setTrace(item);
     ui->ratingWidget->update();
 }
