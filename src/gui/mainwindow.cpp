@@ -287,6 +287,17 @@ void MainWindow::MenuHomepage()
 
 void MainWindow::MenuAbout()
 {
+    QMessageBox msgBox;
+    msgBox.setWindowTitle("About algts gui");
+    msgBox.setText(
+                "<b>algts gui 0.0.2</b>"
+                "<hr>"
+                "Based on Qt 4.8.0<br><br>"
+                "The program is provided AS IS with NO WARRANTY<br>"
+                "OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN,<br>"
+                "MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.");
+    msgBox.setIcon(QMessageBox::Information);
+    msgBox.exec();
 }
 
 // Page 1: Welcome ////////////////////////////////////////////////////////////
