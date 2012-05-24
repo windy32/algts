@@ -29,6 +29,9 @@ private slots:
     void MenuNewTest();
     void MenuViewTests();
 
+    void MenuHomepage();
+    void MenuAbout();
+
     // Page 1: Welcome
     void btnAddrSetting();
     void btnEmulationSetting();

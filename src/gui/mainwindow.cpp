@@ -3,6 +3,7 @@
 
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QDesktopServices>
 
 #include "dialog/ipaddrdialog.h"
 #include "dialog/emulatordialog.h"
@@ -57,6 +58,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionNewTest, SIGNAL(triggered()), this, SLOT(MenuNewTest()));
     connect(ui->actionViewTests, SIGNAL(triggered()),
             this, SLOT(MenuViewTests()));
+
+    connect(ui->actionHomepage, SIGNAL(triggered()), this, SLOT(MenuHomepage()));
+    connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(MenuAbout()));
 
     ui->cmbP23Type->addItem("Bulk Download");
     ui->cmbP23Type->addItem("Bulk Upload");
@@ -274,6 +278,15 @@ void MainWindow::MenuNewTest()
 void MainWindow::MenuViewTests()
 {
     ui->pages->setCurrentIndex(4);
+}
+
+void MainWindow::MenuHomepage()
+{
+    QDesktopServices::openUrl(QUrl("http://algts.googlecode.com"));
+}
+
+void MainWindow::MenuAbout()
+{
 }
 
 // Page 1: Welcome ////////////////////////////////////////////////////////////
@@ -1402,8 +1415,8 @@ void MainWindow::btnP4Run()
 
     // Check ip address and port
     QRegExp rx("^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\."
-                "(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*):([0-9]+)$");
-    if( rx.indexIn(serverAddr) == -1 )
+                "(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\:([0-9]+)$");
+    if( rx.indexIn(serverAddrAndPort) == -1 )
     {
         msgBox.setText("Invalid server address/port");
         msgBox.exec();

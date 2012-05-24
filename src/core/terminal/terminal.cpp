@@ -54,15 +54,14 @@ void Terminal::enter(const QString &input)
     {
         buffer += m_process.readAll();
     }
-    LOG_TERMINAL(buffer);
+    lines = buffer.split("\n");
+    for(int i = 0; i < lines.size(); i++)
+    {
+        LOG_INFO(QString("> %1").arg(lines[i]));
+    }
     
     // Write
     m_process.write(input.toLocal8Bit().data());
-    if( !input.endsWith("\n"))
-    {
-        m_process.write(QString("\n").toLocal8Bit().data());
-    }
-    
     if( !m_process.waitForBytesWritten(100))
     {
         LOG_ERROR("Cannot write terminal process");
@@ -75,7 +74,13 @@ void Terminal::enter(const QString &input)
     {
         buffer += m_process.readAll();
     }
-    LOG_TERMINAL(buffer);//lines[i]);
+    lines = buffer.split("\n");
+    for(int i = 0; i < lines.size(); i++)
+    {
+        LOG_INFO(QString("> %1").arg(lines[i]));
+    }
+    
+    // LOG_DEBUG("End of Terminal::enter");
 }
 
 void Terminal::close()
