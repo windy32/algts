@@ -1,7 +1,7 @@
 algts Tutorial
 ===========================
 
-This is the **algts Tutorial**. Primary documentation for the ns-3 project is available in two 
+This is the **algts Tutorial**. Primary documentation for the algts project is available in two 
 forms:
 
 * `algts Doxygen <http://code.google.com/p/algts/downloads/list>`_: Documentation of the public APIs

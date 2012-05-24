@@ -19,7 +19,7 @@ SOURCES += mainwindow.cpp main.cpp \
 SOURCES += scenarioex.cpp test.cpp testthread.cpp progressthread.cpp
 SOURCES += linegraph.cpp globaldatabase.cpp script.cpp
 
-SOURCES += widget/stacklist.cpp
+SOURCES +=
 SOURCES += widget/ipaddresswidget.cpp
 SOURCES += widget/cdfwidget.cpp
 SOURCES += widget/pdfwidget.cpp
@@ -44,7 +44,7 @@ HEADERS += scenarioex.h test.h testthread.h progressthread.h
 HEADERS += linegraph.h globaldatabase.h script.h
 
 HEADERS += widget/scenarioview.h
-HEADERS += widget/stacklist.h
+HEADERS +=
 HEADERS += widget/ipaddresswidget.h
 HEADERS += widget/cdfwidget.h
 HEADERS += widget/pdfwidget.h

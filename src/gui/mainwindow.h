@@ -103,8 +103,7 @@ private slots:
     void btnP4SelectScenario();
     void btnP4SelectScript();
     void btnP4Run();
-    void btnP4DefaultServerAddr();
-    void btnP4DefaultServerPort();
+    void btnP4DefaultServer();
     void btnP4TerminalSettings();
 
     void p4NewLog(const QString &newLog);

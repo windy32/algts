@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>870</width>
-    <height>460</height>
+    <height>510</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>800</width>
-    <height>460</height>
+    <height>510</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -22,33 +22,29 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="mainLayout">
     <property name="leftMargin">
-     <number>0</number>
+     <number>10</number>
     </property>
     <property name="topMargin">
-     <number>0</number>
+     <number>10</number>
+    </property>
+    <property name="rightMargin">
+     <number>10</number>
     </property>
     <property name="bottomMargin">
-     <number>0</number>
+     <number>12</number>
     </property>
     <item>
-     <widget class="StackList" name="stakcList" native="true">
-      <property name="minimumSize">
-       <size>
-        <width>110</width>
-        <height>0</height>
-       </size>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QStackedWidget" name="pages">
+     <widget class="QTabWidget" name="pages">
       <property name="currentIndex">
        <number>0</number>
       </property>
       <widget class="QWidget" name="pageWelcome">
+       <attribute name="title">
+        <string>Welcome</string>
+       </attribute>
        <layout class="QVBoxLayout" name="welcomeLayout" stretch="0,0,1,0,0,0,0,0,0,0,0">
         <property name="leftMargin">
-         <number>6</number>
+         <number>10</number>
         </property>
         <property name="topMargin">
          <number>10</number>
@@ -288,9 +284,12 @@
        </layout>
       </widget>
       <widget class="QWidget" name="pageScenario">
+       <attribute name="title">
+        <string>Scenario</string>
+       </attribute>
        <layout class="QVBoxLayout" name="scenarioLayout" stretch="0,0,1,0">
         <property name="leftMargin">
-         <number>6</number>
+         <number>10</number>
         </property>
         <property name="topMargin">
          <number>10</number>
@@ -1730,9 +1729,12 @@
        </layout>
       </widget>
       <widget class="QWidget" name="pageScript">
+       <attribute name="title">
+        <string>Script</string>
+       </attribute>
        <layout class="QVBoxLayout" name="scriptLayout">
         <property name="leftMargin">
-         <number>6</number>
+         <number>10</number>
         </property>
         <property name="topMargin">
          <number>10</number>
@@ -1906,7 +1908,22 @@
        </layout>
       </widget>
       <widget class="QWidget" name="pageNewTest">
+       <attribute name="title">
+        <string>New Test</string>
+       </attribute>
        <layout class="QVBoxLayout" name="newTestLayout">
+        <property name="leftMargin">
+         <number>10</number>
+        </property>
+        <property name="topMargin">
+         <number>10</number>
+        </property>
+        <property name="rightMargin">
+         <number>8</number>
+        </property>
+        <property name="bottomMargin">
+         <number>12</number>
+        </property>
         <item>
          <layout class="QHBoxLayout" name="P4Layout1">
           <item>
@@ -2008,7 +2025,7 @@
         <item>
          <layout class="QHBoxLayout" name="P4Layout3">
           <item>
-           <widget class="QLabel" name="lblP4ServerAddress">
+           <widget class="QLabel" name="lblP4Server">
             <property name="minimumSize">
              <size>
               <width>105</width>
@@ -2022,60 +2039,15 @@
              </size>
             </property>
             <property name="text">
-             <string>Server Address</string>
+             <string>Server</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="txtP4ServerAddress"/>
+           <widget class="QLineEdit" name="txtP4Server"/>
           </item>
           <item>
-           <widget class="QPushButton" name="btnP4DefaultServerAddr">
-            <property name="minimumSize">
-             <size>
-              <width>80</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>80</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Default</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="P4Layout4">
-          <item>
-           <widget class="QLabel" name="lblP4ServerPort">
-            <property name="minimumSize">
-             <size>
-              <width>105</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>105</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Server Port</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="txtP4ServerPort"/>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btnP4DefaultServerPort">
+           <widget class="QPushButton" name="btnP4DefaultServer">
             <property name="minimumSize">
              <size>
               <width>80</width>
@@ -2271,9 +2243,12 @@
        </layout>
       </widget>
       <widget class="QWidget" name="pageViewTests">
+       <attribute name="title">
+        <string>View Tests</string>
+       </attribute>
        <layout class="QVBoxLayout" name="viewTestsLayout" stretch="0,0,0,1">
         <property name="leftMargin">
-         <number>6</number>
+         <number>10</number>
         </property>
         <property name="topMargin">
          <number>10</number>
@@ -2897,12 +2872,6 @@
    <class>ScenarioView</class>
    <extends>QWidget</extends>
    <header>widget/scenarioview.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>StackList</class>
-   <extends>QWidget</extends>
-   <header>widget/stacklist.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

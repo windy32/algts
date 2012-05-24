@@ -49,11 +49,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tabP5Rating->setLayout(ui->P53Layout);
 
     // Menus
-    connect(ui->stakcList, SIGNAL(OnPageChanged(int)),
-            ui->pages, SLOT(setCurrentIndex(int)));
-
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
-
     connect(ui->actionWelcome, SIGNAL(triggered()),this, SLOT(MenuWelcome()));
     connect(ui->actionScenario, SIGNAL(triggered()),
             this, SLOT(MenuScenario()));
@@ -205,10 +201,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->btnP4Scenario, SIGNAL(clicked()), this, SLOT(btnP4SelectScenario()));
     connect(ui->btnP4Script, SIGNAL(clicked()), this, SLOT(btnP4SelectScript()));
     connect(ui->btnP4Run, SIGNAL(clicked()), this, SLOT(btnP4Run()));
-    connect(ui->btnP4DefaultServerAddr, SIGNAL(clicked()),
-            this, SLOT(btnP4DefaultServerAddr()));
-    connect(ui->btnP4DefaultServerPort, SIGNAL(clicked()),
-            this, SLOT(btnP4DefaultServerPort()));
+    connect(ui->btnP4DefaultServer, SIGNAL(clicked()),
+            this, SLOT(btnP4DefaultServer()));
     connect(ui->btnP4TerminalSettings, SIGNAL(clicked()),
             this, SLOT(btnP4TerminalSettings()));
 
@@ -216,9 +210,7 @@ MainWindow::MainWindow(QWidget *parent) :
             this, SLOT(p4UpdateRunButtonState()));
     connect(ui->txtP4Script, SIGNAL(textChanged(QString)),
             this, SLOT(p4UpdateRunButtonState()));
-    connect(ui->txtP4ServerAddress, SIGNAL(textChanged(QString)),
-            this, SLOT(p4UpdateRunButtonState()));
-    connect(ui->txtP4ServerPort, SIGNAL(textChanged(QString)),
+    connect(ui->txtP4Server, SIGNAL(textChanged(QString)),
             this, SLOT(p4UpdateRunButtonState()));
 
     // Page 5: View Tests
@@ -252,50 +244,6 @@ MainWindow::MainWindow(QWidget *parent) :
             this, SLOT(cmbP53UserChanged(int)));
     connect(ui->lstP53Tasks, SIGNAL(activated(QModelIndex)),
             this, SLOT(lstP53TaskSelected(QModelIndex)));
-
-    // Debugging code
-#if 0
-    RegularTraceItem trace;
-    //trace.insert("RxRate", QList<qint32>());
-    //trace.insert("MaxRxRate", QList<qint32>());
-    trace.insert("Delay", QList<qint32>());
-    trace.insert("Active", QList<qint32>());
-    trace.insert("Lost", QList<qint32>());
-#endif
-#if 0
-    trace["RxRate"].append(320000); // byte/s
-    trace["RxRate"].append(330000);
-    trace["RxRate"].append(210000);
-    trace["RxRate"].append(340000);
-    trace["RxRate"].append(385000);
-
-    trace["MaxRxRate"].append(470000);
-    trace["MaxRxRate"].append(512000);
-    trace["MaxRxRate"].append(512000);
-    trace["MaxRxRate"].append(512000);
-    trace["MaxRxRate"].append(512000);
-#endif
-#if 0
-    trace["Delay"].append(67);
-    trace["Delay"].append(83);
-    trace["Delay"].append(173);
-    trace["Delay"].append(100);
-    trace["Delay"].append(83);
-
-    trace["Lost"].append(7);
-    trace["Lost"].append(4);
-    trace["Lost"].append(9);
-    trace["Lost"].append(7);
-    trace["Lost"].append(5);
-
-    trace["Active"].append(1);
-    trace["Active"].append(1);
-    trace["Active"].append(1);
-    trace["Active"].append(1);
-    trace["Active"].append(1);
-
-    ui->ratingWidget->setTrace(trace);
-#endif
 }
 
 MainWindow::~MainWindow()
@@ -306,31 +254,26 @@ MainWindow::~MainWindow()
 void MainWindow::MenuWelcome()
 {
     ui->pages->setCurrentIndex(0);
-    ui->stakcList->SetPage(0);
 }
 
 void MainWindow::MenuScenario()
 {
     ui->pages->setCurrentIndex(1);
-    ui->stakcList->SetPage(1);
 }
 
 void MainWindow::MenuScript()
 {
     ui->pages->setCurrentIndex(2);
-    ui->stakcList->SetPage(2);
 }
 
 void MainWindow::MenuNewTest()
 {
     ui->pages->setCurrentIndex(3);
-    ui->stakcList->SetPage(3);
 }
 
 void MainWindow::MenuViewTests()
 {
     ui->pages->setCurrentIndex(4);
-    ui->stakcList->SetPage(4);
 }
 
 // Page 1: Welcome ////////////////////////////////////////////////////////////
@@ -1425,8 +1368,7 @@ void MainWindow::btnP4SelectScenario()
 
     if( ui->txtP4Scenario->text() != "" &&
         ui->txtP4Script->text() != "" &&
-        ui->txtP4ServerAddress->text() != "" &&
-        ui->txtP4ServerPort->text() != "" )
+        ui->txtP4Server->text() != "" )
     {
         ui->btnP4Run->setEnabled(true);
     }
@@ -1442,8 +1384,7 @@ void MainWindow::btnP4SelectScript()
 
     if( ui->txtP4Scenario->text() != "" &&
         ui->txtP4Script->text() != "" &&
-        ui->txtP4ServerAddress->text() != "" &&
-        ui->txtP4ServerPort->text() != "" )
+        ui->txtP4Server->text() != "" )
     {
         ui->btnP4Run->setEnabled(true);
     }
@@ -1451,20 +1392,20 @@ void MainWindow::btnP4SelectScript()
 
 void MainWindow::btnP4Run()
 {
-    QString serverAddr = ui->txtP4ServerAddress->text();
-    QString serverPort = ui->txtP4ServerPort->text();
+    QString serverAddrAndPort = ui->txtP4Server->text();
+    QString serverAddr;
     QHostAddress addr;
     quint16 port;
 
     QMessageBox msgBox;
     msgBox.setIcon(QMessageBox::Warning);
 
-    // Check ip address
+    // Check ip address and port
     QRegExp rx("^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\."
-                "(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$");
+                "(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*):([0-9]+)$");
     if( rx.indexIn(serverAddr) == -1 )
     {
-        msgBox.setText("Invalid server address");
+        msgBox.setText("Invalid server address/port");
         msgBox.exec();
         return;
     }
@@ -1477,23 +1418,18 @@ void MainWindow::btnP4Run()
         msgBox.exec();
         return;
     }
+    serverAddr = QString("%1.%2.%3.%4")
+            .arg(rx.cap(1)).arg(rx.cap(2)).arg(rx.cap(3)).arg(rx.cap(4));
     addr = QHostAddress(serverAddr);
 
     // Check port
-    bool ok;
-    port = serverPort.toUShort(&ok);
-    if( !ok )
+    if( rx.cap(5).toUShort() < 1024 ) // conversion failed
     {
         msgBox.setText("Invalid server port");
         msgBox.exec();
         return;
     }
-    else if( port < 1024 )
-    {
-        msgBox.setText("Invalid server port");
-        msgBox.exec();
-        return;
-    }
+    port = rx.cap(5).toUShort();
 
     // Enable logging
     ui->txtP4Log->clear();
@@ -1551,15 +1487,13 @@ void MainWindow::btnP4Run()
     // Disable current page
     ui->btnP4Scenario->setEnabled(false);
     ui->btnP4Script->setEnabled(false);
-    ui->btnP4DefaultServerAddr->setEnabled(false);
-    ui->btnP4DefaultServerPort->setEnabled(false);
+    ui->btnP4DefaultServer->setEnabled(false);
     ui->btnP4Run->setEnabled(false);
     ui->btnP4TerminalSettings->setEnabled(false);
 
     ui->txtP4Scenario->setEnabled(false);
     ui->txtP4Script->setEnabled(false);
-    ui->txtP4ServerAddress->setEnabled(false);
-    ui->txtP4ServerPort->setEnabled(false);
+    ui->txtP4Server->setEnabled(false);
 
     ui->rdoP4Telnet->setEnabled(false);
     ui->rdoP4Ssh->setEnabled(false);
@@ -1568,14 +1502,9 @@ void MainWindow::btnP4Run()
     connect(testThread, SIGNAL(finished()), this, SLOT(p4TestFinished()));
 }
 
-void MainWindow::btnP4DefaultServerAddr()
+void MainWindow::btnP4DefaultServer()
 {
-    ui->txtP4ServerAddress->setText("10.0.0.1");
-}
-
-void MainWindow::btnP4DefaultServerPort()
-{
-    ui->txtP4ServerPort->setText("3200");
+    ui->txtP4Server->setText("10.0.0.1:3200");
 }
 
 void MainWindow::btnP4TerminalSettings()
@@ -1654,15 +1583,13 @@ void MainWindow::p4TestFinished()
 
     ui->btnP4Scenario->setEnabled(true);
     ui->btnP4Script->setEnabled(true);
-    ui->btnP4DefaultServerAddr->setEnabled(true);
-    ui->btnP4DefaultServerPort->setEnabled(true);
+    ui->btnP4DefaultServer->setEnabled(true);
     ui->btnP4Run->setEnabled(true);
     ui->btnP4TerminalSettings->setEnabled(true);
 
     ui->txtP4Scenario->setEnabled(true);
     ui->txtP4Script->setEnabled(true);
-    ui->txtP4ServerAddress->setEnabled(true);
-    ui->txtP4ServerPort->setEnabled(true);
+    ui->txtP4Server->setEnabled(true);
 
     ui->rdoP4Telnet->setEnabled(true);
     ui->rdoP4Ssh->setEnabled(true);
@@ -1672,8 +1599,7 @@ void MainWindow::p4UpdateRunButtonState()
 {
     if( ui->txtP4Scenario->text() != "" &&
         ui->txtP4Script->text() != "" &&
-        ui->txtP4ServerAddress->text() != "" &&
-        ui->txtP4ServerPort->text() != "" &&
+        ui->txtP4Server->text() != "" &&
         m_p4routerAddr != "" &&
         m_p4username != "" &&
         m_p4password != "" )
