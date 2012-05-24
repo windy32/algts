@@ -19,8 +19,27 @@ EmulatorDialog::EmulatorDialog(int &txRate, int &rxRate, QWidget *parent) :
     connect(ui->buttonBox, SIGNAL(accepted()), this, SLOT(onOK()));
     connect(ui->buttonBox, SIGNAL(rejected()), this, SLOT(onCancel()));
 
-    m_infiniteTxRate = false;
-    m_infiniteRxRate = false;
+    if( m_txRate >= 0 && m_txRate <= 1024 * 100 )
+    {
+        ui->sldTxRate->setValue(m_txRate / 32);
+        m_infiniteTxRate = false;
+    }
+    else
+    {
+        ui->sldTxRate->setValue(3201);
+        m_infiniteTxRate = true;
+    }
+
+    if( m_rxRate >= 0 && m_rxRate <= 1024 * 100 )
+    {
+        ui->sldRxRate->setValue(m_rxRate / 32);
+        m_infiniteRxRate = false;
+    }
+    else
+    {
+        ui->sldRxRate->setValue(3201);
+        m_infiniteRxRate = true;
+    }
 
     updateText();
 }

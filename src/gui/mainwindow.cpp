@@ -315,9 +315,19 @@ void MainWindow::btnAddrSetting()
 
 void MainWindow::btnEmulationSetting()
 {
+    // Display emulation setting dialog
     EmulatorDialog dialog(m_txRate, m_rxRate);
-    dialog.exec();
-    updateEmulationState();
+    if( dialog.exec() == QDialog::Accepted )
+    {
+        // Executer emulator
+        BasicEmulator emulator("10.0.0.1", 3201);
+        emulator.reset();
+        emulator.setParam("TxRate", QString("%1kbps").arg(m_txRate));
+        emulator.setParam("RxRate", QString("%1kbps").arg(m_rxRate));
+        emulator.commit();
+
+        updateEmulationState();
+    }
 }
 
 void MainWindow::updateEmulationState()
