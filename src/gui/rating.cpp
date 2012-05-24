@@ -22,6 +22,8 @@ void Rating::calc(Score &score, int dsRate, int usRate)
     //    "Global RxRate" strategy if the task trace has an "RxRate" field
     //
     // 4. Calculate task scores, user scores and finally the overall score
+    TODO: This function is corrupt
+
     QMap<QString, QVector<RegularTraceItem> >::iterator it;
     int i;
     int userCount = m_trace.size();
@@ -31,7 +33,7 @@ void Rating::calc(Score &score, int dsRate, int usRate)
     score.overall = 0.0;
     score.user.clear();
     score.task.clear();
-
+    qDebug() << "1";
     for(it = m_trace.begin(); it != m_trace.end(); ++it) // for each user
     {
         QString username = it.key();
@@ -46,12 +48,15 @@ void Rating::calc(Score &score, int dsRate, int usRate)
             score.task[username][j].valid.fill(0, false);
         }
     }
+    qDebug() << "2";
 
     // Step 1.
     UnaryFunctionModel model(0, 500);
     model.addPoint(0, 1.0);
     model.addPoint(60, 1.0);
     model.addPoint(500, 0.0);
+
+    qDebug() << "3";
 
     for(it = m_trace.begin(); it != m_trace.end(); ++it) // For each user
     {
@@ -84,6 +89,7 @@ void Rating::calc(Score &score, int dsRate, int usRate)
             }
         }
     }
+    qDebug() << "4";
 
     // Step 2. (Global Tx Rating)
     QVector<QVector<int> > C1, C2, C3, CP, INF;
@@ -106,6 +112,7 @@ void Rating::calc(Score &score, int dsRate, int usRate)
         INF[i].fill(0, seconds);
         AVG[i].fill(0.0, seconds);
     }
+    qDebug() << "5";
 
     // Step 2.1. C2 and INF
     for(int t = 0; t < seconds; t++) // For each seconds
@@ -131,6 +138,7 @@ void Rating::calc(Score &score, int dsRate, int usRate)
             }
         }
     }
+    qDebug() << "6";
 
     // Step 2.2. C3 and CP
     for(int t = 0; t < seconds; t++) // For each seconds
@@ -162,6 +170,7 @@ void Rating::calc(Score &score, int dsRate, int usRate)
                                    qMin(C2[i][t], C1[i][t] + C3[i][t]);
         }
     }
+    qDebug() << "7";
 
     // Step 2.3. User average score - S(i)
     for(int t = 0; t < seconds; t++) // For each seconds
@@ -191,6 +200,7 @@ void Rating::calc(Score &score, int dsRate, int usRate)
             }
         }
     }
+    qDebug() << "8";
 
     // Step 2.4. Task Score - First Pass
     for(int t = 0; t < seconds; t++) // For each seconds
@@ -210,6 +220,7 @@ void Rating::calc(Score &score, int dsRate, int usRate)
             }
         }
     }
+    qDebug() << "9";
 
     // Step 2.5. Task Score - Second Pass
     for(int t = 0; t < seconds; t++) // For each seconds
@@ -240,6 +251,7 @@ void Rating::calc(Score &score, int dsRate, int usRate)
             }
         }
     }
+    qDebug() << "10";
 }
 
 // Unary Function Model ///////////////////////////////////////////////////////

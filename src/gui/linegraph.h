@@ -49,6 +49,8 @@ public:
     void addYScale(int flags, double yValue, const QString &unit, int precision = 2);
     void addYScaleText(int flags, double position, int xOffset, int yOffset,
                        const QString &text, QColor color = Qt::black);
+    void addYScaleTextRight(int flags, double position, int xOffset, int yOffset,
+                            const QString &text, QColor color = Qt::black);
 
     void addLine(double x1, double x2, double y1, double y2);
     void addLine(double x1, double x2, double y1, double y2, QColor color);

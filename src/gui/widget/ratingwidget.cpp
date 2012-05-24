@@ -18,6 +18,8 @@ void RatingWidget::paintEvent(QPaintEvent */*event*/)
     // Draw widget bg
     painter.drawRect(0, 0, width - 1, height - 1);
 
+    qDebug() << "X";
+
     // Draw graph
     if( m_trace.contains("TxRate") &&
         m_trace.contains("MaxTxRate") &&
@@ -35,13 +37,29 @@ void RatingWidget::paintEvent(QPaintEvent */*event*/)
             maxRate = qMax(maxRate, m_trace["MaxTxRate"][i]);
         }
 
+        qDebug() << m_trace["TxRate"];
+        qDebug() << m_trace["MaxTxRate"];
+        qDebug() << m_rating;
+
+        // Get base score
+        double baseScore = 1.0;
+        if( !m_rating.empty() && m_ratingVisible )
+        {
+            for(int i = 0; i < m_rating.size(); i++)
+            {
+                baseScore = qMax(baseScore, m_rating[i]);
+            }
+        }
+
         // Init graph
         int minX = 0;
         int maxX = m_trace["Active"].size();
         double minY = 0;
         double maxY = (double)maxRate / (128.0 * 1000); // byte/s -> Mbps
 
-        LineGraph g(&painter, width, height, 70, 10, minX, maxX, minY, maxY);
+        LineGraph g(&painter, width, height, 70,
+                    (!m_rating.empty() && m_ratingVisible) ? 34 : 10,
+                    minX, maxX, minY, maxY);
         g.addBorder();
 
         g.addXScaleAsTime(Qt::AlignLeft, minX);
@@ -49,6 +67,22 @@ void RatingWidget::paintEvent(QPaintEvent */*event*/)
 
         g.addYScale(Qt::AlignBottom, minY, " Mbps");
         g.addYScale(Qt::AlignTop, maxY, " Mbps");
+
+        if( !m_rating.empty() && m_ratingVisible )
+        {
+            if( baseScore == 1.0 )
+            {
+                g.addYScaleTextRight(Qt::AlignBottom, 0, 0, 0, "0.00", QColor::fromRgb(0x13, 0x4F, 0x13));
+                g.addYScaleTextRight(Qt::AlignTop, 1.0, 0, 0, "1.00", QColor::fromRgb(0x13, 0x4F, 0x13));
+            }
+            else
+            {
+                g.addYScaleTextRight(Qt::AlignBottom, 0, 0, 0, "0.00", QColor::fromRgb(0x13, 0x4F, 0x13));
+                g.addYScaleTextRight(Qt::AlignTop, 1.0, 0, 0,
+                                     QString("%1").arg(baseScore, 0, 'f', 2), QColor::fromRgb(0x13, 0x4F, 0x13));
+                g.addLine(0, maxX - 1, maxY / baseScore, maxY / baseScore, Qt::lightGray);
+            }
+        }
 
         // Draw TxRate & MaxTxRate
         for(int i = 0; i < maxX - 1; i++)
@@ -61,6 +95,13 @@ void RatingWidget::paintEvent(QPaintEvent */*event*/)
                       m_trace["MaxTxRate"][i] / (128.0 * 1000),
                       m_trace["MaxTxRate"][i + 1] / (128.0 * 1000),
                       QColor::fromRgb(0xDF, 0x00, 0x24));
+            if( !m_rating.empty() && m_ratingVisible )
+            {
+                g.addLine(i, i + 1,
+                          m_rating[i] * maxY / baseScore,
+                          m_rating[i + 1] * maxY / baseScore,
+                          QColor::fromRgb(0x22, 0x8B, 0x22));
+            }
         }
 
         // Draw legend
@@ -71,6 +112,12 @@ void RatingWidget::paintEvent(QPaintEvent */*event*/)
         QList<QColor> colors;
         colors.append(QColor::fromRgb(0x31, 0x77, 0xC1));
         colors.append(QColor::fromRgb(0xDF, 0x00, 0x24));
+
+        if( !m_rating.empty() && m_ratingVisible )
+        {
+            names.append("Score");
+            colors.append(QColor::fromRgb(0x22, 0x8B, 0x22));
+        }
 
         g.addLegend(names, colors);
     }
@@ -233,17 +280,17 @@ void RatingWidget::setTrace(const RegularTraceItem &trace)
     m_trace = trace;
 }
 
-void RatingWidget::setRating(const QList<double> &rating)
+void RatingWidget::setRating(const QVector<double> &rating)
 {
     m_rating = rating;
 }
 
 void RatingWidget::hideRating()
 {
-
+    m_ratingVisible = false;
 }
 
 void RatingWidget::showRating()
 {
-
+    m_ratingVisible = true;
 }

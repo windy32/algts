@@ -95,7 +95,7 @@ class RatingWidget : public QWidget
 
 private:
     RegularTraceItem m_trace;
-    QList<double> m_rating;
+    QVector<double> m_rating;
     bool m_ratingVisible;
 
 protected:
@@ -105,7 +105,7 @@ public:
     explicit RatingWidget(QWidget *parent = 0);
 
     void setTrace(const RegularTraceItem &trace);
-    void setRating(const QList<double> &rating);
+    void setRating(const QVector<double> &rating);
     void hideRating();
     void showRating();
 };

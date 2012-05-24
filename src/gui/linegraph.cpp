@@ -139,6 +139,24 @@ void LineGraph::addYScaleText(int flags, double position, int xOffset, int yOffs
     }
 }
 
+void LineGraph::addYScaleTextRight(int flags, double position, int xOffset, int yOffset, const QString &text, QColor color)
+{
+    int x = m_baseX + m_graphWidth + 4;
+    int y = m_baseY - m_graphHeight * position;
+    m_painter->setPen(color);
+
+    if( flags & Qt::AlignTop )
+    {
+        m_painter->drawText(x + xOffset, y + yOffset - 3, m_baseX - 4, 12,
+                            Qt::AlignLeft, text);
+    }
+    else if( flags & Qt::AlignBottom )
+    {
+        m_painter->drawText(x + xOffset, y + yOffset - 10, m_baseX - 4, 12,
+                            Qt::AlignLeft, text);
+    }
+}
+
 void LineGraph::addLine(double x1, double x2, double y1, double y2)
 {
     m_painter->setPen(m_lineColor);
