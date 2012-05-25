@@ -24,7 +24,7 @@ protected:
 
 protected:
     void calcGlobalTx(const QString &username, int taskIndex, TaskScore &ts, int usRate);
-    void calcGlobalRx(Score &score, int dsRate);
+    void calcGlobalRx(const QString &username, int taskIndex, TaskScore &ts, int dsRate);
     void calcDefaultUnary(Score &score, const QString &username, int taskIndex);
 
 public:

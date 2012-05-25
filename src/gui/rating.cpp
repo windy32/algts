@@ -239,9 +239,215 @@ void Rating::calcGlobalTx(const QString &username, int taskIndex, TaskScore &ts,
     }
 }
 
-void Rating::calcGlobalRx(Score &score, int dsRate)
+void Rating::calcGlobalRx(const QString &username, int taskIndex, TaskScore &ts, int usRate)
 {
+    // Code here is similar to calcGlobalTx(), should be reconstructed lator
+    int newTaskIndex = taskIndex;
+    QMap<QString, QVector<RegularTraceItem> > trace = m_trace;
+    QMap<QString, QVector<RegularTraceItem> >::iterator it;
+    int i;
 
+    for(it = trace.begin(); it != trace.end(); ++it) // for each user
+    {
+        QString curUser = it.key();
+
+        for(int j = trace[curUser].size() - 1; j >= 0; j--) // for each task
+        {
+            if( !trace[curUser][j].contains("RxRate"))
+            {
+                trace[curUser].remove(j);
+                if( curUser == username && j < taskIndex )
+                {
+                    newTaskIndex -= 1;
+                }
+            }
+        }
+    }
+
+    // 2. Initialize relative data structure
+    //
+    // Currently, realtime tasks (tcp echo & async udp ehco) don't have
+    // a txrate or rxrate field, hence C1 is alwasy equal to usRate / N
+    //
+    // The environment paremeters are calculated as shown below:
+    //  - C1     = usRate / N
+    //  - C2(i)  = MaxRate(i,1) + MaxRate(i,2) + ... + MaxRate(i,N(i))
+    //  - INF(i) = (C2(i) > C1) ? 1 : 0
+    //  - C3  = [ max(C1 - C2(1), 0) + max(C1 - C2(2), 0) + ... +
+    //          max(C1 - C2(N(i)), 0) ] / [ INF(1) + INF(2) + ... + INF(N(i)) ]
+    //
+    int userCount = trace.size();
+    int seconds = trace.begin().value().first()["RxRate"].size();
+
+    // qDebug() << "GlobalRx usercount = " << userCount << " seconds = " << seconds;
+
+    int C1 = usRate / userCount;
+    QVector<QVector<int> > C2, C3, CP, INF; // for each users and secondds
+    QVector<QVector<double> > AVG;
+    const double K = 1.4;
+
+    C2.resize(userCount);
+    C3.resize(userCount);
+    CP.resize(userCount);
+    INF.resize(userCount);
+    AVG.resize(userCount);
+
+    for(i = 0; i < userCount; i++)
+    {
+        C2[i].fill(0, seconds);
+        C3[i].fill(0, seconds);
+        CP[i].fill(0, seconds);
+        INF[i].fill(0, seconds);
+        AVG[i].fill(0.0, seconds);
+    }
+
+    // 3. Calc C2 and INF
+    for(int t = 0; t < seconds; t++) // For each seconds
+    {
+        for(i = 0, it = trace.begin(); it != trace.end(); ++it, ++i) // For each user
+        {
+            QString username = it.key();
+            for(int j = 0; j < trace[username].size(); j++) // For each task
+            {
+                if( trace[username][j]["MaxRxRate"][t] == -1 )
+                {
+                    C2[i][t] = -1;
+                    break;
+                }
+                else
+                {
+                    C2[i][t] += trace[username][j]["MaxRxRate"][t];
+                }
+            }
+            INF[i][t] = ( C2[i][t] == -1 || C2[i][t] > C1 ) ? 1 : 0;
+        }
+    }
+
+    // 4. Calc C3 and CP
+    for(int t = 0; t < seconds; t++) // For each seconds
+    {
+        int infCount = 0; // How many users have infinite demand in this second
+        int extraBandwidth = 0; // Free bandwidth available in this second
+
+        for(i = 0; i < userCount; i++)
+        {
+            infCount += INF[i][t];
+            if( !INF[i][t] )
+            {
+                extraBandwidth += qMax(C1 - C2[i][t], 0);
+            }
+        }
+
+        for(i = 0; i < trace.size(); i++) // For each user
+        {
+            C3[i][t] = (infCount == 0) ? 0 : extraBandwidth / infCount;
+            CP[i][t] = INF[i][t] ? C1 + C3[i][t] :
+                                   qMin(C2[i][t], C1 + C3[i][t]);
+        }
+    }
+
+    // 5. Calc user average score - S(i)
+    for(int t = 0; t < seconds; t++) // For each seconds
+    {
+        for(i = 0, it = trace.begin(); it != trace.end(); ++it, ++i) // For each user
+        {
+            QString username = it.key();
+
+            // Calc the user's overall rx rate
+            int userRxRate = 0;
+            for(int j = 0; j < trace[username].size(); j++) // For each task
+            {
+                userRxRate += trace[username][j]["RxRate"][t];
+            }
+
+            // Calc the user's average score at this second
+            if( userRxRate < CP[i][t] )
+            {
+                AVG[i][t] = (double)userRxRate / CP[i][t];
+            }
+            else
+            {
+                AVG[i][t] = 1 + K * (userRxRate - CP[i][t]) / (usRate / userCount);
+            }
+        }
+    }
+
+    // 6. Calc Task Score - First Pass
+    ts.valid.fill(false, seconds);
+    ts.score.fill(0, seconds);
+
+    for(int t = 0; t < seconds; t++) // For each seconds
+    {
+        for(i = 0, it = trace.begin(); it != trace.end(); ++it, ++i) // For each user
+        {
+            QString username = it.key();
+
+            // User's average rx rate (for each task) in this second
+            int totalRate = 0;
+            int tasks = 0;
+            for(int j = 0; j < trace[username].size(); j++) // For each task
+            {
+                totalRate += trace[username][j]["RxRate"][t];
+                tasks += 1;
+            }
+            int avgRate = (tasks == 0) ? 0 : totalRate / tasks;
+
+            // Task score when L(i, j) = 1
+            for(int j = 0; j < trace[username].size(); j++) // For each task
+            {
+                RegularTraceItem &rti = trace[username][j];
+
+                if( rti["MaxRxRate"][t] < avgRate )
+                {
+                    ts.valid[t] = true; // true ??
+                    ts.score[t] = AVG[i][t] * rti["RxRate"][t] / rti["MaxRxRate"][t];
+                }
+            }
+        }
+    }
+
+    // 7. Calc Task Score - Second Pass
+    for(int t = 0; t < seconds; t++) // For each seconds
+    {
+        for(i = 0, it = trace.begin(); it != trace.end(); ++it, ++i) // For each user
+        {
+            QString username = it.key();
+
+            // User's average rx rate (for each task) in this second
+            int totalRate = 0;
+            int tasks = 0;
+            for(int j = 0; j < trace[username].size(); j++) // For each task
+            {
+                totalRate += trace[username][j]["RxRate"][t];
+                tasks += 1;
+            }
+            int avgRate = (tasks == 0) ? 0 : totalRate / tasks;
+
+            // S(i, j) = S1 * Rate(i, j) / S(2)
+            double S1 = AVG[i][t] * trace[username].size();
+            double S2 = totalRate;
+
+            // Task score when L(i, j) = 1
+            for(int j = 0; j < trace[username].size(); j++) // For each task
+            {
+                if( trace[username][j]["MaxRxRate"][t] < avgRate )
+                {
+                    S1 -= ts.score[t];
+                    S2 -= trace[username][j]["RxRate"][t];
+                }
+            }
+
+            // Task score when L(i, j) = 0
+            for(int j = 0; j < trace[username].size(); j++) // For each task
+            {
+                if( trace[username][j]["MaxRxRate"][t] >= avgRate )
+                {
+                    ts.valid[t] = true; // true ??
+                    ts.score[t] = S1 * trace[username][j]["RxRate"][t] / S2;
+                }
+            }
+        }
+    }
 }
 
 void Rating::calcDefaultUnary(Score &score, const QString &username, int taskIndex)
@@ -281,21 +487,6 @@ void Rating::calcDefaultUnary(Score &score, const QString &username, int taskInd
 
 void Rating::calc(Score &score, int dsRate, int usRate)
 {
-    // 0. Initialize the score structure
-    //
-    // 1. Traverse the trace structure and calculate task score using the
-    //    default unary function model if the task trace has a "Delay" field
-    //
-    //    The unary function model has minimum x of 0 and a maximum of 500 (ms)
-    //    Critical points are (0, 1.00), (60, 1.00) and (500, 0.00)
-    //
-    // 2. Traverse the trace structure and calculate task score using the
-    //    "Global TxRate" strategy if the task trace has a "TxRate" field
-    //
-    // 3. Traverse the trace structure and calculate task score using the
-    //    "Global RxRate" strategy if the task trace has an "RxRate" field
-    //
-    // 4. Calculate task scores, user scores and finally the overall score
     QMap<QString, QVector<RegularTraceItem> >::iterator it;
 
     // Initialize the score structure
@@ -329,7 +520,7 @@ void Rating::calc(Score &score, int dsRate, int usRate)
             }
             else if( m_trace[username][j].contains("RxRate"))
             {
-                calcGlobalRx(score, dsRate);
+                calcGlobalRx(username, j, score.task[username][j], dsRate);
             }
             else
             {
