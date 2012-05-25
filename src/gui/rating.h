@@ -22,6 +22,11 @@ class Rating
 protected:
     QMap<QString, QVector<RegularTraceItem> > &m_trace;
 
+protected:
+    void calcGlobalTx(const QString &username, int taskIndex, TaskScore &ts, int usRate);
+    void calcGlobalRx(Score &score, int dsRate);
+    void calcDefaultUnary(Score &score, const QString &username, int taskIndex);
+
 public:
     Rating(QMap<QString, QVector<RegularTraceItem> > &trace);
 

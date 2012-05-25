@@ -18,8 +18,6 @@ void RatingWidget::paintEvent(QPaintEvent */*event*/)
     // Draw widget bg
     painter.drawRect(0, 0, width - 1, height - 1);
 
-    qDebug() << "X";
-
     // Draw graph
     if( m_trace.contains("TxRate") &&
         m_trace.contains("MaxTxRate") &&
@@ -37,9 +35,9 @@ void RatingWidget::paintEvent(QPaintEvent */*event*/)
             maxRate = qMax(maxRate, m_trace["MaxTxRate"][i]);
         }
 
-        qDebug() << m_trace["TxRate"];
-        qDebug() << m_trace["MaxTxRate"];
-        qDebug() << m_rating;
+        //qDebug() << m_trace["TxRate"];
+        //qDebug() << m_trace["MaxTxRate"];
+        //qDebug() << m_rating;
 
         // Get base score
         double baseScore = 1.0;
@@ -84,7 +82,7 @@ void RatingWidget::paintEvent(QPaintEvent */*event*/)
             }
         }
 
-        // Draw TxRate & MaxTxRate
+        // Draw TxRate & MaxTxRate & score
         for(int i = 0; i < maxX - 1; i++)
         {
             g.addLine(i, i + 1,

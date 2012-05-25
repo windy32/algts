@@ -1790,18 +1790,14 @@ void MainWindow::lstP53TaskSelected(QModelIndex index)
 
     Rating rating(m_p5testResult.scenario.getTraces());
     Score score;
-    int usRate = (m_txRate == -1) ? -1 : m_txRate * 128; // convert to byte/s
-    int dsRate = (m_rxRate == -1) ? -1 : m_rxRate * 128;
+    int usRate = (m_txRate == -1) ? 100 * 1024 * 1024 / 8 : m_txRate * 128; // convert to byte/s
+    int dsRate = (m_rxRate == -1) ? 100 * 1024 * 1024 / 8 : m_rxRate * 128;
     rating.calc(score, dsRate, usRate);
 
-    qDebug() << "A";
     ui->ratingWidget->setTrace(item);
-    qDebug() << "B";
     ui->ratingWidget->setRating(score.task[username][row].score);
     ui->ratingWidget->showRating();
-    qDebug() << "C";
     ui->ratingWidget->update();
-    qDebug() << "D";
 }
 
 void MainWindow::rdoP52SetupScript()
