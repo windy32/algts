@@ -85,8 +85,8 @@ void OnoffDownloadServerSession::run()
             break;
         }
         
-        LOG_DEBUG("OnoffDownloadServerSession %d / %d", 
-            (int)bytesSent, (int)totalBytes);
+        // LOG_DEBUG("OnoffDownloadServerSession %d / %d", 
+        //    (int)bytesSent, (int)totalBytes);
         
         // Rate limit
         if( maxRate != -1 && totalBytes * 1000 / maxRate > (qint64)t.elapsed())

@@ -783,7 +783,7 @@ void MainWindow::sldP231MaxRateChanged(int value)
     }
 
     BulkDownloadTask *task = (BulkDownloadTask *)m_scenario.task(m_p2user, m_p2index);
-    task->setMaxRate(maxRate * 1024 / 8);
+    task->setMaxRate(value == 3201 ? -1 : maxRate * 1024 / 8);
 }
 
 void MainWindow::sldP232MaxBytesChanged(int value)
@@ -832,7 +832,7 @@ void MainWindow::sldP232MaxRateChanged(int value)
     }
 
     BulkUploadTask *task = (BulkUploadTask *)m_scenario.task(m_p2user, m_p2index);
-    task->setMaxRate(maxRate * 1024 / 8);
+    task->setMaxRate(value == 3201 ? -1 : maxRate * 1024 / 8);
 }
 
 void MainWindow::sldP233MaxRateChanged(int value)
@@ -857,7 +857,7 @@ void MainWindow::sldP233MaxRateChanged(int value)
     }
 
     OnoffDownloadTask *task = (OnoffDownloadTask *)m_scenario.task(m_p2user, m_p2index);
-    task->setMaxRate(maxRate * 1024 / 8);
+    task->setMaxRate(value == 3201 ? -1 : maxRate * 1024 / 8);
 }
 
 void MainWindow::sldP233PacketSizeChanged(int value)

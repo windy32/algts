@@ -72,11 +72,11 @@ void CoreApplication::exec(Scenario *s)
     {
         for(int i = 0; i < it.value().size(); i++)
         {
-            it.value()[i]->expand();
             if( it.value()[i]->getStopTime() == -1 )
             {
                 it.value()[i]->setStopTime(s->getLength() * 1000);
             }
+            it.value()[i]->expand();
         }
     }
 
@@ -168,7 +168,6 @@ void CoreApplication::exec(Scenario *s)
             }
         }
     }
-    
     
     // 8
     GlobalTimer::start();

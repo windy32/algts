@@ -28,16 +28,23 @@ void OnoffDownloadClient::run()
     
     // Get basic info & attributes from task
     quint16 serverPort = m_task->getServerPort();
-    //qint32 startTime = m_task->getStartTime();
-    //qint32 stopTime = m_task->getStopTime();
+    qint32 startTime = m_task->getStartTime();
+    qint32 stopTime = m_task->getStopTime();
     
     qint32 maxRate = m_task->getMaxRate();
     qint16 packetSize = m_task->getPacketSize();
     qint16 requestSize = m_task->getRequestSize();
-    
+
     const QVector<qint32> &onTimes = m_task->getOnTimes();
     const QVector<qint32> &offTimes = m_task->getOffTimes();
-    
+
+    // Start timer
+    QTime t;
+    t.start();
+
+    // Wait
+    msleep(startTime);
+
     for(int i = 0; i < onTimes.size(); i++)
     {
         LOG_DEBUG("Period %d / %d", i + 1, onTimes.size());
@@ -79,9 +86,9 @@ void OnoffDownloadClient::run()
         qint32 totalBytes = 0;
         qint32 index = 0;
 
-        while( true )
+        while( t.elapsed() < stopTime )
         {
-            if( socket.waitForReadyRead(3 * 1000))
+            if( socket.waitForReadyRead(5 * 1000))
             {
                 qint32 bytesRead = (qint32)socket.read(buffer, 256 * 1024);
                 totalBytes += bytesRead;
@@ -148,7 +155,7 @@ void OnoffDownloadClient::generateRegularTrace(RegularTraceItem &trace, int seco
     }
     
     // Calculate idle ratio
-    QVector<double> busyRatios(seconds, 1.0);
+    QVector<double> busyRatios(seconds, 0.0);
     
     for(int i = 0; i < startTimes.size(); i++)
     {
@@ -183,7 +190,8 @@ void OnoffDownloadClient::generateRegularTrace(RegularTraceItem &trace, int seco
     // MaxRxRate & Active
     for(int i = 0; i < seconds; i++)
     {
-        trace["MaxRxRate"].append(busyRatios[i] * m_task->getMaxRate());
+        trace["MaxRxRate"].append((m_task->getMaxRate() == -1) ? -1 : 
+                                      busyRatios[i] * m_task->getMaxRate());
         trace["Active"].append(busyRatios[i] > 0.0 ? 1 : 0);
     }
     

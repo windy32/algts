@@ -70,11 +70,11 @@ void GuiApplication::exec(ScenarioEx *s)
     {
         for(int i = 0; i < it.value().size(); i++)
         {
-            it.value()[i]->expand();
             if( it.value()[i]->getStopTime() == -1 )
             {
                 it.value()[i]->setStopTime(s->getLength() * 1000);
             }
+            it.value()[i]->expand();
         }
     }
 
