@@ -503,7 +503,7 @@ void Rating::calc(Score &score, int dsRate, int usRate)
         score.task[username].resize(m_trace[username].size());
     }
 
-    // Calculate scores
+    // Calculate task scores
     for(it = m_trace.begin(); it != m_trace.end(); ++it) // For each user
     {
         QString username = it.key();
@@ -528,6 +528,52 @@ void Rating::calc(Score &score, int dsRate, int usRate)
             }
         }
     }
+
+    // Task overall score
+    for(it = m_trace.begin(); it != m_trace.end(); ++it) // For each user
+    {
+        QString username = it.key();
+
+        for(int j = 0; j < m_trace[username].size(); j++) // For each task
+        {
+            TaskScore &ts = score.task[username][j];
+            double sum = 0;
+            int samples = 0;
+
+            for(int t = 0; t < ts.score.size(); t++)
+            {
+                if( ts.valid[t] )
+                {
+                    sum += ts.score[t];
+                    samples += 1;
+                }
+            }
+            ts.overall = (samples == 0) ? 0 : sum / samples;
+        }
+    }
+
+    // User overall score
+    for(it = m_trace.begin(); it != m_trace.end(); ++it) // For each user
+    {
+        QString username = it.key();
+        double sum = 0;
+
+        for(int j = 0; j < m_trace[username].size(); j++) // For each task
+        {
+            sum += score.task[username][j].overall;
+        }
+        score.user[username] = sum / m_trace[username].size();
+    }
+
+    // Overall score
+    double sum = 0;
+    for(it = m_trace.begin(); it != m_trace.end(); ++it) // For each user
+    {
+        QString username = it.key();
+
+        sum += score.user[username];
+    }
+    score.overall = sum / score.user.size();
 }
 
 // Unary Function Model ///////////////////////////////////////////////////////
