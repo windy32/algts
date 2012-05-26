@@ -1751,9 +1751,6 @@ void MainWindow::cmbP53UserChanged(int index)
         m_p5scoreModel->setItem(i, 1, typeItem);
         m_p5scoreModel->setItem(i, 2, scoreItem);
     }
-
-    //ui->lstP3Params->setModel(ui->rdoP3SetupScript->isChecked() ?
-    //                              m_setupModel : m_resetModel);
 }
 
 void MainWindow::lstP53TaskSelected(QModelIndex index)
@@ -1768,20 +1765,12 @@ void MainWindow::lstP53TaskSelected(QModelIndex index)
     int dsRate = (m_rxRate == -1) ? 100 * 1024 * 1024 / 8 : m_rxRate * 128;
     rating.calc(score, dsRate, usRate);
 
-    qDebug() << "Regular Trace: \n";
-    qDebug() << item;
-
     ui->ratingWidget->setTrace(item);
     ui->ratingWidget->setRating(score.task[username][row].score);
     ui->ratingWidget->showRating();
     ui->ratingWidget->update();
 
     // Update ui for overall scores
-    //QString username = m_p5testResult.scenario.user(index);
-//    qDebug() << score.overall;
-//    qDebug() << score.user;
-//    qDebug() << score.task;
-
     int count = m_p5testResult.scenario.taskCount(username);
 
     for(int i = 0; i < count; i++)
