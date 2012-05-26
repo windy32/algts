@@ -53,6 +53,15 @@ void Rating::calcGlobalTx(const QString &username, int taskIndex, TaskScore &ts,
         }
     }
 
+    int userIndex = 0;
+    for(i = 0, it = trace.begin(); it != trace.end(); ++it, ++i) // For each user
+    {
+        if( it.key() == username )
+        {
+            userIndex = i;
+        }
+    }
+
     // 2. Initialize relative data structure
     //
     // Currently, realtime tasks (tcp echo & async udp ehco) don't have
@@ -67,8 +76,6 @@ void Rating::calcGlobalTx(const QString &username, int taskIndex, TaskScore &ts,
     //
     int userCount = trace.size();
     int seconds = trace.begin().value().first()["TxRate"].size();
-
-    // qDebug() << "GlobalTx usercount = " << userCount << " seconds = " << seconds;
 
     int C1 = usRate / userCount;
     QVector<QVector<int> > C2, C3, CP, INF; // for each users and secondds
@@ -167,30 +174,25 @@ void Rating::calcGlobalTx(const QString &username, int taskIndex, TaskScore &ts,
 
     for(int t = 0; t < seconds; t++) // For each seconds
     {
-        for(i = 0, it = trace.begin(); it != trace.end(); ++it, ++i) // For each user
+        // User's average tx rate (for each task) in this second
+        int totalRate = 0;
+        int tasks = 0;
+        for(int j = 0; j < trace[username].size(); j++) // For each task
         {
-            QString username = it.key();
+            totalRate += trace[username][j]["TxRate"][t];
+            tasks += 1;
+        }
+        int avgRate = (tasks == 0) ? 0 : totalRate / tasks;
 
-            // User's average tx rate (for each task) in this second
-            int totalRate = 0;
-            int tasks = 0;
-            for(int j = 0; j < trace[username].size(); j++) // For each task
+        // Task score when L(i, j) = 1
+        RegularTraceItem &rti = trace[username][newTaskIndex];
+
+        if( rti["MaxTxRate"][t] != -1 && rti["MaxTxRate"][t] < avgRate )
+        {
+            if( rti["Active"][t])
             {
-                totalRate += trace[username][j]["TxRate"][t];
-                tasks += 1;
-            }
-            int avgRate = (tasks == 0) ? 0 : totalRate / tasks;
-
-            // Task score when L(i, j) = 1
-            for(int j = 0; j < trace[username].size(); j++) // For each task
-            {
-                RegularTraceItem &rti = trace[username][j];
-
-                if( rti["MaxTxRate"][t] < avgRate )
-                {
-                    ts.valid[t] = true; // true ??
-                    ts.score[t] = AVG[i][t] * rti["TxRate"][t] / rti["MaxTxRate"][t];
-                }
+                ts.valid[t] = true;
+                ts.score[t] = AVG[userIndex][t] * rti["TxRate"][t] / rti["MaxTxRate"][t];
             }
         }
     }
@@ -198,42 +200,39 @@ void Rating::calcGlobalTx(const QString &username, int taskIndex, TaskScore &ts,
     // 7. Calc Task Score - Second Pass
     for(int t = 0; t < seconds; t++) // For each seconds
     {
-        for(i = 0, it = trace.begin(); it != trace.end(); ++it, ++i) // For each user
+        // User's average tx rate (for each task) in this second
+        int totalRate = 0;
+        int tasks = 0;
+        for(int j = 0; j < trace[username].size(); j++) // For each task
         {
-            QString username = it.key();
+            totalRate += trace[username][j]["TxRate"][t];
+            tasks += 1;
+        }
+        int avgRate = (tasks == 0) ? 0 : totalRate / tasks;
 
-            // User's average tx rate (for each task) in this second
-            int totalRate = 0;
-            int tasks = 0;
-            for(int j = 0; j < trace[username].size(); j++) // For each task
+        // S(i, j) = S1 * Rate(i, j) / S(2)
+        double S1 = AVG[userIndex][t] * trace[username].size();
+        double S2 = totalRate;
+
+        // Task score when L(i, j) = 1
+        for(int j = 0; j < trace[username].size(); j++) // For each task
+        {
+            if( trace[username][j]["MaxTxRate"][t] != 1 &&
+                trace[username][j]["MaxTxRate"][t] < avgRate )
             {
-                totalRate += trace[username][j]["TxRate"][t];
-                tasks += 1;
+                S1 -= AVG[userIndex][t] * trace[username][j]["TxRate"][t] / trace[username][j]["MaxTxRate"][t];
+                S2 -= trace[username][j]["TxRate"][t];
             }
-            int avgRate = (tasks == 0) ? 0 : totalRate / tasks;
+        }
 
-            // S(i, j) = S1 * Rate(i, j) / S(2)
-            double S1 = AVG[i][t] * trace[username].size();
-            double S2 = totalRate;
-
-            // Task score when L(i, j) = 1
-            for(int j = 0; j < trace[username].size(); j++) // For each task
+        // Task score when L(i, j) = 0
+        if( trace[username][newTaskIndex]["MaxTxRate"][t] == -1 ||
+            trace[username][newTaskIndex]["MaxTxRate"][t] >= avgRate )
+        {
+            if( trace[username][newTaskIndex]["Active"][t])
             {
-                if( trace[username][j]["MaxTxRate"][t] < avgRate )
-                {
-                    S1 -= ts.score[t];
-                    S2 -= trace[username][j]["TxRate"][t];
-                }
-            }
-
-            // Task score when L(i, j) = 0
-            for(int j = 0; j < trace[username].size(); j++) // For each task
-            {
-                if( trace[username][j]["MaxTxRate"][t] >= avgRate )
-                {
-                    ts.valid[t] = true; // true ??
-                    ts.score[t] = S1 * trace[username][j]["TxRate"][t] / S2;
-                }
+                ts.valid[t] = true;
+                ts.score[t] = (S2 == 0) ? 0 : S1 * trace[username][newTaskIndex]["TxRate"][t] / S2;
             }
         }
     }
