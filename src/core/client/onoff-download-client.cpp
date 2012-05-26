@@ -190,8 +190,9 @@ void OnoffDownloadClient::generateRegularTrace(RegularTraceItem &trace, int seco
     // MaxRxRate & Active
     for(int i = 0; i < seconds; i++)
     {
-        trace["MaxRxRate"].append((m_task->getMaxRate() == -1) ? -1 : 
-                                      busyRatios[i] * m_task->getMaxRate());
+        trace["MaxRxRate"].append(
+            (m_task->getMaxRate() == -1) ? (busyRatios[i] > 0.0 ? -1 : 0) : 
+            busyRatios[i] * m_task->getMaxRate());
         trace["Active"].append(busyRatios[i] > 0.0 ? 1 : 0);
     }
     

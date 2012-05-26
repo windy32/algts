@@ -1659,32 +1659,6 @@ void MainWindow::cmbP5ResultChanged(int index)
     m_p5index = index;
     GlobalDatabase::instance()->getTestResult(index, m_p5testResult);
 
-    // Debug
-#if 0
-    QMap<QString, QVector<RegularTraceItem> > &traces =
-            m_p5testResult.scenario.getTraces();
-    QMap<QString, QVector<RegularTraceItem> >::iterator it;
-
-    for(it = traces.begin(); it != traces.end(); ++it) // user
-    {
-        QString username = it.key();
-        for(int i = 0; i < traces[username].size(); i++) // task
-        {
-            qDebug() << "User " << username << " Task " << i;
-            RegularTraceItem &item = traces[username][i];
-
-            for(RegularTraceItem::iterator it = item.begin(); it != item.end(); ++it) // property
-            {
-                QString property = it.key();
-                qDebug() << "Property " << property;
-                for(int j = 0; j < item[property].size(); j++)
-                {
-                    qDebug() << item[property][j];
-                }
-            }
-        }
-    }
-#endif
     ui->txtP5Scenario->setText(m_p5testResult.scenario.name());
     ui->txtP5Script->setText(m_p5testResult.script.name);
     ui->txtP5Time->setText(m_p5testResult.time);
@@ -1794,10 +1768,32 @@ void MainWindow::lstP53TaskSelected(QModelIndex index)
     int dsRate = (m_rxRate == -1) ? 100 * 1024 * 1024 / 8 : m_rxRate * 128;
     rating.calc(score, dsRate, usRate);
 
+    qDebug() << "Regular Trace: \n";
+    qDebug() << item;
+
     ui->ratingWidget->setTrace(item);
     ui->ratingWidget->setRating(score.task[username][row].score);
     ui->ratingWidget->showRating();
     ui->ratingWidget->update();
+
+    // Update ui for overall scores
+    //QString username = m_p5testResult.scenario.user(index);
+//    qDebug() << score.overall;
+//    qDebug() << score.user;
+//    qDebug() << score.task;
+
+    int count = m_p5testResult.scenario.taskCount(username);
+
+    for(int i = 0; i < count; i++)
+    {
+        m_p5scoreModel->item(i, 2)->setText(
+                    QString("%1").arg(score.task[username][i].overall, 0, 'f', 2));
+    }
+
+    ui->lblP53UserScore->setText(
+                QString("User Score: %1").arg(score.user[username], 0, 'f', 2));
+    ui->lblP53OverallScore->setText(
+                QString("Overall Score: %1").arg(score.overall, 0, 'f', 2));
 }
 
 void MainWindow::rdoP52SetupScript()

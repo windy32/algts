@@ -148,7 +148,9 @@ void BulkUploadClient::generateRegularTrace(RegularTraceItem &trace,
     // MaxRxRate & Active
     for(int i = 0; i < seconds; i++)
     {
-        trace["MaxTxRate"].append(busyRatios[i] * m_task->getMaxRate());
+        trace["MaxTxRate"].append(
+            (m_task->getMaxRate() == -1) ? (busyRatios[i] > 0.0 ? -1 : 0) : 
+            busyRatios[i] * m_task->getMaxRate());
         trace["Active"].append(busyRatios[i] > 0.0 ? 1 : 0);
     }
     

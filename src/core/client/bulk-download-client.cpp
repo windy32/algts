@@ -154,10 +154,17 @@ void BulkDownloadClient::generateRegularTrace(RegularTraceItem &trace,
         }
     }
     
+    qDebug() << "StartTime = " << startTime;
+    qDebug() << "StopTime = " << stopTime;
+    qDebug() << "Seconds = " << seconds;
+    qDebug() << busyRatios;
+    
     // MaxRxRate & Active
     for(int i = 0; i < seconds; i++)
     {
-        trace["MaxRxRate"].append(busyRatios[i] * m_task->getMaxRate());
+        trace["MaxRxRate"].append(
+            (m_task->getMaxRate() == -1) ? (busyRatios[i] > 0.0 ? -1 : 0) : 
+            busyRatios[i] * m_task->getMaxRate());
         trace["Active"].append(busyRatios[i] > 0.0 ? 1 : 0);
     }
     
