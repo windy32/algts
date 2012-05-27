@@ -220,7 +220,8 @@ void Rating::calcGlobalTx(const QString &username, int taskIndex, TaskScore &ts,
             if( trace[username][j]["MaxTxRate"][t] != 1 &&
                 trace[username][j]["MaxTxRate"][t] < avgRate )
             {
-                S1 -= AVG[userIndex][t] * trace[username][j]["TxRate"][t] / trace[username][j]["MaxTxRate"][t];
+                S1 -= (trace[username][j]["MaxTxRate"][t] == 0) ?
+                            0 : AVG[userIndex][t] * trace[username][j]["TxRate"][t] / trace[username][j]["MaxTxRate"][t];
                 S2 -= trace[username][j]["TxRate"][t];
             }
         }
@@ -370,12 +371,10 @@ void Rating::calcGlobalRx(const QString &username, int taskIndex, TaskScore &ts,
             if( userRxRate < CP[i][t] )
             {
                 AVG[i][t] = (double)userRxRate / CP[i][t];
-                qDebug() << "AVG A " << userRxRate << CP[i][t];
             }
             else
             {
                 AVG[i][t] = 1 + K * (userRxRate - CP[i][t]) / (dsRate / userCount);
-                qDebug() << "AVG B " << userRxRate << CP[i][t] << (dsRate / userCount);
             }
         }
     }
@@ -435,7 +434,8 @@ void Rating::calcGlobalRx(const QString &username, int taskIndex, TaskScore &ts,
             if( trace[username][j]["MaxRxRate"][t] != -1 &&
                 trace[username][j]["MaxRxRate"][t] < avgRate )
             {
-                S1 -= AVG[userIndex][t] * trace[username][j]["RxRate"][t] / trace[username][j]["MaxRxRate"][t];
+                S1 -= (trace[username][j]["MaxRxRate"][t] == 0) ?
+                            0 : AVG[userIndex][t] * trace[username][j]["RxRate"][t] / trace[username][j]["MaxRxRate"][t];
                 S2 -= trace[username][j]["RxRate"][t];
             }
         }
