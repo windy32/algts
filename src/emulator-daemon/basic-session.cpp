@@ -41,7 +41,7 @@ bool BasicSession::execCommand(const QString &command,
     process.waitForFinished(-1); //terminate();
     
     // Compare and return
-    if( output == expectedOutput.toLocal8Bit())
+    if( output.size() == 0 || output == expectedOutput.toLocal8Bit())
     {
         LOG_DEBUG("End of BasicSession::execCommand");
         return true;
@@ -120,9 +120,10 @@ bool BasicSession::execCommit(QMap<QString, QString> &params)
     cmds[9] = QString("tc qdisc add dev eth0 parent 1:1 handle 10:"
                       "   sfq perturb 10");
     
-    // The fourth result appears in a clean ubuntu server 10.04.4
+    // The fourth result "Action 4..." appears in a clean ubuntu server 10.04.4
+    // In a clean ubuntu server 12.04.1, however, nothing shows up
     QString expectedOutputs[10] = 
-        { "", "", "", "Action 4 device ifb0 ifindex 3\n", 
+        { "", "", "", "", // "Action 4 device ifb0 ifindex 3\n", 
           "", "" , "", "", "", "" }; 
     
     // Execute commands

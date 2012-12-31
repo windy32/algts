@@ -17,7 +17,7 @@ function usage()
     echo "    ./script --run filename arguments"
     echo "Exapmles:"
     echo "    ./script --build sample"
-    echo "    ./script --run sample \"172.16.0.8/29 10.0.0.1 3201\""
+    echo "    ./script --run sample \"172.16.0.8/29 10.0.0.1 3200\""
     exit 1
 }
 
@@ -58,7 +58,7 @@ if [ ! -d "$2-build" ]; then
 fi
 
 cd "$2-build"
-    qmake ../$2.pro
+    /usr/local/qt/bin/qmake ../$2.pro
 make
 
 # cleanup
