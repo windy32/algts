@@ -54,8 +54,6 @@ void TcpEchoClient::run()
         // Sleep during the interval
         msleep(intervals[i]);
         
-        LOG_INFO("%d - Sleep %d", i, intervals[i]);
-        
         // Send input
         QByteArray block;
         QDataStream out(&block, QIODevice::WriteOnly);
