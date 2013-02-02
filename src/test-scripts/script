@@ -17,7 +17,7 @@ function usage()
     echo "    ./script --run filename arguments"
     echo "Exapmles:"
     echo "    ./script --build sample"
-    echo "    ./script --run sample \"172.16.0.8/29 10.0.0.1 3200\""
+    echo "    ./script --run sample \"172.16.0.16/28 10.0.0.1 3200\""
     exit 1
 }
 
