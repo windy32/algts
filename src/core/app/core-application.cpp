@@ -187,6 +187,7 @@ void CoreApplication::exec(Scenario *s)
     
     // 10
     index = 0;
+    m_rawTrace.clear();
     for(it = tasks.begin(); it != tasks.end(); ++it) // For each user
     {
         QString username = it.key();
