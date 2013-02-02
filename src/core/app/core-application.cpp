@@ -63,8 +63,8 @@ void CoreApplication::exec(Scenario *s)
     for(it = tasks.begin(), index = 0; it != tasks.end(); ++it, ++index)
     {
         addrTable[it.key()] = m_localAddrs[index];
-        LOG_INFO(QString("%1's address: %2")
-            .arg(it.key()).arg(m_localAddrs[index].toString())); 
+        //LOG_INFO(QString("%1's address: %2")
+        //    .arg(it.key()).arg(m_localAddrs[index].toString())); 
     }
     
     // 3
