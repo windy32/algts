@@ -55,7 +55,6 @@ void TextTrace::generate(QMap<QString, QVector<Task *> > &tasks,
                 << " Type=\"" << task->getName() << "\"\n";
             out << "{\n";
             
-            
             // The content
             TextTraceItem content;
             clients[index++]->generateTextTrace(content);

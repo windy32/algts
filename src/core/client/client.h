@@ -74,6 +74,12 @@ public:
      * \param length The length of the regular trace
      */
     virtual void generateRegularTrace(RegularTraceItem &trace, int length) = 0;
+    
+    /**
+     * \brief Generate raw trace
+     * \param trace The raw trace item for output
+     */
+    virtual void generateRawTrace(RawTraceItem &trace) = 0;
 };
 
 #endif /* CLIENT_H */

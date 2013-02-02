@@ -57,7 +57,17 @@ protected:
      * \brief Port of the server daemon
      */
     quint16 m_serverDaemonPort;
-    
+
+    /**
+     * \brief Raw trace generated while executing tasks
+     *
+     * This is a rather complicated container structure.
+     *  - 1st index is username
+     *  - 2nd index is the task index
+     *  - 3rd index is the name of the trace item (within RawTraceItem)
+     *  - 4th index is the data index of the trace item (within RawTraceItem)
+     */
+    QMap<QString, QList<RawTraceItem> > m_rawTrace;
 public:
     /**
      * \brief Constructor that does nothing
@@ -113,7 +123,8 @@ public:
      *  8. Wait until thread exits
      *  9. Generate trace file if desired
      */
-    void  exec(Scenario *s);
+    void exec(Scenario *s);
+    void exportRawTrace(QString userName, int taskIndex, RawTraceItem &trace);
 };
 
 #endif /* CORE_APPLICATION_H */

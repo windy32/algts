@@ -104,6 +104,7 @@ public:
 
     virtual void generateTextTrace(TextTraceItem &trace);
     virtual void generateRegularTrace(RegularTraceItem &trace, int seconds);
+    virtual void generateRawTrace(RawTraceItem &trace);
 };
 
 #endif /* ONOFF_DOWNLOAD_CLIENT_H */

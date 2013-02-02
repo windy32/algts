@@ -186,6 +186,24 @@ void CoreApplication::exec(Scenario *s)
     }
     
     // 10
+    index = 0;
+    for(it = tasks.begin(); it != tasks.end(); ++it) // For each user
+    {
+        QString username = it.key();
+        m_rawTrace.insert(username, QList<RawTraceItem>()); // Insert user
+
+        // For each task
+        for(int taskIndex = 0; taskIndex < it.value().size(); taskIndex++) 
+        {
+            m_rawTrace[username].append(RawTraceItem()); // Insert task
+            
+            // Obtain the Client object and generate
+            Client *client = clients[index++];
+            client->generateRawTrace(m_rawTrace[username][taskIndex]);
+        }
+    }
+
+
     if( TextTrace::enabled())
     {
         LOG_DEBUG("Generate trace file...");
@@ -194,5 +212,25 @@ void CoreApplication::exec(Scenario *s)
     }
     
     LOG_DEBUG("End of CoreApplication::exec");
+}
+
+void CoreApplication::exportRawTrace(QString userName, int taskIndex, 
+                                     RawTraceItem &trace)
+{
+    if (!m_rawTrace.contains(userName))
+    {
+        LOG_ERROR(QString(
+            "ExportRawTrace: username '%1' does not exist").arg(userName));
+        return;
+    }
+
+    if (taskIndex >= m_rawTrace[userName].size() || taskIndex < 0)
+    {
+        LOG_ERROR(QString(
+            "ExportRawTrace: index %1 is out of range").arg(taskIndex));
+        return;
+    }
+    
+    trace = m_rawTrace[userName][taskIndex];
 }
 

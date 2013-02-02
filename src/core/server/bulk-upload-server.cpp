@@ -49,8 +49,8 @@ void BulkUploadServerSession::run()
         qint64 bytesRead = socket.read(buffer, 256 * 1024);
         totalBytes += bytesRead;
         
-        LOG_DEBUG("BulkUploadServerSession %d / %d", 
-            (int)bytesRead, (int)totalBytes);
+        //LOG_DEBUG("BulkUploadServerSession %d / %d", 
+        //    (int)bytesRead, (int)totalBytes);
     }
     
     // Connection closed by client

@@ -30,7 +30,8 @@
  * "at 3692ms, 1430 bytes are received, now 7220024 bytes are received in total"
  *
  * \note Raw trace is generated internally when a client executes a task, 
- *       which is not visible from users.
+ *       however it can be exported via exportRawTrace() with a core application
+ *       or a console application object.
  *
  * **Text trace**
  *
@@ -69,6 +70,11 @@
  * \see Client
  */
 
+/**
+ * \brief Raw trace output for a task
+ * \ingroup Constructs
+ */
+typedef QMap<QString, QList<qint32> > RawTraceItem;
 
 /**
  * \brief Text trace output for a task

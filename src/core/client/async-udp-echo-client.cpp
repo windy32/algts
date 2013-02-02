@@ -201,3 +201,19 @@ void AsyncUdpEchoClientReceiver::run()
     }
     LOG_DEBUG("End of AsyncUdpEchoClientReceiver::run");
 }
+
+void AsyncUdpEchoClient::generateRawTrace(RawTraceItem &trace)
+{
+    trace.clear();
+    trace.insert("Index", QList<qint32>());
+    trace.insert("Time", QList<qint32>());
+    trace.insert("Delay", QList<qint32>());
+    
+    for(int i = 0; i < m_trace.index.size(); i++)
+    {
+        trace["Index"].append(m_trace.index[i]);
+        trace["Time"].append(m_trace.time[i]);
+        trace["Delay"].append(m_trace.delay[i]);
+    }
+}
+

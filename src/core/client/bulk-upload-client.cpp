@@ -172,3 +172,21 @@ void BulkUploadClient::generateRegularTrace(RegularTraceItem &trace,
         trace["TxRate"].append(bytesPerSecond[i]);
     }
 }
+
+void BulkUploadClient::generateRawTrace(RawTraceItem &trace)
+{
+    trace.clear();
+    trace.insert("Index", QList<qint32>());
+    trace.insert("Time", QList<qint32>());
+    trace.insert("NewBytes", QList<qint32>());
+    trace.insert("TotalBytes", QList<qint32>());
+    
+    for(int i = 0; i < m_trace.index.size(); i++)
+    {
+        trace["Index"].append(m_trace.index[i]);
+        trace["Time"].append(m_trace.time[i]);
+        trace["NewBytes"].append(m_trace.newBytes[i]);
+        trace["TotalBytes"].append(m_trace.totalBytes[i]);
+    }
+}
+

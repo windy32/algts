@@ -86,6 +86,7 @@ public:
 
     virtual void generateTextTrace(TextTraceItem &trace);
     virtual void generateRegularTrace(RegularTraceItem &trace, int seconds);
+    virtual void generateRawTrace(RawTraceItem &trace);
 };
 
 #endif /* TCP_ECHO_CLIENT_H */

@@ -181,3 +181,21 @@ void BulkDownloadClient::generateRegularTrace(RegularTraceItem &trace,
         trace["RxRate"].append(bytesPerSecond[i]);
     }
 }
+
+void BulkDownloadClient::generateRawTrace(RawTraceItem &trace)
+{
+    trace.clear();
+    trace.insert("Index", QList<qint32>());
+    trace.insert("Time", QList<qint32>());
+    trace.insert("NewBytes", QList<qint32>());
+    trace.insert("TotalBytes", QList<qint32>());
+    
+    for(int i = 0; i < m_trace.index.size(); i++)
+    {
+        trace["Index"].append(m_trace.index[i]);
+        trace["Time"].append(m_trace.time[i]);
+        trace["NewBytes"].append(m_trace.newBytes[i]);
+        trace["TotalBytes"].append(m_trace.totalBytes[i]);
+    }
+}
+

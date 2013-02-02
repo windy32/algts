@@ -148,3 +148,19 @@ void TcpEchoClient::generateRegularTrace(RegularTraceItem &trace, int seconds)
         trace["Active"].append((samples[i] == 0) ? 0 : 1);
     }
 }
+
+void TcpEchoClient::generateRawTrace(RawTraceItem &trace)
+{
+    trace.clear();
+    trace.insert("Index", QList<qint32>());
+    trace.insert("Time", QList<qint32>());
+    trace.insert("Delay", QList<qint32>());
+    
+    for(int i = 0; i < m_trace.index.size(); i++)
+    {
+        trace["Index"].append(m_trace.index[i]);
+        trace["Time"].append(m_trace.time[i]);
+        trace["Delay"].append(m_trace.delay[i]);
+    }
+}
+
