@@ -45,11 +45,16 @@ void TcpEchoClient::run()
 
     // Sleep before start
     msleep(startTime);
+
+    QTime t;
+    t.start();
     
     for(int i = 0; i < intervals.size(); i++)
     {
         // Sleep during the interval
         msleep(intervals[i]);
+        
+        LOG_INFO("%d - Sleep %d", i, intervals[i]);
         
         // Send input
         QByteArray block;
@@ -62,8 +67,8 @@ void TcpEchoClient::run()
         socket.waitForBytesWritten(-1);
         
         // Receive echo
-        QTime t;
-        t.start();
+        QTime sendTimer;
+        sendTimer.start();
         
         while( socket.bytesAvailable() < echoSizes[i] )
         {
@@ -90,7 +95,7 @@ void TcpEchoClient::run()
             
             m_trace.index.append(i);
             m_trace.time.append(GlobalTimer::msec());
-            m_trace.delay.append(t.elapsed());
+            m_trace.delay.append(sendTimer.elapsed());
         }
         
         if( t.elapsed() >= stopTime )
