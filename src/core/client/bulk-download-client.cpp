@@ -90,7 +90,7 @@ void BulkDownloadClient::run()
         }
         else
         {
-            LOG_INFO("BulkDownload session timed out");
+            LOG_DEBUG("BulkDownload session timed out");
         }
     }
     
