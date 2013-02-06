@@ -63,13 +63,10 @@ int main(int argc, char *argv[])
         s.task()->setAttribute("EchoSize", "Uniform 100, 100");
         s.task()->setAttribute("Interval", "Uniform 10, 10");
 
+        s.addUser("Bulk Download User");
         for (int i = 0; i < n; i++)
         {
-            char username[32];
-            sprintf(username, "Bulk Download User %d", i + 1);
-
-            s.addUser(username);
-            s.addTask(username, new BulkDownloadTask(80));
+            s.addTask("Bulk Download User", new BulkDownloadTask(80));
             s.task()->setAttribute("MaxBytes", "INFINITE");
             s.task()->setAttribute("MaxRate", "INFINITE");
         }
