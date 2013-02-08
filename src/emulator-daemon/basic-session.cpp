@@ -100,31 +100,44 @@ bool BasicSession::execCommit(QMap<QString, QString> &params)
     }
     
     // Build commands
-    QString cmds[6];
+    QString cmds[10];
     cmds[0] = QString("modprobe ifb");
     cmds[1] = QString("ip link set dev ifb0 up");
     cmds[2] = QString("tc qdisc add dev eth0 handle ffff: ingress");
     cmds[3] = QString("tc filter add dev eth0 parent ffff: protocol ip pref 10"
                       "   u32 match u32 0 0 flowid 1:1"
                       "   action mirred egress redirect dev ifb0");
-    cmds[4] = QString("tc qdisc add dev ifb0 root tbf rate %1kbit burst 6kb"
-                      "   latency 500ms").arg(txRate);
-   
-    cmds[5] = QString("tc qdisc add dev eth0 root tbf rate %1kbit burst 6kb"
-                      "   latency 500ms").arg(rxRate);
+    // tbf or htb, that's a question
+    // fifo or sfq, that's also a question
     
+    // cmds[4] = QString("tc qdisc add dev ifb0 root tbf rate %1kbit burst 6kb"
+    //                   "   latency 500ms").arg(txRate);
+    cmds[4] = QString("tc qdisc add dev ifb0 root handle 1: htb default 1");
+    cmds[5] = QString("tc class add dev ifb0 parent 1: classid 1:1"
+                      "   htb rate %1kbit burst 6k quantum 1540").arg(txRate);
+	cmds[6] = QString("tc qdisc add dev ifb0 parent 1:1 handle 10:"
+                      "   sfq perturb 10");
+	
+    // cmds[5] = QString("tc qdisc add dev eth0 root tbf rate %1kbit burst 6kb"
+    //                   "   latency 500ms").arg(rxRate);
+    cmds[7] = QString("tc qdisc add dev eth0 root handle 1: htb default 1");
+    cmds[8] = QString("tc class add dev eth0 parent 1: classid 1:1"
+                      "   htb rate %1kbit burst 6k quantum 1540").arg(rxRate);
+    cmds[9] = QString("tc qdisc add dev eth0 parent 1:1 handle 10:"
+                      "   sfq perturb 10");
+
     // The fourth result "Action 4..." appears in a clean ubuntu server 10.04.4
     // In a clean ubuntu server 12.04.1, however, nothing shows up
-    QString expectedOutputs[6] = 
+    QString expectedOutputs[10] = 
         { "", "", "", "", // "Action 4 device ifb0 ifindex 3\n", 
-          "", "" }; 
+          "", "", "", "", "", "" }; 
     
     // Execute commands
     //
     // Note:
     //    Commands below require root privilege, if the emulator daemon doesn't
     //    have root privilege, the output will always be empty
-    for(int i = 0; i < 6; i++)
+    for(int i = 0; i < 10; i++)
     {
         if( !execCommand(cmds[i], expectedOutputs[i]))
         {
@@ -147,7 +160,7 @@ bool BasicSession::execReset()
     if( !execCommand("tc qdisc del dev eth0 ingress", ""))
         return false;
         
-    if( !execCommand("tc qdisc del dev ifb0 root handle 1:", ""))
+    if( !execCommand("tc qdisc del dev ifb0 root", ""))
         return false;
 
     LOG_DEBUG("End of BasicSession::execReset");
