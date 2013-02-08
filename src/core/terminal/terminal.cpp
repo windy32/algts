@@ -59,7 +59,7 @@ void Terminal::enter(const QString &input)
     {
         LOG_INFO(QString("> %1").arg(lines[i]));
     }
-    
+
     // Write
     m_process.write(input.toLocal8Bit().data());
     if( !m_process.waitForBytesWritten(100))
@@ -79,7 +79,7 @@ void Terminal::enter(const QString &input)
     {
         LOG_INFO(QString("> %1").arg(lines[i]));
     }
-    
+
     // LOG_DEBUG("End of Terminal::enter");
 }
 

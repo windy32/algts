@@ -35,6 +35,8 @@ public:
      * \endcode
      */
     SshTerminal(const QString &addr);
+
+    virtual void enter(const QString &input);
 };
 
 #endif /* SSH_TERMINAL_H */

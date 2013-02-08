@@ -17,6 +17,62 @@
 
 SshTerminal::SshTerminal(const QString &addr)
 {
-    m_program = "ssh";
-    m_arguments = QStringList(addr);
+    m_program = "sshpass";
+    m_arguments = QStringList(addr.split(" "));
 }
+
+void SshTerminal::enter(const QString &input)
+{
+    // With sshpass, it's impossible to get input from stdout
+    // so it's a bit different here
+
+    QString buffer;
+    QStringList lines;
+    
+    // Read if possible
+    while( m_process.waitForReadyRead(100))
+    {
+        buffer += m_process.readAll();
+    }
+    
+    if (buffer != "")
+    {
+        lines = buffer.split("\n");
+        for(int i = 0; i < lines.size(); i++)
+        {
+            LOG_INFO(QString("> %1").arg(lines[i]));
+        }
+    }
+    
+    // Write
+    m_process.write(input.toLocal8Bit().data());
+    if( !m_process.waitForBytesWritten(100))
+    {
+        LOG_ERROR("Cannot write terminal process");
+        return;
+    }
+    
+    QString inputWithoutNewline = input;
+    while (inputWithoutNewline.endsWith("\n"))
+    {
+        inputWithoutNewline.resize(inputWithoutNewline.size() - 1);
+    }
+    LOG_INFO(QString("> %1").arg(inputWithoutNewline));
+    
+    // Read again
+    buffer = "";
+    while( m_process.waitForReadyRead(100))
+    {
+        buffer += m_process.readAll();
+    }
+    
+    if (buffer != "")
+    {
+        lines = buffer.split("\n");
+        for(int i = 0; i < lines.size(); i++)
+        {
+            LOG_INFO(QString("> %1").arg(lines[i]));
+        }
+    }
+}
+
