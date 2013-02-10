@@ -71,6 +71,8 @@ bool BasicSession::execCommit(QMap<QString, QString> &params)
     // Init parameters
     int txRate = 100000; // 100mbps
     int rxRate = 100000; // 100mbps
+    enum enumAlgorithm { htb, tbf } algorithm = htb;
+    enum enumFairQueue { on, off } fairQueue = on;
     
     // Read parameters (no error handling is necessary here)
     if( params.contains("TxRate"))
@@ -99,6 +101,22 @@ bool BasicSession::execCommit(QMap<QString, QString> &params)
         }
     }
     
+    if (params.contains("Algorithm")) // "htb" or "tbf"
+    {
+        if (params["Algorithm"].toLower() == "tbf")
+        {
+            algorithm = tbf;        
+        }
+    }
+    
+    if (params.contains("FairQueue")) // "on" or "off"
+    {
+        if (params["FairQueue"].toLower() == "off")
+        {
+            fairQueue = off;
+        }
+    }
+    
     // Build commands
     QString cmds[10];
     cmds[0] = QString("modprobe ifb");
@@ -107,25 +125,56 @@ bool BasicSession::execCommit(QMap<QString, QString> &params)
     cmds[3] = QString("tc filter add dev eth0 parent ffff: protocol ip pref 10"
                       "   u32 match u32 0 0 flowid 1:1"
                       "   action mirred egress redirect dev ifb0");
-    // tbf or htb, that's a question
-    // fifo or sfq, that's also a question
-    
-    // cmds[4] = QString("tc qdisc add dev ifb0 root tbf rate %1kbit burst 6kb"
-    //                   "   latency 500ms").arg(txRate);
-    cmds[4] = QString("tc qdisc add dev ifb0 root handle 1: htb default 1");
-    cmds[5] = QString("tc class add dev ifb0 parent 1: classid 1:1"
-                      "   htb rate %1kbit burst 6k quantum 1540").arg(txRate);
-	cmds[6] = QString("tc qdisc add dev ifb0 parent 1:1 handle 10:"
-                      "   sfq perturb 10");
+    int n = 0;
+    if (algorithm == htb && fairQueue == on)
+    {
+        n = 10;
+        cmds[4] = QString("tc qdisc add dev ifb0 root handle 1: htb default 1");
+        cmds[5] = QString("tc class add dev ifb0 parent 1: classid 1:1 htb"
+                          "   rate %1kbit burst 6k quantum 1540").arg(txRate);
+	    cmds[6] = QString("tc qdisc add dev ifb0 parent 1:1 handle 10: sfq"
+	                      "   perturb 10");
 	
-    // cmds[5] = QString("tc qdisc add dev eth0 root tbf rate %1kbit burst 6kb"
-    //                   "   latency 500ms").arg(rxRate);
-    cmds[7] = QString("tc qdisc add dev eth0 root handle 1: htb default 1");
-    cmds[8] = QString("tc class add dev eth0 parent 1: classid 1:1"
-                      "   htb rate %1kbit burst 6k quantum 1540").arg(rxRate);
-    cmds[9] = QString("tc qdisc add dev eth0 parent 1:1 handle 10:"
-                      "   sfq perturb 10");
+        cmds[7] = QString("tc qdisc add dev eth0 root handle 1: htb default 1");
+        cmds[8] = QString("tc class add dev eth0 parent 1: classid 1:1 htb"
+                          "   rate %1kbit burst 6k quantum 1540").arg(rxRate);
+        cmds[9] = QString("tc qdisc add dev eth0 parent 1:1 handle 10: sfq"
+                          "   perturb 10");
+    }
+    else if (algorithm == htb && fairQueue == off)
+    {
+        n = 8;
+        cmds[4] = QString("tc qdisc add dev ifb0 root handle 1: htb default 1");
+        cmds[5] = QString("tc class add dev ifb0 parent 1: classid 1:1 htb"
+                          "   rate %1kbit burst 6k quantum 1540").arg(txRate);
+	
+        cmds[6] = QString("tc qdisc add dev eth0 root handle 1: htb default 1");
+        cmds[7] = QString("tc class add dev eth0 parent 1: classid 1:1 htb"
+                          "   rate %1kbit burst 6k quantum 1540").arg(rxRate);
+    }
+    else if (algorithm == tbf && fairQueue == on)
+    {
+        n = 8;
+        cmds[4] = QString("tc qdisc add dev ifb0 root handle 1: tbf"
+                          "   rate %1kbit burst 6kb latency 500ms").arg(txRate);
+	    cmds[5] = QString("tc qdisc add dev ifb0 parent 1: handle 10: sfq"
+	                      "   perturb 10");
 
+        cmds[6] = QString("tc qdisc add dev eth0 root handle 1: tbf"
+                          "   rate %1kbit burst 6kb latency 500ms").arg(rxRate);
+        cmds[7] = QString("tc qdisc add dev eth0 parent 1: handle 10: sfq"
+                          "   perturb 10");
+    }
+    else if (algorithm == tbf && fairQueue == off)
+    {
+        n = 6;
+        cmds[4] = QString("tc qdisc add dev ifb0 root handle 1: tbf"
+                          "   rate %1kbit burst 6kb latency 500ms").arg(txRate);
+
+        cmds[5] = QString("tc qdisc add dev eth0 root handle 1: tbf"
+                          "   rate %1kbit burst 6kb latency 500ms").arg(rxRate);
+    }
+    
     // The fourth result "Action 4..." appears in a clean ubuntu server 10.04.4
     // In a clean ubuntu server 12.04.1, however, nothing shows up
     QString expectedOutputs[10] = 
@@ -137,7 +186,7 @@ bool BasicSession::execCommit(QMap<QString, QString> &params)
     // Note:
     //    Commands below require root privilege, if the emulator daemon doesn't
     //    have root privilege, the output will always be empty
-    for(int i = 0; i < 10; i++)
+    for(int i = 0; i < n; i++)
     {
         if( !execCommand(cmds[i], expectedOutputs[i]))
         {
@@ -209,6 +258,30 @@ bool BasicSession::parseCommit(
             if( !ok || // cannot convert to long
                 intValue < 1024 / inc || // less than 1kbps
                 intValue > 100 * 1024 * 1024 / inc ) // or greater than 100mbps
+            {
+                LOG_WARN(QString("Invalid value %1 for parameter %2")
+                    .arg(it.value()).arg(it.key()));
+                paramValid = false;
+                description.append(QString("Invalid value %1 for parameter %2")
+                    .arg(it.value()).arg(it.key()));
+                continue;
+            }
+        }
+        else if (it.key() == "Algorithm")
+        {
+            if (it.value().toLower() != "htb" && it.value().toLower() != "tbf")
+            {
+                LOG_WARN(QString("Invalid value %1 for parameter %2")
+                    .arg(it.value()).arg(it.key()));
+                paramValid = false;
+                description.append(QString("Invalid value %1 for parameter %2")
+                    .arg(it.value()).arg(it.key()));
+                continue;
+            }
+        }
+        else if (it.key() == "FairQueue")
+        {
+            if (it.value().toLower() != "on" && it.value().toLower() != "off")
             {
                 LOG_WARN(QString("Invalid value %1 for parameter %2")
                     .arg(it.value()).arg(it.key()));
