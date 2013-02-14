@@ -178,7 +178,7 @@ bool BasicSession::execCommit(QMap<QString, QString> &params)
     // The fourth result "Action 4..." appears in a clean ubuntu server 10.04.4
     // In a clean ubuntu server 12.04.1, however, nothing shows up
     QString expectedOutputs[10] = 
-        { "", "", "", "", // "Action 4 device ifb0 ifindex 3\n", 
+        { "", "", "", "Action 4 device ifb0 ifindex 3\n", 
           "", "", "", "", "", "" }; 
     
     // Execute commands

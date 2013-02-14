@@ -36,7 +36,7 @@ bool Terminal::start()
 
     if( !m_process.waitForStarted(1000))
     {
-        LOG_ERROR("Cannot start telnet process");
+        LOG_ERROR("Cannot start terminal process");
         return false;
     }
 
