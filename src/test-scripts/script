@@ -58,7 +58,7 @@ if [ ! -d "$2-build" ]; then
 fi
 
 cd "$2-build"
-    qmake ../$2.pro
+    /home/feng32/qt/bin/qmake ../$2.pro
 make
 
 # cleanup

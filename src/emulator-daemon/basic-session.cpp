@@ -143,14 +143,18 @@ bool BasicSession::execCommit(QMap<QString, QString> &params)
     }
     else if (algorithm == htb && fairQueue == off)
     {
-        n = 8;
+        n = 10;
         cmds[4] = QString("tc qdisc add dev ifb0 root handle 1: htb default 1");
         cmds[5] = QString("tc class add dev ifb0 parent 1: classid 1:1 htb"
                           "   rate %1kbit burst 6k quantum 1540").arg(txRate);
-	
-        cmds[6] = QString("tc qdisc add dev eth0 root handle 1: htb default 1");
-        cmds[7] = QString("tc class add dev eth0 parent 1: classid 1:1 htb"
+	    cmds[6] = QString("tc qdisc add dev ifb0 parent 1:1 handle 10: bfifo"
+	                      "   limit %1kb").arg(txRate / 16); // max delay = 500 ms
+        
+        cmds[7] = QString("tc qdisc add dev eth0 root handle 1: htb default 1");
+        cmds[8] = QString("tc class add dev eth0 parent 1: classid 1:1 htb"
                           "   rate %1kbit burst 6k quantum 1540").arg(rxRate);
+        cmds[9] = QString("tc qdisc add dev eth0 parent 1:1 handle 10: bfifo"
+                          "   limit %1kb").arg(rxRate / 16); // max delay = 500 ms
     }
     else if (algorithm == tbf && fairQueue == on)
     {

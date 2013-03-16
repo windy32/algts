@@ -26,7 +26,7 @@
  *
  * Usage:
  * \code
- * init <local-address-range> <daemon-address> <daemon-port>
+ * emulator <local-address-range> <daemon-address> <daemon-port>
  * \endcode
  */
 
@@ -35,14 +35,12 @@
  */
 int main(int argc, char *argv[])
 {
-    ConsoleApplication app(argc, argv);
-    
     // Enable logging
     Log::enable(Log::LOG_LEVEL_DEBUG);
     
     // Setup emulator
     BasicEmulator emulator("10.0.0.1", 3201);
-    emulator.setParam("TxRate", "500kbps");
+    emulator.setParam("TxRate", "256kbps");
     emulator.setParam("RxRate", "2000kbps");
     emulator.commit();
     
