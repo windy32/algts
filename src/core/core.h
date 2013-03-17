@@ -52,5 +52,8 @@
 #include "task/tcp-echo-task.h"
 #include "task/async-udp-echo-task.h"
 
+// Utils
+#include "utils.h"
+
 #endif /* CORE_H */
 

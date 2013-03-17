@@ -20,8 +20,8 @@ HEADERS += global-timer.h   log.h   QBoundTcpSocket.h   scenario.h   trace.h
 SOURCES += rng-stream.cpp random-variable.cpp random-variable-factory.cpp
 HEADERS += rng-stream.h   random-variable.h   random-variable-factory.h
 
-SOURCES += QTcpServerEx.cpp
-HEADERS += QTcpServerEx.h
+SOURCES += QTcpServerEx.cpp utils.cpp
+HEADERS += QTcpServerEx.h   utils.h
 
 # tasks
 SOURCES += task/task.cpp task/bulk-download-task.cpp task/bulk-upload-task.cpp
