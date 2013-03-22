@@ -16,13 +16,13 @@
 #include "../core/core.h"
 
 /**
- * \file rx-htb-basic.cpp
+ * \file rx-htb-users-vs-thread.cpp
  * \ingroup Scripts
  * \brief The sample client application script
  *
  * Usage:
  * \code
- * rx-htb-basic <local-address-range> <daemon-address> <daemon-port>
+ * rx-htb-user-vs-thread <local-address-range> <daemon-address> <daemon-port>
  * \endcode
  *
  * \see CoreApplication, ConsoleApplication, Scenario, Emulator, Terminal
@@ -180,35 +180,48 @@ int main(int argc, char *argv[])
     // Exec tests
     for (int test_index = 0; test_index < 2; test_index++)
     {
-        // Setup Router
-        if (test_index == 0) // In test one, fifo queues are applied as the default qdisc
+        if (test_index == 0)
         {
-            terminal.enter("tc qdisc show\n");
+            terminal.enter("tc qdisc add dev eth1 root handle 1: htb default 20\n");
+            terminal.enter("tc class add dev eth1 parent 1: classid 1:1 htb rate 1800kbit ceil 1800kbit quantum 1540\n");
+            terminal.enter("tc class add dev eth1 parent 1:1 classid 1:10 htb rate 600kbit ceil 1800kbit quantum 1540\n");
+            terminal.enter("tc class add dev eth1 parent 1:1 classid 1:20 htb rate 600kbit ceil 1800kbit quantum 1540\n");
+            terminal.enter("tc class add dev eth1 parent 1:1 classid 1:30 htb rate 600kbit ceil 1800kbit quantum 1540\n");
+            terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.16 flowid 1:10\n");
+            terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.17 flowid 1:20\n");
+            terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.18 flowid 1:30\n");
+            
+            int threads[16] = // two bulk users
+                { 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 };
+            execTest(app, 2, 16, threads, true, true);
+            
+            // Reset router
+            terminal.enter("tc qdisc del dev eth1 root\n");
         }
-        else // In test two, use htb
+        else
         {
             terminal.enter("tc qdisc add dev eth1 root handle 1: htb default 40\n");
-            terminal.enter("tc class add dev eth1 parent 1: classid 1:1 htb rate 1600kbit ceil 1600kbit quantum 1540\n");
-            terminal.enter("tc class add dev eth1 parent 1:1 classid 1:10 htb rate 400kbit ceil 1600kbit quantum 1540\n");
-            terminal.enter("tc class add dev eth1 parent 1:1 classid 1:20 htb rate 400kbit ceil 1600kbit quantum 1540\n");
-            terminal.enter("tc class add dev eth1 parent 1:1 classid 1:30 htb rate 400kbit ceil 1600kbit quantum 1540\n");
-            terminal.enter("tc class add dev eth1 parent 1:1 classid 1:40 htb rate 400kbit ceil 1600kbit quantum 1540\n");
+            terminal.enter("tc class add dev eth1 parent 1: classid 1:1 htb rate 1800kbit ceil 1800kbit quantum 1540\n");
+            terminal.enter("tc class add dev eth1 parent 1:1 classid 1:10 htb rate 360kbit ceil 1800kbit quantum 1540\n");
+            terminal.enter("tc class add dev eth1 parent 1:1 classid 1:20 htb rate 360kbit ceil 1800kbit quantum 1540\n");
+            terminal.enter("tc class add dev eth1 parent 1:1 classid 1:30 htb rate 360kbit ceil 1800kbit quantum 1540\n");
+            terminal.enter("tc class add dev eth1 parent 1:1 classid 1:40 htb rate 360kbit ceil 1800kbit quantum 1540\n");
+            terminal.enter("tc class add dev eth1 parent 1:1 classid 1:50 htb rate 360kbit ceil 1800kbit quantum 1540\n");
             terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.16 flowid 1:10\n");
             terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.17 flowid 1:20\n");
             terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.18 flowid 1:30\n");
             terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.19 flowid 1:40\n");
-        }
+            terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.20 flowid 1:50\n");
 
-        // Execute Test
-        int threads[15] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
-        execTest(app, 3, 15, threads, true, true);
+            int threads[8] = // four bulk users
+                { 2, 3, 4, 5, 6, 7, 8, 9 };
+            execTest(app, 4, 8, threads, true, true);
 
-        // Reset router
-        if (test_index == 1)
-        {
+            // Reset router
             terminal.enter("tc qdisc del dev eth1 root\n");
         }
     }
+
     emulator.reset();
     terminal.close();
 

@@ -16,13 +16,13 @@
 #include "../core/core.h"
 
 /**
- * \file rx-htb-basic.cpp
+ * \file rx-htb-bandwidth.cpp
  * \ingroup Scripts
  * \brief The sample client application script
  *
  * Usage:
  * \code
- * rx-htb-basic <local-address-range> <daemon-address> <daemon-port>
+ * rx-htb-bandwidth <local-address-range> <daemon-address> <daemon-port>
  * \endcode
  *
  * \see CoreApplication, ConsoleApplication, Scenario, Emulator, Terminal
@@ -30,25 +30,22 @@
 
 /**
  * \brief Execute test
- * \param bulkUsers The number of bulk download users
- * \param nThreads The size of the threads array
- * \param threads An array that contains the number of threads in test
+ * \param nPass Specify how many times each test is executed
+ * \param bandwidth Bandwidth of the emulator
  * \param printDetail Whether to print detail while executing
  * \param printSummary Whether to print summary after it's finished
  */
 void execTest(ConsoleApplication &app, 
-              int bulkUsers, int nThreads, int *threads, // Test options
+              int nPass, int bandwidth, // Test options (bandwidth is for display only) 
               bool printDetail, bool printSummary) // Output options
 {
     QVector<int> mins, maxs, avgs;
     
-    for (int index = 0; index < nThreads; index++) // n threads
+    for (int index = 0; index < nPass; index++)
     {
-        int n = threads[index]; // n threads
-
         if (printDetail)
         {
-            printf("\nPass %d / %d, %d Threads\n", index + 1, nThreads, n);
+            printf("\nPass %d / %d\n", index + 1, nPass);
             printf("------------------------------------------\n");
         }
         
@@ -61,13 +58,13 @@ void execTest(ConsoleApplication &app,
         s.task()->setAttribute("EchoSize", "Uniform 100, 100");
         s.task()->setAttribute("Interval", "Uniform 10, 10");
 
-        for (int i = 0; i < bulkUsers; i++)
+        for (int i = 0; i < 3; i++)
         {
             char username[32];
             sprintf(username, "Bulk Download User %d", i + 1);
             s.addUser(username);
 
-            for (int j = 0; j < n; j++)
+            for (int j = 0; j < 6; j++)
             {
                 s.addTask(username, new BulkDownloadTask(80));
                 s.task()->setAttribute("MaxBytes", "INFINITE");
@@ -136,21 +133,15 @@ void execTest(ConsoleApplication &app,
     
     if (printSummary)
     {
-        printf("\n===========");
-        for (int index = 0; index < nThreads; index++) { printf("====="); }
-        printf("\nThreads   |");
-        for (int index = 0; index < nThreads; index++) { printf("%5d", threads[index]); }
-        printf("\n----------+");
-        for (int index = 0; index < nThreads; index++) { printf("-----"); }
-        printf("\nMin Delay |");
-        for (int index = 0; index < nThreads; index++) { printf("%5d", mins[index]); }
-        printf("\nMax Delay |");
-        for (int index = 0; index < nThreads; index++) { printf("%5d", maxs[index]); }
-        printf("\nAvg Delay |");
-        for (int index = 0; index < nThreads; index++) { printf("%5d", avgs[index]); }
-        printf("\n===========");
-        for (int index = 0; index < nThreads; index++) { printf("====="); }
-        printf("\n\n");
+        printf("\nBandwidth = %d kbps", bandwidth);
+        printf("\n========================================");
+        printf("\nPass | Min Delay | Max Delay | Avg Delay");
+        printf("\n-----+----------------------------------");
+        for (int index = 0; index < nPass; index++)
+        {
+            printf("\n%4d | %9d | %9d | %9d", index + 1, mins[index], maxs[index], avgs[index]);
+        }
+        printf("\n========================================\n\n");
     }
 }
 
@@ -167,49 +158,52 @@ int main(int argc, char *argv[])
     
     // Setup emulator
     BasicEmulator emulator("10.0.0.1", 3201);
-    emulator.setParam("Algorithm", "htb");
-    emulator.setParam("FairQueue", "on");
-    emulator.setParam("TxRate", "256kbps");
-    emulator.setParam("RxRate", "2000kbps");
-    emulator.commit();
 
     // Setup router
     SshTerminal terminal("-p voyage ssh root@172.16.0.1"); // use sshpass
     terminal.start();
 
     // Exec tests
-    for (int test_index = 0; test_index < 2; test_index++)
+    for (int bandwidth = 1000; bandwidth <= 10000; bandwidth += 1000)
     {
-        // Setup Router
-        if (test_index == 0) // In test one, fifo queues are applied as the default qdisc
-        {
-            terminal.enter("tc qdisc show\n");
-        }
-        else // In test two, use htb
-        {
-            terminal.enter("tc qdisc add dev eth1 root handle 1: htb default 40\n");
-            terminal.enter("tc class add dev eth1 parent 1: classid 1:1 htb rate 1600kbit ceil 1600kbit quantum 1540\n");
-            terminal.enter("tc class add dev eth1 parent 1:1 classid 1:10 htb rate 400kbit ceil 1600kbit quantum 1540\n");
-            terminal.enter("tc class add dev eth1 parent 1:1 classid 1:20 htb rate 400kbit ceil 1600kbit quantum 1540\n");
-            terminal.enter("tc class add dev eth1 parent 1:1 classid 1:30 htb rate 400kbit ceil 1600kbit quantum 1540\n");
-            terminal.enter("tc class add dev eth1 parent 1:1 classid 1:40 htb rate 400kbit ceil 1600kbit quantum 1540\n");
-            terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.16 flowid 1:10\n");
-            terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.17 flowid 1:20\n");
-            terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.18 flowid 1:30\n");
-            terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.19 flowid 1:40\n");
-        }
+        // Setup emulator
+        emulator.setParam("Algorithm", "htb");
+        emulator.setParam("FairQueue", "on");
+        emulator.setParam("TxRate", "1000kbps");
+        emulator.setParam("RxRate", QString("%1kbps").arg(bandwidth));
+        emulator.commit();
+
+        // Setup router
+        terminal.enter("tc qdisc add dev eth1 root handle 1: htb default 40\n");
+        terminal.enter(QString(
+            "tc class add dev eth1 parent 1: classid 1:1 htb rate %1kbit ceil %2kbit quantum 1540\n")
+            .arg(bandwidth * 90 / 100).arg(bandwidth * 90 / 100));
+        terminal.enter(QString(
+            "tc class add dev eth1 parent 1:1 classid 1:10 htb rate %1kbit ceil %2kbit\n")
+            .arg(bandwidth * 225 / 1000).arg(bandwidth * 90 / 100));
+        terminal.enter(QString(
+            "tc class add dev eth1 parent 1:1 classid 1:20 htb rate %1kbit ceil %2kbit\n")
+            .arg(bandwidth * 225 / 1000).arg(bandwidth * 90 / 100));
+        terminal.enter(QString(
+            "tc class add dev eth1 parent 1:1 classid 1:30 htb rate %1kbit ceil %2kbit\n")
+            .arg(bandwidth * 225 / 1000).arg(bandwidth * 90 / 100));
+        terminal.enter(QString(
+            "tc class add dev eth1 parent 1:1 classid 1:40 htb rate %1kbit ceil %2kbit\n")
+            .arg(bandwidth * 225 / 1000).arg(bandwidth * 90 / 100));
+        terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.16 flowid 1:10\n");
+        terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.17 flowid 1:20\n");
+        terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.18 flowid 1:30\n");
+        terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.19 flowid 1:40\n");
 
         // Execute Test
-        int threads[15] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
-        execTest(app, 3, 15, threads, true, true);
+        execTest(app, 64, bandwidth, true, true);
+
+        // Reset emulator
+        emulator.reset();
 
         // Reset router
-        if (test_index == 1)
-        {
-            terminal.enter("tc qdisc del dev eth1 root\n");
-        }
+        terminal.enter("tc qdisc del dev eth1 root\n");
     }
-    emulator.reset();
     terminal.close();
 
     // Exit

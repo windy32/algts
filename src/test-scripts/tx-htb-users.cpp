@@ -16,39 +16,37 @@
 #include "../core/core.h"
 
 /**
- * \file rx-htb-basic.cpp
+ * \file tx-htb-users.cpp
  * \ingroup Scripts
  * \brief The sample client application script
  *
  * Usage:
  * \code
- * rx-htb-basic <local-address-range> <daemon-address> <daemon-port>
+ * tx-htb-users <local-address-range> <daemon-address> <daemon-port>
  * \endcode
  *
  * \see CoreApplication, ConsoleApplication, Scenario, Emulator, Terminal
  */
 
+
 /**
  * \brief Execute test
  * \param bulkUsers The number of bulk download users
- * \param nThreads The size of the threads array
- * \param threads An array that contains the number of threads in test
+ * \param nPass Specify how many times each test is executed
  * \param printDetail Whether to print detail while executing
  * \param printSummary Whether to print summary after it's finished
  */
 void execTest(ConsoleApplication &app, 
-              int bulkUsers, int nThreads, int *threads, // Test options
+              int bulkUsers, int nPass, // Test options
               bool printDetail, bool printSummary) // Output options
 {
     QVector<int> mins, maxs, avgs;
     
-    for (int index = 0; index < nThreads; index++) // n threads
+    for (int index = 0; index < nPass; index++)
     {
-        int n = threads[index]; // n threads
-
         if (printDetail)
         {
-            printf("\nPass %d / %d, %d Threads\n", index + 1, nThreads, n);
+            printf("\nPass %d / %d\n", index + 1, nPass);
             printf("------------------------------------------\n");
         }
         
@@ -64,12 +62,12 @@ void execTest(ConsoleApplication &app,
         for (int i = 0; i < bulkUsers; i++)
         {
             char username[32];
-            sprintf(username, "Bulk Download User %d", i + 1);
+            sprintf(username, "Bulk Upload User %d", i + 1);
             s.addUser(username);
 
-            for (int j = 0; j < n; j++)
+            for (int j = 0; j < 4; j++)
             {
-                s.addTask(username, new BulkDownloadTask(80));
+                s.addTask(username, new BulkUploadTask(80));
                 s.task()->setAttribute("MaxBytes", "INFINITE");
                 s.task()->setAttribute("MaxRate", "INFINITE");
             }
@@ -129,28 +127,22 @@ void execTest(ConsoleApplication &app,
             }
             printf("\n");
         }
-
+        
         // Wait for a while
         Utils::msleep(1000);
     }
     
     if (printSummary)
     {
-        printf("\n===========");
-        for (int index = 0; index < nThreads; index++) { printf("====="); }
-        printf("\nThreads   |");
-        for (int index = 0; index < nThreads; index++) { printf("%5d", threads[index]); }
-        printf("\n----------+");
-        for (int index = 0; index < nThreads; index++) { printf("-----"); }
-        printf("\nMin Delay |");
-        for (int index = 0; index < nThreads; index++) { printf("%5d", mins[index]); }
-        printf("\nMax Delay |");
-        for (int index = 0; index < nThreads; index++) { printf("%5d", maxs[index]); }
-        printf("\nAvg Delay |");
-        for (int index = 0; index < nThreads; index++) { printf("%5d", avgs[index]); }
-        printf("\n===========");
-        for (int index = 0; index < nThreads; index++) { printf("====="); }
-        printf("\n\n");
+        printf("\n-> %d Bulk Upload Users", bulkUsers);
+        printf("\n========================================");
+        printf("\nPass | Min Delay | Max Delay | Avg Delay");
+        printf("\n-----+----------------------------------");
+        for (int index = 0; index < nPass; index++)
+        {
+            printf("\n%4d | %9d | %9d | %9d", index + 1, mins[index], maxs[index], avgs[index]);
+        }
+        printf("\n========================================\n\n");
     }
 }
 
@@ -168,7 +160,7 @@ int main(int argc, char *argv[])
     // Setup emulator
     BasicEmulator emulator("10.0.0.1", 3201);
     emulator.setParam("Algorithm", "htb");
-    emulator.setParam("FairQueue", "on");
+    emulator.setParam("FairQueue", "off");
     emulator.setParam("TxRate", "256kbps");
     emulator.setParam("RxRate", "2000kbps");
     emulator.commit();
@@ -178,36 +170,34 @@ int main(int argc, char *argv[])
     terminal.start();
 
     // Exec tests
-    for (int test_index = 0; test_index < 2; test_index++)
+    for (int bulkUsers = 1; bulkUsers <= 9; bulkUsers++)
     {
         // Setup Router
-        if (test_index == 0) // In test one, fifo queues are applied as the default qdisc
+        terminal.enter(QString(
+            "tc qdisc add dev eth0 root handle 1: htb default %1\n")
+            .arg((bulkUsers + 1) * 10));
+        terminal.enter(
+            "tc class add dev eth0 parent 1: classid 1:1 htb rate 240kbit quantum 1540\n");
+        for (int i = 1; i <= bulkUsers + 1; i++)
         {
-            terminal.enter("tc qdisc show\n");
-        }
-        else // In test two, use htb
-        {
-            terminal.enter("tc qdisc add dev eth1 root handle 1: htb default 40\n");
-            terminal.enter("tc class add dev eth1 parent 1: classid 1:1 htb rate 1600kbit ceil 1600kbit quantum 1540\n");
-            terminal.enter("tc class add dev eth1 parent 1:1 classid 1:10 htb rate 400kbit ceil 1600kbit quantum 1540\n");
-            terminal.enter("tc class add dev eth1 parent 1:1 classid 1:20 htb rate 400kbit ceil 1600kbit quantum 1540\n");
-            terminal.enter("tc class add dev eth1 parent 1:1 classid 1:30 htb rate 400kbit ceil 1600kbit quantum 1540\n");
-            terminal.enter("tc class add dev eth1 parent 1:1 classid 1:40 htb rate 400kbit ceil 1600kbit quantum 1540\n");
-            terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.16 flowid 1:10\n");
-            terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.17 flowid 1:20\n");
-            terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.18 flowid 1:30\n");
-            terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.19 flowid 1:40\n");
+            terminal.enter(QString(
+                "tc class add dev eth0 parent 1:1 classid 1:%1 htb rate %2kbit ceil 240kbit quantum 1540\n")
+                .arg(i * 10).arg(240 / (bulkUsers + 1)));
+            terminal.enter(QString(
+                "tc filter add dev eth0 parent 1: protocol ip prio 1 handle %1 fw flowid 1:%1\n")
+                .arg(i * 10));
+            terminal.enter(QString(
+                "iptables -t mangle -A FORWARD -s 172.16.0.%1 -j MARK --set-mark %2\n")
+                .arg(16 + i - 1).arg(i * 10));
         }
 
         // Execute Test
-        int threads[15] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
-        execTest(app, 3, 15, threads, true, true);
+        printf("\nTest %d: %d users\n", bulkUsers, bulkUsers);
+        execTest(app, bulkUsers, 64, true, true);
 
         // Reset router
-        if (test_index == 1)
-        {
-            terminal.enter("tc qdisc del dev eth1 root\n");
-        }
+        terminal.enter("tc qdisc del dev eth0 root\n");
+        terminal.enter("iptables -t mangle -F FORWARD\n");
     }
     emulator.reset();
     terminal.close();

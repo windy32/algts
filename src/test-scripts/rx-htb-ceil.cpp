@@ -30,29 +30,27 @@
 
 /**
  * \brief Execute test
- * \param bulkUsers The number of bulk download users
- * \param minThreads Min number of threads
- * \param maxThreads Max number of threads
+ * \param nPass Specify how many times each test is executed
+ * \param ceil Ceil rate for the test
  * \param printDetail Whether to print detail while executing
  * \param printSummary Whether to print summary after it's finished
  */
 void execTest(ConsoleApplication &app, 
-              int bulkUsers, int minThreads, int maxThreads, // Test options
+              int nPass, int ceil, // Test options (ceil is for display only) 
               bool printDetail, bool printSummary) // Output options
 {
     QVector<int> mins, maxs, avgs;
     
-    for (int n = minThreads; n <= maxThreads; n++) // n threads
+    for (int index = 0; index < nPass; index++)
     {
         if (printDetail)
         {
-            printf("\nPass %d / %d, %d Threads\n", 
-                    n - minThreads + 1, maxThreads - minThreads + 1, n);
+            printf("\nPass %d / %d\n", index + 1, nPass);
             printf("------------------------------------------\n");
         }
         
         // Setup scenario
-        Scenario s(12345, 20); // seed & length
+        Scenario s(12345, 10); // seed & length
         
         s.addUser("Realtime User");
         s.addTask("Realtime User", new TcpEchoTask(23));
@@ -60,13 +58,13 @@ void execTest(ConsoleApplication &app,
         s.task()->setAttribute("EchoSize", "Uniform 100, 100");
         s.task()->setAttribute("Interval", "Uniform 10, 10");
 
-        for (int i = 0; i < bulkUsers; i++)
+        for (int i = 0; i < 3; i++)
         {
             char username[32];
             sprintf(username, "Bulk Download User %d", i + 1);
             s.addUser(username);
 
-            for (int j = 0; j < n; j++)
+            for (int j = 0; j < 6; j++)
             {
                 s.addTask(username, new BulkDownloadTask(80));
                 s.task()->setAttribute("MaxBytes", "INFINITE");
@@ -128,25 +126,22 @@ void execTest(ConsoleApplication &app,
             }
             printf("\n");
         }
+
+        // Wait for a while
+        Utils::msleep(1000);
     }
     
     if (printSummary)
     {
-        printf("\n===========");
-        for (int n = minThreads; n <= maxThreads; n++) { printf("====="); }
-        printf("\nThreads   |");
-        for (int n = minThreads; n <= maxThreads; n++) { printf("%5d", n); }
-        printf("\n----------+");
-        for (int n = minThreads; n <= maxThreads; n++) { printf("-----"); }
-        printf("\nMin Delay |");
-        for (int n = minThreads; n <= maxThreads; n++) { printf("%5d", mins[n - minThreads]); }
-        printf("\nMax Delay |");
-        for (int n = minThreads; n <= maxThreads; n++) { printf("%5d", maxs[n - minThreads]); }
-        printf("\nAvg Delay |");
-        for (int n = minThreads; n <= maxThreads; n++) { printf("%5d", avgs[n - minThreads]); }
-        printf("\n===========");
-        for (int n = minThreads; n <= maxThreads; n++) { printf("====="); }
-        printf("\n\n");
+        printf("\nCeil Rate = %d kbps", ceil);
+        printf("\n========================================");
+        printf("\nPass | Min Delay | Max Delay | Avg Delay");
+        printf("\n-----+----------------------------------");
+        for (int index = 0; index < nPass; index++)
+        {
+            printf("\n%4d | %9d | %9d | %9d", index + 1, mins[index], maxs[index], avgs[index]);
+        }
+        printf("\n========================================\n\n");
     }
 }
 
@@ -174,22 +169,27 @@ int main(int argc, char *argv[])
     terminal.start();
 
     // Exec tests
-    for (int ceil = 1600; ceil <= 2000; ceil += 50)
+    for (int percentage = 70; percentage <= 100; percentage += 2)
     {
         // Setup router
         terminal.enter("tc qdisc add dev eth1 root handle 1: htb default 40\n");
-        terminal.enter(QString("tc class add dev eth1 parent 1: classid 1:1 htb rate %1kbit ceil %1kbit quantum 1540\n").arg(ceil));
-        terminal.enter(QString("tc class add dev eth1 parent 1:1 classid 1:10 htb rate 400kbit ceil %1kbit\n").arg(ceil));
-        terminal.enter(QString("tc class add dev eth1 parent 1:1 classid 1:20 htb rate 400kbit ceil %1kbit\n").arg(ceil));
-        terminal.enter(QString("tc class add dev eth1 parent 1:1 classid 1:30 htb rate 400kbit ceil %1kbit\n").arg(ceil));
-        terminal.enter(QString("tc class add dev eth1 parent 1:1 classid 1:40 htb rate 400kbit ceil %1kbit\n").arg(ceil));
+        terminal.enter(QString(
+            "tc class add dev eth1 parent 1: classid 1:1 htb rate %1kbit ceil %1kbit quantum 1540\n").arg(2000 * percentage / 100));
+        terminal.enter(QString(
+            "tc class add dev eth1 parent 1:1 classid 1:10 htb rate 400kbit ceil %1kbit\n").arg(2000 * percentage / 100));
+        terminal.enter(QString(
+            "tc class add dev eth1 parent 1:1 classid 1:20 htb rate 400kbit ceil %1kbit\n").arg(2000 * percentage / 100));
+        terminal.enter(QString(
+            "tc class add dev eth1 parent 1:1 classid 1:30 htb rate 400kbit ceil %1kbit\n").arg(2000 * percentage / 100));
+        terminal.enter(QString(
+            "tc class add dev eth1 parent 1:1 classid 1:40 htb rate 400kbit ceil %1kbit\n").arg(2000 * percentage / 100));
         terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.16 flowid 1:10\n");
         terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.17 flowid 1:20\n");
         terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.18 flowid 1:30\n");
         terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.19 flowid 1:40\n");
 
         // Execute Test
-        execTest(app, 3, 1, 16, false, true);
+        execTest(app, 64, 2000 * percentage / 100, true, true);
 
         // Reset router
         terminal.enter("tc qdisc del dev eth1 root\n");
