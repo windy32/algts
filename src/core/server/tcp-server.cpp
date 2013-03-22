@@ -44,6 +44,8 @@ void TcpServer::run()
         m_ready = true;
     }
 
+    QList<TcpServerSession *> threads;
+
     // Process incoming requests
     while( true )
     {
@@ -56,8 +58,19 @@ void TcpServer::run()
         
         // Start a new thread for the session
         TcpServerSession *session = createSession(socketDescriptor);
+        threads.append(session);
         //connect(session, SIGNAL(finished()), this, SLOT(deleteLator()));
         session->start();
+        
+        // Free Memory
+        for (int i = threads.size() - 1; i >= 0; i--)
+        {
+            if (threads[i]->isFinished())
+            {
+                delete threads[i];
+                threads.removeAt(i);
+            }
+        }
     }
 
     // TODO: capture ctrl+c and stop the loop above

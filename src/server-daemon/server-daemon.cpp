@@ -384,6 +384,7 @@ int main(int argc, char *argv[])
         
         // Delete the thread object
         delete session;
+        //connect(session, SIGNAL(finished()), this, SLOT(deleteLator()));
     }
 
     // TODO: capture ctrl+c and stop the loop above

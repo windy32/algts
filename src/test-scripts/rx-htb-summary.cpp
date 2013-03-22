@@ -66,19 +66,19 @@ int calcCeilRate(ConsoleApplication &app, SshTerminal &terminal,
         terminal.enter("tc qdisc add dev eth1 root handle 1: htb default 40\n");
         terminal.enter(QString(
             "tc class add dev eth1 parent 1: classid 1:1 htb rate %1kbit ceil %2kbit quantum 1540\n")
-            .arg(avgCeil * bandwidth / 100).arg(avgCeil * bandwidth / 100));
+            .arg(ceil * bandwidth / 100).arg(ceil * bandwidth / 100));
         terminal.enter(QString(
             "tc class add dev eth1 parent 1:1 classid 1:10 htb rate %1kbit ceil %2kbit\n")
-            .arg(avgCeil * bandwidth / 100 / 4).arg(avgCeil * bandwidth / 100));
+            .arg(ceil * bandwidth / 100 / 4).arg(ceil * bandwidth / 100));
         terminal.enter(QString(
             "tc class add dev eth1 parent 1:1 classid 1:20 htb rate %1kbit ceil %2kbit\n")
-            .arg(avgCeil * bandwidth / 100 / 4).arg(avgCeil * bandwidth / 100));
+            .arg(ceil * bandwidth / 100 / 4).arg(ceil * bandwidth / 100));
         terminal.enter(QString(
             "tc class add dev eth1 parent 1:1 classid 1:30 htb rate %1kbit ceil %2kbit\n")
-            .arg(avgCeil * bandwidth / 100 / 4).arg(avgCeil * bandwidth / 100));
+            .arg(ceil * bandwidth / 100 / 4).arg(ceil * bandwidth / 100));
         terminal.enter(QString(
             "tc class add dev eth1 parent 1:1 classid 1:40 htb rate %1kbit ceil %2kbit\n")
-            .arg(avgCeil * bandwidth / 100 / 4).arg(avgCeil * bandwidth / 100));
+            .arg(ceil * bandwidth / 100 / 4).arg(ceil * bandwidth / 100));
         terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.16 flowid 1:10\n");
         terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.17 flowid 1:20\n");
         terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.18 flowid 1:30\n");
@@ -243,7 +243,7 @@ int main(int argc, char *argv[])
             emulator.commit();
 
             // Execute Test
-            calcCeilRate(app, terminal, 75, 80, 32, bandwidth, threads, true, true);
+            calcCeilRate(app, terminal, 75, 80, 50, bandwidth, threads, true, true);
 
             // Reset emulator
             emulator.reset();
