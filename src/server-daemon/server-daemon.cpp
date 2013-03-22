@@ -377,11 +377,13 @@ int main(int argc, char *argv[])
         
         // Start a new thread for the session
         ServerDaemonSession *session = new ServerDaemonSession(socket);
-        //connect(session, SIGNAL(finished()), thread, SLOT(deleteLator()));
         session->start();
         
         // Block the thread to avoid concurrent visit to QSet servers
         session->wait();
+        
+        // Delete the thread object
+        delete session;
     }
 
     // TODO: capture ctrl+c and stop the loop above
