@@ -175,19 +175,19 @@ int calcCeilRate(ConsoleApplication &app, SshTerminal &terminal,
         if (x < 1.0) // Interpolation with alpha = beta = 0.1
         {
             double k = (x - 0.5) / 0.5;
-            ceil = (1 - k) * (avgCeil * 1.2) + k * avgCeil;
+            ceil = (1 - k) * (ceil * 1.2) + k * ceil;
         }
         else
         {
             double k = (x - 1.0) / 1.0;
-            ceil = (1 - k) * avgCeil + k * (avgCeil * 0.8);
+            ceil = (1 - k) * ceil + k * (ceil * 0.8);
         }
         
-        // Prepare ceil rate for next round
+        // Calc Average
         sumCeil += ceil;
         avgCeil = sumCeil / (index + 2);
-        ceils.append(ceil);
         avgCeils.append(avgCeil);
+        ceils.append(ceil);
 
         // TODO: Fix memory leak in server daemon
         
@@ -243,7 +243,7 @@ int main(int argc, char *argv[])
             emulator.commit();
 
             // Execute Test
-            calcCeilRate(app, terminal, 75, 80, 50, bandwidth, threads, true, true);
+            calcCeilRate(app, terminal, 75, 80, 40, bandwidth, threads, true, true);
 
             // Reset emulator
             emulator.reset();

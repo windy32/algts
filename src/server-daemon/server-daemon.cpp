@@ -216,11 +216,21 @@ public:
      * \brief Initialize the server daemon session with an established socket
      */
     ServerDaemonSession(QTcpSocket *socket);
+
+    /**
+     * \brief The destructor of the server daemon session
+     */
+    ~ServerDaemonSession();
 };
 
 ServerDaemonSession::ServerDaemonSession(QTcpSocket *socket)
     : m_socket(socket)
 {
+}
+
+ServerDaemonSession::~ServerDaemonSession()
+{
+    delete m_socket;
 }
 
 void ServerDaemonSession::run()
