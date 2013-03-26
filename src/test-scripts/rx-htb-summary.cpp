@@ -31,29 +31,19 @@
 /**
  * \brief Execute test
  * \param app The Console Application object
- * \param terminal The SSH Terminal object
- * \param ceil Init value of the ceil rate
- * \param targetDelay The test tries to keep the average delay under this value 
- * \param nPass Specify how many times each test is executed
  * \param bandwidth Bandwidth of the emulator
  * \param threads Number of download sessions of each bulk user
+ * \param ceil Init value of the ceil rate
+ * \param nPass Specify how many times each test is executed
  * \param printDetail Whether to print detail while executing
  * \param printSummary Whether to print summary after it's finished
  */
-int calcCeilRate(ConsoleApplication &app, SshTerminal &terminal,
-                 int ceil, int targetDelay, int nPass, // Search Options
-                 int bandwidth, int threads, // Scenario Options
-                 bool printDetail, bool printSummary) // Output options
+void execTest(ConsoleApplication &app, 
+             int bandwidth, int threads, int ceil, int nPass, // Search options
+             bool printDetail, bool printSummary) // Output options
 {
     QVector<int> mins, maxs, avgs;
-    QVector<int> ceils, avgCeils;
 
-    // At the beginning, only one ceil rate is available
-    ceils.append(ceil);
-    avgCeils.append(ceil);
-    int sumCeil = ceil;
-    int avgCeil = ceil;
-    
     for (int index = 0; index < nPass; index++)
     {
         if (printDetail)
@@ -62,31 +52,8 @@ int calcCeilRate(ConsoleApplication &app, SshTerminal &terminal,
             printf("------------------------------------------\n");
         }
         
-        // Setup Router
-        terminal.enter("tc qdisc add dev eth1 root handle 1: htb default 40\n");
-        terminal.enter(QString(
-            "tc class add dev eth1 parent 1: classid 1:1 htb rate %1kbit ceil %2kbit quantum 1540\n")
-            .arg(ceil * bandwidth / 100).arg(ceil * bandwidth / 100));
-        terminal.enter(QString(
-            "tc class add dev eth1 parent 1:1 classid 1:10 htb rate %1kbit ceil %2kbit\n")
-            .arg(ceil * bandwidth / 100 / 4).arg(ceil * bandwidth / 100));
-        terminal.enter(QString(
-            "tc class add dev eth1 parent 1:1 classid 1:20 htb rate %1kbit ceil %2kbit\n")
-            .arg(ceil * bandwidth / 100 / 4).arg(ceil * bandwidth / 100));
-        terminal.enter(QString(
-            "tc class add dev eth1 parent 1:1 classid 1:30 htb rate %1kbit ceil %2kbit\n")
-            .arg(ceil * bandwidth / 100 / 4).arg(ceil * bandwidth / 100));
-        terminal.enter(QString(
-            "tc class add dev eth1 parent 1:1 classid 1:40 htb rate %1kbit ceil %2kbit\n")
-            .arg(ceil * bandwidth / 100 / 4).arg(ceil * bandwidth / 100));
-        terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.16 flowid 1:10\n");
-        terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.17 flowid 1:20\n");
-        terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.18 flowid 1:30\n");
-        terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.19 flowid 1:40\n");
-        
         // Setup scenario
         Scenario s(12345, 10); // seed & length
-        
         s.addUser("Realtime User");
         s.addTask("Realtime User", new TcpEchoTask(23));
         s.task()->setAttribute("InputSize", "Uniform 100, 100");
@@ -106,12 +73,9 @@ int calcCeilRate(ConsoleApplication &app, SshTerminal &terminal,
                 s.task()->setAttribute("MaxRate", "INFINITE");
             }
         }
-        
+            
         // Execute
         app.exec(&s);
-
-        // Reset router
-        terminal.enter("tc qdisc del dev eth1 root\n");
 
         // Collect statistics
         RawTraceItem rti;
@@ -141,7 +105,7 @@ int calcCeilRate(ConsoleApplication &app, SshTerminal &terminal,
             }
         }
         avg /= nSamples;
-
+            
         mins.append(min);
         maxs.append(max);
         avgs.append(avg);
@@ -163,53 +127,24 @@ int calcCeilRate(ConsoleApplication &app, SshTerminal &terminal,
                 printf("%4d", count[i]);
             }
             printf("\n");
-            
-            printf("AvgCeil = %d, NewCeil = %d, Result = %d ms, Target = %d ms\n", 
-                avgCeil, ceil, avg, targetDelay);
         }
-
-        // Adjust ceil rate
-        double x = avg / (double)targetDelay;
-        if (x < 0.5) x = 0.5;
-        if (x > 2.0) x = 2.0;
-        if (x < 1.0) // Interpolation with alpha = beta = 0.1
-        {
-            double k = (x - 0.5) / 0.5;
-            ceil = (1 - k) * (ceil * 1.2) + k * ceil;
-        }
-        else
-        {
-            double k = (x - 1.0) / 1.0;
-            ceil = (1 - k) * ceil + k * (ceil * 0.8);
-        }
-        
-        // Calc Average
-        sumCeil += ceil;
-        avgCeil = sumCeil / (index + 2);
-        avgCeils.append(avgCeil);
-        ceils.append(ceil);
-
-        // TODO: Fix memory leak in server daemon
-        
+    
         // Wait for a while
         Utils::msleep(1000);
     }
     
     if (printSummary)
     {
-        printf("\nBandwidth = %d kbps, threads = %d", bandwidth, threads);
-        printf("\n==============================================================");
-        printf("\nPass | Min Delay | Max Delay | Avg Delay | New Ceil | Avg Ceil");
-        printf("\n-----+--------------------------------------------------------");
+        printf("\nBandwidth = %d kbps, threads = %d, ceil = %d%%", bandwidth, threads, ceil);
+        printf("\n========================================");
+        printf("\nPass | Min Delay | Max Delay | Avg Delay");
+        printf("\n-----+----------------------------------");
         for (int index = 0; index < nPass; index++)
         {
-            printf("\n%4d | %9d | %9d | %9d | %8d | %8d", 
-                index + 1, mins[index], maxs[index], avgs[index], ceils[index], avgCeils[index]);
+            printf("\n%4d | %9d | %9d | %9d", index + 1, mins[index], maxs[index], avgs[index]);
         }
-        printf("\n==============================================================\n\n");
+        printf("\n========================================\n\n");
     }
-    
-    return avgCeil;
 }
 
 /**
@@ -231,23 +166,51 @@ int main(int argc, char *argv[])
     terminal.start();
 
     // Exec tests
-    for (int bandwidth = 1000; bandwidth <= 10000; bandwidth += 1000)
+    int bandwidths[4] = { 1000, 2000, 4000, 8000 };
+    int threads[6] = { 1, 2, 4, 7, 10, 15 };
+    int ceils[8] = { 65, 70, 75, 80, 85, 90, 95, 100 };
+
+    for (int i = 0; i < 4; i++)
     {
-        for (int threads = 1; threads <= 15; threads++)
-        {
-            // Setup emulator
-            emulator.setParam("Algorithm", "htb");
-            emulator.setParam("FairQueue", "on");
-            emulator.setParam("TxRate", "1000kbps");
-            emulator.setParam("RxRate", QString("%1kbps").arg(bandwidth));
-            emulator.commit();
+    for (int j = 0; j < 6; j++)
+    {
+    for (int k = 0; k < 8; k++)
+    {
+        // Setup emulator
+        emulator.setParam("Algorithm", "htb");
+        emulator.setParam("FairQueue", "off");
+        emulator.setParam("TxRate", "1000kbps");
+        emulator.setParam("RxRate", QString("%1kbps").arg(bandwidths[i]));
+        emulator.commit();
 
-            // Execute Test
-            calcCeilRate(app, terminal, 75, 80, 40, bandwidth, threads, true, true);
+        // Setup Router
+        int ceil = bandwidths[i] * ceils[k] / 100;
+        terminal.enter("tc qdisc add dev eth1 root handle 1: htb default 40\n");
+        terminal.enter(QString(
+            "tc class add dev eth1 parent 1: classid 1:1 htb rate %1kbit ceil %2kbit quantum 1540\n").arg(ceil).arg(ceil));
+        terminal.enter(QString(
+            "tc class add dev eth1 parent 1:1 classid 1:10 htb rate %1kbit ceil %2kbit quantum 1540\n").arg(ceil / 4).arg(ceil));
+        terminal.enter(QString(
+            "tc class add dev eth1 parent 1:1 classid 1:20 htb rate %1kbit ceil %2kbit quantum 1540\n").arg(ceil / 4).arg(ceil));
+        terminal.enter(QString(
+            "tc class add dev eth1 parent 1:1 classid 1:30 htb rate %1kbit ceil %2kbit quantum 1540\n").arg(ceil / 4).arg(ceil));
+        terminal.enter(QString(
+            "tc class add dev eth1 parent 1:1 classid 1:40 htb rate %1kbit ceil %2kbit quantum 1540\n").arg(ceil / 4).arg(ceil));
+        terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.16 flowid 1:10\n");
+        terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.17 flowid 1:20\n");
+        terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.18 flowid 1:30\n");
+        terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.19 flowid 1:40\n");
 
-            // Reset emulator
-            emulator.reset();
-        }
+        // Execute Test
+        execTest(app, bandwidths[i], threads[j], ceils[k], 32, true, true);
+
+        // Reset emulator
+        emulator.reset();
+
+        // Reset router
+        terminal.enter("tc qdisc del dev eth1 root\n");
+    }
+    }
     }
     terminal.close();
 
