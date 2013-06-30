@@ -1,7 +1,7 @@
-// Copyright (C) 2012 Gao Fengyu (feng32tc@gmail.com)
+// Copyright (C) 2012-2013 Fengyu Gao (feng32tc@gmail.com)
 //
 // This program is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License version 2 as
+// it under the terms of the GNU General Public License version 3 as
 // published by the Free Software Foundation;
 //
 // This program is distributed in the hope that it will be useful,
