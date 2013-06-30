@@ -9,7 +9,7 @@ layer logic.
 
 The `algts project <http://algts.googlecode.com>`_ started in 2012, is an open-source project
 developing algts, the source code is released under the license of GNU General Public License
-version 2.
+version 3.
 
 The purpose of this tutorial is to introduce algts to new users in a structured way. It is sometimes
 difficult for new users to glean essential information from detailed manuals. In this tutorial, we

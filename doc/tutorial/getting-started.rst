@@ -31,7 +31,7 @@ you adopt that approach, you can get a copy of algts by typing the following int
     cd ~
     mkdir repos
     cd repos
-    svn checkout http://algts.googlecode.com/svn/tags/0.0.2/ .
+    svn checkout http://algts.googlecode.com/svn/tags/0.1.0/ .
 
 As the svn (Subversion) command executes, you should see something like the following displayed:
 
@@ -51,7 +51,7 @@ As the svn (Subversion) command executes, you should see something like the foll
     A    src/test-scripts/bulk-download.cpp
     ...
     A    bin
-    Checked out revision 58.
+    Checked out revision 144.
 
 After the checkout command completes, you should have three directories named **bin**,  **src** and
 **doc**. Go ahead and change into **src** directory. You should see something like the following
@@ -81,8 +81,8 @@ typing the following into your Linux shell (substitute the appropriate version n
     cd ~
     mkdir tarballs
     cd tarballs
-    wget http://algts.googlecode.com/files/algts-0.0.2-src.tar.gz
-    tar -xjf algts-0.0.2-src.tar.gz
+    wget http://algts.googlecode.com/files/algts-0.1.0-src.tar.gz
+    tar xzf algts-0.1.0-src.tar.gz
 
 If you change into the directory **src** you should see a number of files:
 
@@ -98,7 +98,7 @@ Building algts
 
 Change into the **src** directory you created in the download section above. If you downloaded using
 Subversion you should have a directory called **src** under your **~/repos** directory. If you
-downloaded using a tarball you should have a directory called something like **algts-0.0.2-src**
+downloaded using a tarball you should have a directory called something like **algts-0.1.0-src**
 under your **~/tarballs** directory. 
 
 Before the first time you build the algts project, you should get the project configured by
@@ -116,11 +116,11 @@ not detected at standard locations.
     QTDIR environment variable not set!
     Checking for Qt...QTDIR not set and Qt not found at standard locations!
 
-The message above mostly occurs when you've downloaded and installed a QtSDK without compiling from 
-source. Now execute **configure** again with a QTDIR environment variable so that 
-**$QTDIR/bin/qmake** exists. If the QtSDK is installed into a directory named **qt** in user's home
-directory, the command would be something like (also remember to substitute the appropriate version
-numbers):
+The message above mostly occurs when you've downloaded and installed QT without installing from the
+package management system in your Linux distribution. Now execute **configure** again with a QTDIR
+environment variable so that **$QTDIR/bin/qmake** exists. If the QtSDK is installed into a directory
+named **qt** in user's home directory, the command would be something like (also remember to
+substitute the appropriate version numbers):
 
 ::
 
@@ -198,7 +198,7 @@ Setting Up the Standard Environment
 
 In a standard environment, you should get two linux hosts, one for clients and one for servers, and
 a gateway whose QoS settings shall be tested (it is assumed that the algts is built in the client
-host). The gateway can be either a transparent x86 host, or a commercial blackbox router.
+host). The gateway can be either a transparent x86 Linux router, or a commercial blackbox router.
 
 .. image:: images/env_std.jpg
    :scale: 60 %
@@ -323,6 +323,11 @@ the gateway.
 Finally, insert your downloaded cd image, for example, ubuntu-10.04.4-server-i386.iso, into the 
 virtual machine, and start installing.
 
+.. note::
+
+    Evan a clean ubuntu server installation requires more than 500 MB of space. To save more space, 
+    an embedded x86 Linux distribution like Voyage is recommended.
+
 The initialization scripts in the hardware-in-the-loop environment are completely the same. Put a
 script **setup-clinets.sh** as shown below into the home directory in the client host:
 
@@ -420,8 +425,8 @@ network, and **tap1** for the local area network. The address of the local area 
 172.16.0.0/24 so that addresses for testing the virtual gateway will not contradict the one for 
 actually connecting to the Internet.
 
-Similarly, no IPv4 addresses are available on **tap1**, which means that TCP or UDP based traffic
-from the client host that relies on a IPv4 address will never pass **tap1**. Also note that we've
+Similarly, no IPv4 addresses are available on **tap0**, which means that TCP or UDP based traffic
+from the client host that relies on a IPv4 address will never pass **tap0**. Also note that we've
 created a static route item for the server, so that packets taregeting for the server will be sent
 to the gateway.
 
@@ -450,31 +455,33 @@ The content of **setup-servers.sh** is completely the same compared to the one i
     ip addr add dev eth0 10.0.0.14/24
     ip addr add dev eth0 10.0.0.15/24
 
-Finally we should set up the gateway in the virtual machine. A minimal install of Debian, Ubuntu
-Server, etc. can of course work as a gateway, however even a minimal install of a common linux
-distribution (which means that packages like binutils, gcc, perl are installed which is rarely used
-in a router) will cost more than 500 megabytes of disk space.
-
-To save up resources, we'll introduce a specilized router/fiwewall linux distribution **dd-wrt**.
-
-Go to the Router Database page of dd-wrt's site http://www.dd-wrt.com/site/support/router-database,
-type x86 and get the file dd-wrt_public_vga.image. This file is a raw disk image with a size of 
-about 11 megabytes.
+Finally we should set up the gateway in the virtual machine. As mensioned earlier, it is recommended
+to use an embedded x86 Linux distribution like Voyage as the operating system of the router.
 
 Create a virtual machine for the gateway with the first network adapter bridged to **tap0**, and
-the second bridged to **tap1**, and write the file dd-wrt_public_vga.image into the virtual harddisk
-of the gateway.
+the second bridged to **tap1**. Install the operating system prepared into the virtual hard disk. 
 
-.. note::
+A newly installed system cannot function as a router. To enable NAT, you should execute some
+particular iptables commands. For Voyage, this step is simple as you simply needs to execute a
+prepared script called **nat.sh**, and the final network configuration file 
+**/etc/network/interface** should look like:
 
-    In VirtualBox, the system type of the virtual machine should be set to **Other Linux**, a ram of
-    32MB and a harddisk of 32MB is enough for running the router.
+::
 
-.. note::
+    auto lo
+    iface lo inet loopback
+    
+    auto eth0
+    iface eth0 inet static
+            address 10.0.0.2
+            netmask 255.255.255.0
+            broadcast 10.0.0.255
+    
+    auto eth1
+    iface eth1 inet static
+            address 172.16.0.1
+            netmask 255.255.255.0
+            broadcast 172.16.0.255
+            up nat.sh eth1 eth0 "172.16.0.0/24"
 
-    The size of the virtual harddisk should be larger than the size of dd-wrt_public_vga.image, so
-    that nvram data can be written into the free area of the disk. If you create the virtual
-    harddisk with the **vboxmanage** command, the size of the created virtual harddisk is likely to
-    be exactly equal to the size of dd-wrt_public_vga.image, and settings will be lost each time
-    the router reboots.
 

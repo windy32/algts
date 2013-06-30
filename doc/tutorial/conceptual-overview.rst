@@ -96,7 +96,7 @@ loss, reordering and corruption is important when optimizing the behaviors of th
 
 Thus the emulator in algts is designed to emulate the existance of the elements above. In a linux
 routers, we typically use token buckets for shaping, and use the netem qdisc for packet delay, 
-loss, etc. The emulator in algts provides a and clean interface for setting up the emulation
+loss, etc. The emulator in algts provides a simple and clean interface for setting up the emulation
 environment without touching various implementation details.
 
 A Sample algts Script
@@ -119,17 +119,17 @@ that script line by line, so go ahead and open **sample.cpp** in your favorite e
 Boilerplate
 +++++++++++
 
-The algts suite is licensed using the GNU General Public License Version 2. You will see the
+The algts suite is licensed using the GNU General Public License Version 3. You will see the
 appropriate GNU legalese at the head of every file in the algts distribution. Often you will see
 a copyright notice for one of the institutions involved in the algts project above the GPL text and
 an author listed below.
 
 ::
 
-    // Copyright (C) 2012 Gao Fengyu (feng32tc@gmail.com)
+    // Copyright (C) 2012-2013 Fengyu Gao (feng32tc@gmail.com)
     //
     // This program is free software; you can redistribute it and/or modify
-    // it under the terms of the GNU General Public License version 2 as
+    // it under the terms of the GNU General Public License version 3 as
     // published by the Free Software Foundation;
     //
     // This program is distributed in the hope that it will be useful,
@@ -197,7 +197,7 @@ The next line of the script is the following,
 We will use this statement as a convenient place to talk about our Doxygen documentation system. 
 If you look at the project web site, `algts <http://algts.googlecode.com>`_, you will find a link
 to "Downloads" in the navigation bar. If you select this link, you will be taken to the download
-page. Click and download the api document for current release, (e.g., algts-0.0.2-api.chm).
+page. Click and download the api document for current release, (e.g., algts-0.1.0-api.chm).
 
 Open the chm document with your chm viewer. Along the left side, you will find the structure
 of the documentation. A good place to start is the **Modules** "book" in the algts navigation tree.
@@ -250,6 +250,31 @@ subscript that executes every one minute.
 The terminal classes provide basic support for executing QoS scripts. As shown above, the script
 in the sample just displays the qdisc settings on the gateway and does nothing else.
 
+If the router's telnet service has not started yet (which is a default when use Voyage as the
+operating system, you should replace the code above with:
+
+::
+
+    SshTerminal terminal("-p voyage ssh root@172.16.0.1");
+    terminal.start();
+    terminal.enter("tc qdisc show\n"); // No QoS Script is available here
+    terminal.close();
+
+.. note::
+
+    When you use a ssh terminal to connect to a remote host for the first time, the ssh program will
+    show the RSA key fingerprint of the connection and ask you whether to continue. At this time,
+    you should type "yes" and then press enter. However, algts 0.1.0 has not dealed with such 
+    confirmation. As a result, you should connect to the router manually for the first time, and 
+    enter "yes" when prompted, before algts can connect to the router via ssh automatically.
+
+.. note::
+
+    Since version 0.1.0, the ssh terminal in algts script use sshpass to input the username and
+    password, you can simply construct a SshTerimnal object with parameter, e.g., 
+    **"-p voyage ssh root@172.16.0.1"**, call start(), and then input other commands as you wish.
+
+
 Emulator
 ++++++++
 
@@ -262,8 +287,8 @@ The next few lines sets up the emulator.
     emulator.setParam("RxRate", "2000kbps");
     emulator.commit();
 
-We create a basic emulator, sets the downstream rate and upstream rate of ISP's shaper queues, and
-finally commit settings.
+We create a basic emulator, sets the downstream rate and upstream rate of ISP's shapers, and finally
+commit settings.
 
 A concrete emulator class represents a solution based on some certain implemenation details. The
 basic emulator supports only two properties: **TxRate** and **RxRate**.
@@ -401,23 +426,15 @@ probably have not been started yet, thus you may see the following output:
 
 ::
 
-    Info: > 
-    Info: < root
-    Info: > 
-    Info: > 
-    Info: < admin
-    Info: > 
-    Info: > 
-    Info: < tc qdisc show
-    Info: > 
+    Info: > tc qdisc show
     Info: Parameter TxRate created with value 500kbps
     Info: Parameter RxRate created with value 2000kbps
     Error: Cannot connect to emulator daemon @ 10.0.0.1:3201
     Warning: Minimum value of EchoSize is less than 1B
-    Error: No enough addresses available
+    Error: Cannot connect to server daemon @ 10.0.0.1:3200
     Error: Cannot connect to emulator daemon @ 10.0.0.1:3201
 
-We try to telnet to the gateway, however no response is returned. As the **emulator.commit()**
+We try to log onto the gateway, however no response is returned. As the **emulator.commit()**
 executes, the emulator cannot connect to the daemon working on the server host that processes the
 requests.
 
@@ -442,64 +459,45 @@ Then press **Alt + F2**, enter the second terminal and type the following comman
 ::
 
     cd ~
-    sudo ./serverd 10.0.0.1 3200 10.0.0.8/29
+    sudo ./serverd 10.0.0.1 3200 10.0.0.8/29 &
 
 Finally, go back to your host operating system and execute the script again. There's an **--run**
 option built in the script helper so that you can build and run the script in a single command:
 
 ::
 
-    ./script --run sample "10.0.0.1 3200 10.0.0.8/29"
+    ./script --run sample "172.16.0.16/28 10.0.0.1 3200"
 
 We can see that we've successfully telneted onto the gateway, the execution is successful and the
 trace file is generated as expected:
 
 ::
 
-    Info: > Trying 172.16.0.1...
-    Info: > Connected to 172.16.0.1.
-    Info: > Escape character is '^]'.
-    Info: > 
-    Info: > DD-WRT v24-sp2 std (c) 2010 NewMedia-NET GmbH
-    Info: > Release: 06/12/10 (SVN revision: 14594)
-    Info: > 
-    Info: > DD-WRT login: 
-    Info: < root
-    Info: > root
-    Info: > Password: 
-    Info: > 
-    Info: < admin
-    Info: > 
-    Info: > ==========================================================
-    Info: >  
-    Info: >  ____  ___    __        ______ _____         ____  _  _ 
-    Info: >  | _ \| _ \   \ \      / /  _ \_   _| __   _|___ \| || | 
-    Info: >  || | || ||____\ \ /\ / /| |_) || |   \ \ / / __) | || |_ 
-    Info: >  ||_| ||_||_____\ V  V / |  _ < | |    \ V / / __/|__   _| 
-    Info: >  |___/|___/      \_/\_/  |_| \_\|_|     \_/ |_____|  |_| 
-    Info: >  
-    Info: >                        DD-WRT v24-sp2
-    Info: >                    http://www.dd-wrt.com
-    Info: >  
-    Info: > ==========================================================
-    Info: > 
-    Info: > 
-    Info: > BusyBox v1.13.4 (2010-06-12 10:24:01 CEST) built-in shell (ash)
-    Info: > Enter 'help' for a list of built-in commands.
-    Info: > 
-    Info: > root@DD-WRT:~# 
-    Info: > 
-    Info: < tc qdisc show
     Info: > tc qdisc show
-    Info: > qdisc pfifo_fast 0: dev eth0 root bands 3 priomap  1 2 2 2 1 2 0 0 1 1 1 1 1 1 1 1
-    Info: > qdisc pfifo_fast 0: dev eth1 root bands 3 priomap  1 2 2 2 1 2 0 0 1 1 1 1 1 1 1 1
-    Info: > root@DD-WRT:~# 
+    Info: > Linux voyage 3.0.0-voyage #1 SMP PREEMPT Mon Oct 24 01:49:56 HKT 2011 i686
+    Info: > 
+    Info: > The programs included with the Debian GNU/Linux system are free software;
+    Info: > the exact distribution terms for each program are described in the
+    Info: > individual files in /usr/share/doc/*/copyright.
+    Info: > 
+    Info: > Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+    Info: > permitted by applicable law.
+    Info: >  __  __
+    Info: >  \ \/ /___ __  __ ___  ___  ___    Useful Commands:
+    Info: >   \  // _ \\ \/ /,-_ |/ _ |/ -_)     remountrw - mount disk as read-write
+    Info: >    \/ \___/ \  / \___,\_  |\___|     remountro - mount disk as read-only
+    Info: >            _/_/        _'_|          remove.docs - remove all docs and manpages 
+    Info: >      { V o y a g e } - L i n u x     
+    Info: >       < http://linux.voyage.hk >   Version: 0.8 (Build Date 20111030)
+    Info: > 
+    Info: > 
+    Info: > qdisc pfifo_fast 0: dev eth0 root refcnt 2 bands 3 priomap  1 2 2 2 1 2 0 0 1 1 1 1 1 1 1 1
+    Info: > qdisc pfifo_fast 0: dev eth1 root refcnt 2 bands 3 priomap  1 2 2 2 1 2 0 0 1 1 1 1 1 1 1 1
+    Info: > 
     Info: Parameter TxRate created with value 500kbps
     Info: Parameter RxRate created with value 2000kbps
     Info: Parameters updated successfully
     Warning: Minimum value of EchoSize is less than 1B
-    Info: Harry's address: 172.16.0.8
-    Info: Sally's address: 172.16.0.9
     Info: Trace file generated successfully
     Info: Parameters successfully reset
     Info: Description: Emulator reset successfully
