@@ -273,6 +273,7 @@ operating system, you should replace the code above with:
     Since version 0.1.0, the ssh terminal in algts script use sshpass to input the username and
     password, you can simply construct a SshTerimnal object with parameter, e.g., 
     **"-p voyage ssh root@172.16.0.1"**, call start(), and then input other commands as you wish.
+    Remember to install sshpass before executing an algts script.
 
 
 Emulator
@@ -466,7 +467,7 @@ option built in the script helper so that you can build and run the script in a 
 
 ::
 
-    ./script --run sample "172.16.0.16/28 10.0.0.1 3200"
+    ./script --run sample "172.16.0.8/29 10.0.0.1 3200"
 
 We can see that we've successfully telneted onto the gateway, the execution is successful and the
 trace file is generated as expected:

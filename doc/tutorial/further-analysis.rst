@@ -134,18 +134,33 @@ Using Raw Trace Objects for Further Analysis
 Though it is possible to execute a test, get text trace files, and then use tools like awk for
 further analysis, it is not recommend in algts as it is just not convenient.
 
-In algts scripts, users can get the trace item of a specific task as a RawTraceItem object:
+In algts scripts, users can get the trace item of a specific task as a **RawTraceItem** object, the
+difinition of class **RawTraceItem** is given below:
 
 ::
 
     typedef QMap<QString, QList<qint32> > RawTraceItem;
 
-The key of the map is the field name of the trace item. For example, for a tcp echo task, the key
-could be "Index", "Time", or "Delay", and the value to the key is a list of integers containing the
-data of the field.
+The key of the map is the field name of the trace item, e.g., for a tcp echo task, the key could be
+"Index", "Time", or "Delay", and the value to the key is a list of integers containing the data of
+the field.
 
-Now that users can get any trace item conveniently, any kind of analysis is possible. When users
-want to investigate how download may affact queuing delay, here's an example of the script:
+Different fields of the trace item always share a same length. As a result, code to traverse a raw
+trace item of a tcp echo task often looks like:
+
+::
+
+    for (int i = 0; i < traceItem["Index"].size(); i++)
+    {
+        int index = traceItem["Index"][i];
+        int time  = traceItem["Time"][i];
+        int delay = traceItem["Delay"][i];
+        ...
+    }
+
+Now that users can get any trace item conveniently, any analysis is possible. Below is a example of 
+a complete script function that executes the test, collects statistics and finally prints formatted
+output, when users want to investigate how download may affact queuing delay:
 
 ::
 
@@ -267,9 +282,8 @@ want to investigate how download may affact queuing delay, here's an example of 
         }
     }
 
-Formatted outputs and can also be generated within the script. When a simple fifo queue is applied
-at the router, there are 3 bulk download users, and the number of download threads ranges from 1 to
-15, the output generated is shown below:
+When a simple fifo queue is applied at the router, and there are three bulk download users plus one
+to fifteen download threads, the output generated is as shown below:
 
 ::
 
