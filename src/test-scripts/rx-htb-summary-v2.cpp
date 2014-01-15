@@ -167,7 +167,7 @@ int main(int argc, char *argv[])
     int sessions[12] = { 1, 2, 3, 4, 6, 8, 10, 12, 16, 24, 32, 40 };
     int ceils[10] = { 64, 68, 72, 76, 80, 84, 88, 92, 96, 100 };
 
-    for (int i = 1; i < 2/*16*/; i++)
+    for (int i = 0; i < 16; i++)
     {
     for (int j = 0; j < 12; j++)
     {
