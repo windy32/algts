@@ -163,9 +163,9 @@ int main(int argc, char *argv[])
     int bandwidth = 8000; // 8 Mbps
     int pct = 90; // 10% reserved
     int sessions[8] = { 2, 4, 6, 8, 12, 16, 24, 32 };
-    int packets[10 + 1] = { -1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024 };
+    int packets[6] = { -1, 4, 16, 64, 256, 1024 };
     
-    for (int i = 0; i < 10 + 1; i++)
+    for (int i = 0; i < 6; i++)
     {
     for (int j = 0; j < 8; j++)
     {
@@ -196,7 +196,7 @@ int main(int argc, char *argv[])
         terminal.enter("tc filter add dev eth1 parent 1: protocol ip prio 1 u32 match ip dst 172.16.0.17 flowid 1:20\n");
 
         // Execute Test
-        execTest(app, bandwidth, sessions[j], ceil, 50, true, true);
+        execTest(app, bandwidth, sessions[j], pct, 50, true, true);
 
         // Reset emulator
         emulator.reset();

@@ -38,11 +38,45 @@ BEGIN {
         avg = 0
     }
     
-    min += $3
+    min += $3 # TODO: Remove 2000ms+ samples
     max += $5
     avg += $7
     
-    if ($1 == 50 && $2 == "|") {
-        printf(" min = %d, max = %d, avg = %d\n", min / 50, max / 50, avg / 50)
+    arr_max[$1] = $5
+    arr_valid[$1] = 1
+    
+    if ($1 == 50 && $2 == "|") 
+    {
+        remaining_sum = max
+        remaining_num = 50
+        
+        while (1)
+        {
+            # Find the max valid element
+            max_value = 0
+            max_index = 0
+            for (j = 1; j <= 50; j++)
+            {
+                if (arr_valid[j] == 1 && arr_max[j] > max_value)
+                {
+                    max_value = arr_max[j]
+                    max_index = j
+                }
+            }
+                        
+            # Remove the bad samples
+            if (max_value > (remaining_sum - max_value) / (remaining_num - 1) * 2)
+            {
+                arr_valid[max_index] = 0
+                remaining_sum -= max_value
+                remaining_num -= 1
+                # printf(" <removing %d> ", max_value)
+            }
+            else
+            {
+                break
+            }
+        }
+        printf(" min = %d, max = %d, avg = %d\n", min / 50, remaining_sum / remaining_num, avg / 50)
     }
 }
