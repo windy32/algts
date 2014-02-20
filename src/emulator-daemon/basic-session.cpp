@@ -159,24 +159,38 @@ bool BasicSession::execCommit(QMap<QString, QString> &params)
     else if (algorithm == tbf && fairQueue == on)
     {
         n = 8;
+        
+        // Calculate burst
+        int txBurst = (int)(2580.3 * pow(txRate * 0.001, 0.6319));
+        int rxBurst = (int)(2580.3 * pow(rxRate * 0.001, 0.6319));
+        txBurst = (txBurst < 3080) ? 3080 : txBurst;
+        rxBurst = (rxBurst < 3080) ? 3080 : rxBurst;
+        
         cmds[4] = QString("tc qdisc add dev ifb0 root handle 1: tbf"
-                          "   rate %1kbit burst 6kb latency 500ms").arg(txRate);
-	    cmds[5] = QString("tc qdisc add dev ifb0 parent 1: handle 10: sfq"
+                          "   rate %1kbit burst %2b latency 500ms mtu 100000").arg(txRate).arg(txBurst);
+        cmds[5] = QString("tc qdisc add dev ifb0 parent 1: handle 10: sfq"
 	                      "   perturb 10");
 
         cmds[6] = QString("tc qdisc add dev eth0 root handle 1: tbf"
-                          "   rate %1kbit burst 6kb latency 500ms").arg(rxRate);
+                          "   rate %1kbit burst %2b latency 500ms mtu 100000").arg(rxRate).arg(rxBurst);
         cmds[7] = QString("tc qdisc add dev eth0 parent 1: handle 10: sfq"
                           "   perturb 10");
     }
     else if (algorithm == tbf && fairQueue == off)
     {
         n = 6;
+
+        // Calculate burst
+        int txBurst = (int)(2580.3 * pow(txRate * 0.001, 0.6319));
+        int rxBurst = (int)(2580.3 * pow(rxRate * 0.001, 0.6319));
+        txBurst = (txBurst < 3080) ? 3080 : txBurst;
+        rxBurst = (rxBurst < 3080) ? 3080 : rxBurst;
+
         cmds[4] = QString("tc qdisc add dev ifb0 root handle 1: tbf"
-                          "   rate %1kbit burst 6kb latency 500ms").arg(txRate);
+                          "   rate %1kbit burst %2b latency 500ms mtu 100000").arg(txRate).arg(txBurst);
 
         cmds[5] = QString("tc qdisc add dev eth0 root handle 1: tbf"
-                          "   rate %1kbit burst 6kb latency 500ms").arg(rxRate);
+                          "   rate %1kbit burst %2b latency 500ms mtu 100000").arg(rxRate).arg(rxBurst);
     }
     
     // The fourth result "Action 4..." appears in a clean ubuntu server 10.04.4
