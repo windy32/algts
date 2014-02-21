@@ -1,15 +1,10 @@
 BEGIN {
     packets[0] = -1
-    packets[1] = 2
-    packets[2] = 4
-    packets[3] = 8
-    packets[4] = 16
-    packets[5] = 32
-    packets[6] = 64
-    packets[7] = 128
-    packets[8] = 256
-    packets[9] = 512
-    packets[10] = 1024
+    packets[1] = 4
+    packets[2] = 16
+    packets[3] = 64
+    packets[4] = 256
+    packets[5] = 1024
     i = 0
 }
 {

@@ -160,7 +160,7 @@ int main(int argc, char *argv[])
     terminal.start();
 
     // Exec tests
-    int bandwidth = 8000; // 8 Mbps
+    int bandwidth = 7700; // 8 Mbps (use the real speed reported by iperf)
     int pct = 90; // 10% reserved
     int sessions[8] = { 2, 4, 6, 8, 12, 16, 24, 32 };
     int packets[6] = { -1, 4, 16, 64, 256, 1024 };
@@ -170,7 +170,7 @@ int main(int argc, char *argv[])
     for (int j = 0; j < 8; j++)
     {
         // Setup emulator
-        emulator.setParam("Algorithm", "htb");
+        emulator.setParam("Algorithm", "tbf");
         emulator.setParam("FairQueue", "off");
         emulator.setParam("TxRate", QString("%1kbps").arg(bandwidth / 4));
         emulator.setParam("RxRate", QString("%1kbps").arg(bandwidth));
