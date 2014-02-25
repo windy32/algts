@@ -40,17 +40,17 @@ BEGIN {
     arr_max[$1] = $5
     arr_valid[$1] = 1
     
-    if ($1 == 50 && $2 == "|") 
+    if ($1 == 16 && $2 == "|") 
     {
         remaining_sum = max
-        remaining_num = 50
+        remaining_num = 16
         
         while (1)
         {
             # Find the max valid element
             max_value = 0
             max_index = 0
-            for (j = 1; j <= 50; j++)
+            for (j = 1; j <= 16; j++)
             {
                 if (arr_valid[j] == 1 && arr_max[j] > max_value)
                 {
@@ -72,6 +72,6 @@ BEGIN {
                 break
             }
         }
-        printf(" min = %d, max = %d, avg = %d\n", min / 50, remaining_sum / remaining_num, avg / 50)
+        printf(" min = %d, max = %d, avg = %d\n", min / 16, remaining_sum / remaining_num, avg / 16)
     }
 }

@@ -56,7 +56,7 @@ void BulkDownloadServerSession::run()
     QDataStream in(&socket);
     in >> maxBytes >> maxRate;
     
-    LOG_DEBUG("MaxBytes = %d, MaxRate = %d", maxBytes, maxRate);
+    // LOG_DEBUG("MaxBytes = %d, MaxRate = %d", maxBytes, maxRate);
     
     // Send data
     const int packetSize = 1000;
@@ -73,7 +73,7 @@ void BulkDownloadServerSession::run()
         
         if( socket.state() == QAbstractSocket::UnconnectedState )
         {
-            LOG_DEBUG("Bulk download session closed by client");
+            // LOG_DEBUG("Bulk download session closed by client");
             break;
         }
         

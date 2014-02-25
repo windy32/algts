@@ -33,7 +33,6 @@ int main(int argc, char *argv[])
 {
     // Enable logging and tracing
     Log::enable(Log::LOG_LEVEL_DEBUG);
-    TextTrace::enable(argv[0]);
     
     // Start console application and check arguments
     ConsoleApplication app(argc, argv);
@@ -41,15 +40,28 @@ int main(int argc, char *argv[])
     // Setup scenario
     LOG_DEBUG("Setting up scenaio");
     
-    Scenario s(12345, 30); // seed & length
+    Scenario s(12345, 10); // seed & length
     s.addUser("Harry");
 
-    s.addTask("Harry", new BulkDownloadTask(80));
-    s.task()->setAttribute("MaxBytes", "INFINITE");
-    s.task()->setAttribute("MaxRate", "3Mbps");
-    
+    for (int i = 0; i < 1; i++)
+    {
+        s.addTask("Harry", new BulkDownloadTask(80));
+        s.task()->setAttribute("MaxBytes", "INFINITE");
+        s.task()->setAttribute("MaxRate", "INFINITE"/*"3Mbps"*/);
+    }
+        
     // Execute
     app.exec(&s);
+    
+    // Calculate average throughput
+    int kbytes = 0;
+    for (int i = 0; i < 1; i++)
+    {
+        RawTraceItem rti;
+        app.exportRawTrace("Harry", 0, rti);
+        kbytes += rti["TotalBytes"].last() / 1024;
+    }
+    LOG_INFO("Throughput: %d KB/s", kbytes / 10);
     
     return 0;
 }
