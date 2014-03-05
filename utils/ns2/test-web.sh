@@ -19,7 +19,7 @@ do
     do
         for num in 1 2 3 4 5 6 8 10 12 14 16 20 24 30 40 # 15 Loops
         do
-            ns shaping.tcl $num 0 "$bw"Mb 500 ${pct[$i]} ${qlen[$i]}
+            ns shaping.tcl $num $rate "$bw"Mb 500 ${pct[$i]} ${qlen[$i]}
             echo -ne "$bw\t$num\t${pct[$i]}\t${qlen[$i]}\t" >> $filename
             awk -f queue.awk link-isp.tr $bw 1.0 brief >> $filename
             awk -f throughput.awk link-local.tr $bw 1.0 >> $filename
