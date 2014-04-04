@@ -327,7 +327,7 @@ int main(int argc, char *argv[])
     }
     
     //Log::enable(Log::LOG_LEVEL_INFO);
-    Log::enable(Log::LOG_LEVEL_DEBUG);
+    Log::enable(Log::LOG_LEVEL_WARN);
     
     QHostAddress daemonAddr;
     quint16 daemonPort;
@@ -383,7 +383,7 @@ int main(int argc, char *argv[])
         // Wait for a new connection
         daemon.waitForNewConnection(-1);
         QTcpSocket *socket = daemon.nextPendingConnection();
-        LOG_INFO("Server daemon connection established");
+        LOG_DEBUG("Server daemon connection established");
         
         // Start a new thread for the session
         ServerDaemonSession *session = new ServerDaemonSession(socket);
