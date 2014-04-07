@@ -1,0 +1,11 @@
+How to Applying the ns-2 patch for hard limit CoDel
+===================================================
+
+Simply cd into ns-allinone-2.35, run patch -p1 < hard-limit-CoDel-ns-2.35.patch,
+then build ns-2 normally. The original CoDel patch is not required.
+
+Note: the "hard limit" mode is disabled by default, so you're using the
+      original algorithm by default. To enable "hard limit", for example, 
+      run "Queue/CoDel set maxdelay_ 50". The max delay is specified in
+      milliseconds.
+
