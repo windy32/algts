@@ -9,3 +9,58 @@ Note: the "hard limit" mode is disabled by default, so you're using the
       run "Queue/CoDel set maxdelay_ 50". The max delay is specified in
       milliseconds.
 
+How to Apply the OpenWRT patch for hard limit CoDel
+===================================================
+
+1. Follow the steps in OpenWRT buildroot installation wiki page
+   (http://wiki.openwrt.org/doc/howto/buildroot.exigence), install svn, git and other packages.
+
+2. Clone the OpenWRT 12.09 branch.
+
+   cd ~
+   mkdir openwrt
+   cd openwrt
+   git clone git://git.openwrt.org/12.09/openwrt.git
+
+3. Download and install feeds.
+
+   cd ~/openwrt/openwrt
+   ./scripts/feeds update -a
+   ./scripts/feeds install -a
+
+4. Configure and compile.
+
+   make defconfig
+   make menuconfig
+   
+   As we're testing the algorithm with WNDR3700v2, we made the changes below in menuconfig:
+   
+   - Target System: AR7xxx/AR9xxx
+   - Sub Target: Generic
+   - Target Profile (NETGEAR WNDR3700/WNDR3800/WNDRMAC)
+   - Include: LuCI / Collenction / luci
+   - Include: Kernel modules / Network Support / kmod-sched
+   - Include: Kernel modules / Network Support / kmod-netem
+   - Include: Network / tc
+   - Include: Network / iperf
+   - Include: Network / iperf-mt
+   
+   Save configuration and enter "make". Then wait until finish.
+
+5. Now the source code of the Linux kernel and the iproute2 package has been downloaded, 
+   and the patches from OpenWRT have been applied before compiling. It's time to apply
+   the "hlc" patch.
+
+   cd into ~/openwrt/openwrt/build_dir/linux-ar71xx_generic, and execute:
+   
+   patch -p1 < hard-limit-CoDel-OpenWRT-12.09-linux-3.3.8.patch
+   
+   cd into ~/openwrt/openwrt/build_dir/target-mips_r2_uClibc-0.9.33.2, and execute
+   
+   patch -p1 < hard-limit-CoDel-OpenWRT-12.09-iproute2-3.3.0.patch
+   
+   Then build OpenWRT again. Hard limit CoDel will be added to the new firmware.
+
+Note: When the 12.09 branch is updated, you may fail to apply the patches.
+      If so, you have to apply the patches manually, though it's quite simple and
+      straightforward.
