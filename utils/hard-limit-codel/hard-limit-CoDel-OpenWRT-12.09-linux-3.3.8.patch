@@ -1,0 +1,146 @@
+diff -ru linux-ar71xx_generic_bak/linux-3.3.8/include/linux/pkt_sched.h linux-ar71xx_generic/linux-3.3.8/include/linux/pkt_sched.h
+--- linux-ar71xx_generic_bak/linux-3.3.8/include/linux/pkt_sched.h	2014-04-09 04:29:46.120458000 +0800
++++ linux-ar71xx_generic/linux-3.3.8/include/linux/pkt_sched.h	2014-04-09 12:59:43.858176884 +0800
+@@ -668,6 +668,7 @@
+ 	TCA_CODEL_LIMIT,
+ 	TCA_CODEL_INTERVAL,
+ 	TCA_CODEL_ECN,
++	TCA_CODEL_MAXDELAY,
+ 	__TCA_CODEL_MAX
+ };
+ 
+diff -ru linux-ar71xx_generic_bak/linux-3.3.8/include/net/codel.h linux-ar71xx_generic/linux-3.3.8/include/net/codel.h
+--- linux-ar71xx_generic_bak/linux-3.3.8/include/net/codel.h	2014-04-09 04:29:38.576458000 +0800
++++ linux-ar71xx_generic/linux-3.3.8/include/net/codel.h	2014-04-09 13:14:05.571075956 +0800
+@@ -115,6 +115,7 @@
+ struct codel_params {
+ 	codel_time_t	target;
+ 	codel_time_t	interval;
++	codel_time_t	max_delay;
+ 	bool		ecn;
+ };
+ 
+@@ -160,6 +161,7 @@
+ {
+ 	params->interval = MS2TIME(100);
+ 	params->target = MS2TIME(5);
++	params->max_delay = 0; // Disable hard limit mode by default
+ 	params->ecn = false;
+ }
+ 
+@@ -209,7 +211,8 @@
+ 			      struct codel_vars *vars,
+ 			      struct codel_params *params,
+ 			      struct codel_stats *stats,
+-			      codel_time_t now)
++			      codel_time_t now,
++			      bool *hard_drop)
+ {
+ 	bool ok_to_drop;
+ 
+@@ -239,6 +242,13 @@
+ 	} else if (codel_time_after(now, vars->first_above_time)) {
+ 		ok_to_drop = true;
+ 	}
++
++	if (params->max_delay != 0) {
++		if (codel_time_after(vars->ldelay, params->max_delay)) {
++			ok_to_drop = true;
++			*hard_drop = true;
++		}
++	}
+ 	return ok_to_drop;
+ }
+ 
+@@ -251,16 +261,30 @@
+ 				     struct codel_stats *stats,
+ 				     codel_skb_dequeue_t dequeue_func)
+ {
+-	struct sk_buff *skb = dequeue_func(vars, sch);
++	struct sk_buff *skb;
+ 	codel_time_t now;
+-	bool drop;
++	bool drop, hard_drop;
++
++	do {
++		skb = dequeue_func(vars, sch);
++		if (!skb) {
++			vars->dropping = false;
++			return skb;
++		}
++		now = codel_get_time();
++		drop = codel_should_drop(skb, sch, vars, params, stats, now, &hard_drop);
++		if (hard_drop) {
++			qdisc_drop(skb, sch);
++			stats->drop_count++;
++		}
++	} while (hard_drop);
+ 
+ 	if (!skb) {
+ 		vars->dropping = false;
+ 		return skb;
+ 	}
+ 	now = codel_get_time();
+-	drop = codel_should_drop(skb, sch, vars, params, stats, now);
++	drop = codel_should_drop(skb, sch, vars, params, stats, now, &hard_drop);
+ 	if (vars->dropping) {
+ 		if (!drop) {
+ 			/* sojourn time below target - leave dropping state */
+@@ -292,7 +316,7 @@
+ 				stats->drop_count++;
+ 				skb = dequeue_func(vars, sch);
+ 				if (!codel_should_drop(skb, sch,
+-						       vars, params, stats, now)) {
++						       vars, params, stats, now, &hard_drop)) {
+ 					/* leave dropping state */
+ 					vars->dropping = false;
+ 				} else {
+@@ -315,7 +339,7 @@
+ 
+ 			skb = dequeue_func(vars, sch);
+ 			drop = codel_should_drop(skb, sch, vars, params,
+-						 stats, now);
++						 stats, now, &hard_drop);
+ 		}
+ 		vars->dropping = true;
+ 		/* if min went above target close to when we last went below it
+diff -ru linux-ar71xx_generic_bak/linux-3.3.8/net/sched/sch_codel.c linux-ar71xx_generic/linux-3.3.8/net/sched/sch_codel.c
+--- linux-ar71xx_generic_bak/linux-3.3.8/net/sched/sch_codel.c	2014-04-09 04:29:38.384458000 +0800
++++ linux-ar71xx_generic/linux-3.3.8/net/sched/sch_codel.c	2014-04-09 12:51:22.437029749 +0800
+@@ -109,6 +109,7 @@
+ 	[TCA_CODEL_LIMIT]	= { .type = NLA_U32 },
+ 	[TCA_CODEL_INTERVAL]	= { .type = NLA_U32 },
+ 	[TCA_CODEL_ECN]		= { .type = NLA_U32 },
++	[TCA_CODEL_MAXDELAY]	= { .type = NLA_U32 },
+ };
+ 
+ static int codel_change(struct Qdisc *sch, struct nlattr *opt)
+@@ -145,6 +146,11 @@
+ 	if (tb[TCA_CODEL_ECN])
+ 		q->params.ecn = !!nla_get_u32(tb[TCA_CODEL_ECN]);
+ 
++	if (tb[TCA_CODEL_MAXDELAY]) {
++		u32 max_delay = nla_get_u32(tb[TCA_CODEL_MAXDELAY]);
++		q->params.max_delay = ((u64)max_delay * NSEC_PER_USEC) >> CODEL_SHIFT;
++	}
++
+ 	qlen = sch->q.qlen;
+ 	while (sch->q.qlen > sch->limit) {
+ 		struct sk_buff *skb = __skb_dequeue(&sch->q);
+@@ -199,7 +205,9 @@
+ 	    nla_put_u32(skb, TCA_CODEL_INTERVAL,
+ 			codel_time_to_us(q->params.interval)) ||
+ 	    nla_put_u32(skb, TCA_CODEL_ECN,
+-			q->params.ecn))
++			q->params.ecn) ||
++	    nla_put_u32(skb, TCA_CODEL_MAXDELAY,
++	    		codel_time_to_us(q->params.max_delay)))
+ 		goto nla_put_failure;
+ 
+ 	return nla_nest_end(skb, opts);
+@@ -273,4 +281,5 @@
+ MODULE_DESCRIPTION("Controlled Delay queue discipline");
+ MODULE_AUTHOR("Dave Taht");
+ MODULE_AUTHOR("Eric Dumazet");
++MODULE_AUTHOR("Fengyu Gao");
+ MODULE_LICENSE("Dual BSD/GPL");
