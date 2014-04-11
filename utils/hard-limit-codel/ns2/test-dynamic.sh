@@ -12,19 +12,19 @@ fi
 
 # 417 packets * 1.5 KB = 0.625 MB = 5 Mbit (50ms queue)
 ns hl-codel.tcl 4 0 5 100Mb 5 40 1500 fifo 417 dynamic > /dev/null
-awk -f queue.awk link.tr 100 0.5 > dynamic-fifo.log
+awk -f queue.awk link.tr 100 0.1 > dynamic-fifo.log
 echo -n "."
 
 ns hl-codel.tcl 4 0 5 100Mb 5 40 1500 codel 1000 dynamic > /dev/null
-awk -f queue.awk link.tr 100 0.5 > dynamic-codel.log
+awk -f queue.awk link.tr 100 0.1 > dynamic-codel.log
 echo -n "."
 
 # CoDel with a 50ms "small" buffer
 ns hl-codel.tcl 4 0 5 100Mb 5 40 1500 codel 417 dynamic > /dev/null
-awk -f queue.awk link.tr 100 0.5 > dynamic-codels.log
+awk -f queue.awk link.tr 100 0.1 > dynamic-codels.log
 echo -n "."
 
 ns hl-codel.tcl 4 0 5 100Mb 5 40 1500 hl-codel 50 dynamic > /dev/null
-awk -f queue.awk link.tr 100 0.5 > dynamic-hlc.log
+awk -f queue.awk link.tr 100 0.1 > dynamic-hlc.log
 echo "."
 
