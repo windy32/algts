@@ -113,11 +113,11 @@ do
     d=${delay_[$index]}
     bd=${bdelay_[$index]}
     rtt=`expr $d \* 4 + $bd \* 2`
-    progress=`expr $index + 1`
+    pgs=`expr $index + 1`
 
-    execute_test "[$progress/8] RTT $rtt""ms, hlc  " "rnd-hlc-rtt$rtt.log" $d $bd hlc
-    execute_test "[$progress/8] RTT $rtt""ms, fifo " "rnd-fifo-rtt$rtt.log" $d $bd fifo
-    execute_test "[$progress/8] RTT $rtt""ms, codel" "rnd-codel-rtt$rtt.log" $d $bd codel
+    execute_test "[$pgs/8] RTT $rtt""ms, hlc  " "rnd-hlc-rtt$rtt.log" $d $bd hlc
+    execute_test "[$pgs/8] RTT $rtt""ms, fifo " "rnd-fifo-rtt$rtt.log" $d $bd fifo
+    execute_test "[$pgs/8] RTT $rtt""ms, codel" "rnd-codel-rtt$rtt.log" $d $bd codel
 done
 
 echo ""
